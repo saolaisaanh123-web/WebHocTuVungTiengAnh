@@ -4,6 +4,7 @@ import type { ConversationAnswer, ConversationAttempt } from "./practice-data";
 export type DialogueTarget = {
   id: string;
   lemma: string;
+  partOfSpeech: string;
   meaning: string;
   context: string;
 };
@@ -30,11 +31,13 @@ export type Dialogue = {
 
 const t = (
   lemma: string,
+  partOfSpeech: string,
   meaning: string,
   context: string,
 ): DialogueTarget => ({
   id: `${lemma}-01`,
   lemma,
+  partOfSpeech,
   meaning,
   context,
 });
@@ -91,10 +94,15 @@ export const dialogues: Dialogue[] = [
     title: "Xin góp ý trước hạn nộp",
     level: "B1",
     targets: [
-      t("assignment", "bài tập được giao", "bài viết được giảng viên giao"),
-      t("deadline", "hạn chót", "thời điểm cuối phải nộp bài"),
-      t("feedback", "nhận xét góp ý", "góp ý để sửa bản nháp"),
-      t("improve", "cải thiện", "làm phần kết luận tốt hơn"),
+      t(
+        "assignment",
+        "noun",
+        "bài tập được giao",
+        "bài viết được giảng viên giao",
+      ),
+      t("deadline", "noun", "hạn chót", "thời điểm cuối phải nộp bài"),
+      t("feedback", "noun", "nhận xét góp ý", "góp ý để sửa bản nháp"),
+      t("improve", "verb", "cải thiện", "làm phần kết luận tốt hơn"),
     ],
     lines: [
       line(
@@ -169,10 +177,25 @@ export const dialogues: Dialogue[] = [
     title: "Kiểm tra một thông tin trước khi chia sẻ",
     level: "B2",
     targets: [
-      t("research", "nghiên cứu", "nghiên cứu được viện dẫn trong bài báo"),
-      t("evidence", "bằng chứng", "dữ liệu hỗ trợ một kết luận"),
-      t("source", "nguồn thông tin", "nghiên cứu gốc cung cấp thông tin"),
-      t("reliable", "đáng tin cậy", "nguồn có thể tin dùng sau khi kiểm tra"),
+      t(
+        "research",
+        "noun",
+        "nghiên cứu",
+        "nghiên cứu được viện dẫn trong bài báo",
+      ),
+      t("evidence", "noun", "bằng chứng", "dữ liệu hỗ trợ một kết luận"),
+      t(
+        "source",
+        "noun",
+        "nguồn thông tin",
+        "nghiên cứu gốc cung cấp thông tin",
+      ),
+      t(
+        "reliable",
+        "adjective",
+        "đáng tin cậy",
+        "nguồn có thể tin dùng sau khi kiểm tra",
+      ),
     ],
     lines: [
       line(
@@ -259,12 +282,18 @@ export const dialogues: Dialogue[] = [
     targets: [
       t(
         "budget",
+        "noun",
         "ngân sách; khoản tiền dự tính cho một việc",
         "số tiền tối đa dự tính mua bàn",
       ),
-      t("price", "giá; giá bán", "giá bán được niêm yết"),
-      t("affordable", "có giá phải chăng", "có giá nằm trong khả năng chi trả"),
-      t("cost", "chi phí", "chi phí giao hàng ngoài giá bàn"),
+      t("price", "noun", "giá; giá bán", "giá bán được niêm yết"),
+      t(
+        "affordable",
+        "adjective",
+        "có giá phải chăng",
+        "có giá nằm trong khả năng chi trả",
+      ),
+      t("cost", "noun", "chi phí", "chi phí giao hàng ngoài giá bàn"),
     ],
     lines: [
       line(
@@ -335,19 +364,22 @@ export const dialogues: Dialogue[] = [
     title: "Điều chỉnh nhịp làm việc",
     level: "B1",
     targets: [
-      t("stress", "căng thẳng", "áp lực do làm việc muộn thường xuyên"),
+      t("stress", "noun", "căng thẳng", "áp lực do làm việc muộn thường xuyên"),
       t(
         "balance",
+        "noun",
         "sự cân bằng",
         "phân bổ thời gian giữa công việc và nghỉ ngơi",
       ),
       t(
         "routine",
+        "noun",
         "nếp sinh hoạt; chuỗi việc làm thường xuyên",
         "thói quen sinh hoạt hằng ngày",
       ),
       t(
         "healthy",
+        "adjective",
         "khỏe mạnh; có sức khỏe tốt",
         "duy trì trạng thái sức khỏe tốt",
       ),
@@ -435,10 +467,15 @@ export const dialogues: Dialogue[] = [
     title: "Bảo vệ dữ liệu trên thiết bị",
     level: "B1",
     targets: [
-      t("device", "thiết bị", "chiếc máy tính bảng mới"),
-      t("password", "mật khẩu", "chuỗi dùng để bảo vệ quyền truy cập"),
-      t("privacy", "quyền riêng tư", "quyền kiểm soát thông tin cá nhân"),
-      t("software", "phần mềm", "các chương trình cần cập nhật"),
+      t("device", "noun", "thiết bị", "chiếc máy tính bảng mới"),
+      t("password", "noun", "mật khẩu", "chuỗi dùng để bảo vệ quyền truy cập"),
+      t(
+        "privacy",
+        "noun",
+        "quyền riêng tư",
+        "quyền kiểm soát thông tin cá nhân",
+      ),
+      t("software", "noun", "phần mềm", "các chương trình cần cập nhật"),
     ],
     lines: [
       line(
@@ -515,12 +552,18 @@ export const dialogues: Dialogue[] = [
     targets: [
       t(
         "environment",
+        "noun",
         "môi trường",
         "môi trường tự nhiên bị ảnh hưởng bởi rác thải",
       ),
-      t("reduce", "giảm", "giảm lượng đồ bị vứt đi"),
-      t("sustainable", "bền vững", "có thể duy trì và ít gây hại môi trường"),
-      t("community", "cộng đồng", "nhóm cư dân cùng tổ chức hoạt động"),
+      t("reduce", "verb", "giảm", "giảm lượng đồ bị vứt đi"),
+      t(
+        "sustainable",
+        "adjective",
+        "bền vững",
+        "có thể duy trì và ít gây hại môi trường",
+      ),
+      t("community", "noun", "cộng đồng", "nhóm cư dân cùng tổ chức hoạt động"),
     ],
     lines: [
       line(
@@ -605,15 +648,17 @@ export const dialogues: Dialogue[] = [
     title: "Trao đổi trước một buổi phỏng vấn",
     level: "B2",
     targets: [
-      t("applicant", "người ứng tuyển", "người nộp hồ sơ xin việc"),
-      t("experience", "kinh nghiệm", "kinh nghiệm làm việc liên quan"),
+      t("applicant", "noun", "người ứng tuyển", "người nộp hồ sơ xin việc"),
+      t("experience", "noun", "kinh nghiệm", "kinh nghiệm làm việc liên quan"),
       t(
         "qualification",
+        "noun",
         "bằng cấp hoặc chứng chỉ",
         "bằng cấp chuyên môn được yêu cầu",
       ),
       t(
         "salary",
+        "noun",
         "lương cố định theo tháng hoặc năm",
         "mức lương được trả hằng năm",
       ),
@@ -703,17 +748,20 @@ export const dialogues: Dialogue[] = [
     targets: [
       t(
         "seminar",
+        "noun",
         "buổi học thảo luận chuyên đề",
         "buổi học có trao đổi và câu hỏi",
       ),
-      t("lecture", "bài giảng", "bài giảng đã nghe tuần trước"),
+      t("lecture", "noun", "bài giảng", "bài giảng đã nghe tuần trước"),
       t(
         "revision",
+        "noun",
         "việc ôn tập trước kỳ thi",
         "việc ôn lại bài trước kỳ đánh giá",
       ),
       t(
         "assessment",
+        "noun",
         "việc đánh giá kết quả học tập",
         "bài đánh giá kết quả học tập sắp tới",
       ),
@@ -793,12 +841,13 @@ export const dialogues: Dialogue[] = [
     targets: [
       t(
         "journey",
+        "noun",
         "chuyến đi; hành trình",
         "chuyến tàu từ nơi khởi hành tới đích",
       ),
-      t("fare", "giá vé", "số tiền trả cho chuyến tàu"),
-      t("passenger", "hành khách", "một người đi trên tàu"),
-      t("railway", "đường sắt", "hệ thống đường sắt đang được sửa"),
+      t("fare", "noun", "giá vé", "số tiền trả cho chuyến tàu"),
+      t("passenger", "noun", "hành khách", "một người đi trên tàu"),
+      t("railway", "noun", "đường sắt", "hệ thống đường sắt đang được sửa"),
     ],
     lines: [
       line(
@@ -871,12 +920,18 @@ export const dialogues: Dialogue[] = [
     targets: [
       t(
         "volunteer",
+        "noun",
         "tình nguyện viên",
         "người tham gia giúp đỡ không nhận lương",
       ),
-      t("charity", "tổ chức từ thiện", "tổ chức đang tuyển người giúp đỡ"),
-      t("opportunity", "cơ hội", "dịp để giúp đỡ và học kỹ năng"),
-      t("support", "hỗ trợ; giúp đỡ", "giúp nhóm đóng gói thực phẩm"),
+      t(
+        "charity",
+        "noun",
+        "tổ chức từ thiện",
+        "tổ chức đang tuyển người giúp đỡ",
+      ),
+      t("opportunity", "noun", "cơ hội", "dịp để giúp đỡ và học kỹ năng"),
+      t("support", "verb", "hỗ trợ; giúp đỡ", "giúp nhóm đóng gói thực phẩm"),
     ],
     lines: [
       line(
@@ -957,18 +1012,20 @@ export const dialogues: Dialogue[] = [
     title: "Hỏi xem một căn hộ",
     level: "B1",
     targets: [
-      t("apartment", "căn hộ", "căn hộ đang được cho thuê"),
+      t("apartment", "noun", "căn hộ", "căn hộ đang được cho thuê"),
       t(
         "available",
+        "adjective",
         "có sẵn; có thể dùng hoặc lấy được",
         "căn hộ còn có thể thuê",
       ),
       t(
         "comfortable",
+        "adjective",
         "thoải mái; dễ chịu",
         "không gian ở tạo cảm giác dễ chịu",
       ),
-      t("neighbour", "người hàng xóm", "người sống ở căn hộ bên cạnh"),
+      t("neighbour", "noun", "người hàng xóm", "người sống ở căn hộ bên cạnh"),
     ],
     lines: [
       line(
@@ -1042,10 +1099,20 @@ export const dialogues: Dialogue[] = [
     title: "Cân nhắc một quyết định khó",
     level: "B2",
     targets: [
-      t("consider", "cân nhắc; xem xét", "xem xét một lời mời công việc"),
-      t("decision", "quyết định", "lựa chọn có nhận việc hay không"),
-      t("benefit", "lợi ích", "điểm tích cực của việc nhận công việc"),
-      t("challenge", "thử thách", "khó khăn phải thích nghi khi chuyển đi"),
+      t(
+        "consider",
+        "verb",
+        "cân nhắc; xem xét",
+        "xem xét một lời mời công việc",
+      ),
+      t("decision", "noun", "quyết định", "lựa chọn có nhận việc hay không"),
+      t("benefit", "noun", "lợi ích", "điểm tích cực của việc nhận công việc"),
+      t(
+        "challenge",
+        "noun",
+        "thử thách",
+        "khó khăn phải thích nghi khi chuyển đi",
+      ),
     ],
     lines: [
       line(
@@ -1135,6 +1202,8 @@ export function availableDialogues(state: State, pool = dialogues): Dialogue[] {
         !e.archived &&
         canPractice(e.word, 0) &&
         normalize(e.word.word) === normalize(target.lemma) &&
+        normalize(e.word.part_of_speech || "") ===
+          normalize(target.partOfSpeech) &&
         normalize(e.word.meaning_vi) === normalize(target.meaning)
       );
     }),

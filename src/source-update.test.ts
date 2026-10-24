@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { canPractice, grade, parse, serialize, type Word } from "./core";
@@ -21,9 +21,12 @@ const update = read("data/authoring/source-update-2026-10.json") as {
   sources: { url: string; status: number; sha256: string; scope: string }[];
 };
 const words = parse(readFileSync("public/data/vocabulary.txt", "utf8"));
-const essential = read("data/authoring/essential-senses-2026-10-22.json") as {
-  entries: { word: Word }[];
-};
+const essentialEntries = readdirSync("data/authoring")
+  .filter((name) => /^essential-senses-.*\.json$/.test(name))
+  .sort()
+  .flatMap(
+    (name) => read(`data/authoring/${name}`).entries as { word: Word }[],
+  );
 const byId = new Map(words.map((word) => [word.id, word]));
 const fullReviewPath = "data/authoring/full-review-2026-10.json";
 const fullReview = existsSync(fullReviewPath)
@@ -71,7 +74,7 @@ describe("Source-checked vocabulary update", () => {
     expect(hash).toBe(update.baseline.idsSha256);
     expect(words.slice(update.baseline.entryCount).map((w) => w.id)).toEqual([
       ...update.additions.map((w) => w.id),
-      ...essential.entries.map(({ word }) => word.id),
+      ...essentialEntries.map(({ word }) => word.id),
     ]);
     expect(new Set(words.map((w) => w.id)).size).toBe(words.length);
     expect(parse(serialize(words))).toHaveLength(words.length);

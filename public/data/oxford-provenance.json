@@ -74115,43 +74115,79 @@
   ],
   "coverage": {
     "oxfordHeadwords": 4955,
-    "entryCount": 5560,
-    "reviewed": 5560,
+    "entryCount": 5581,
+    "reviewed": 5581,
     "dictionary": 0,
     "reference": 0,
     "phrasalSenses": 101,
     "slangSenses": 129,
-    "withBilingualContext": 5560,
+    "withBilingualContext": 5581,
     "missingContext": 0,
     "referenceWords": [],
-    "learningReady": 5560,
+    "learningReady": 5581,
     "lookupOnly": 0
   },
   "contentReview": {
     "overlay": "../../data/authoring/content-review-2026-10.txt",
     "entries": 38,
     "scope": "Targeted modern-meaning corrections and authored bilingual contexts; not an assertion that all Oxford meanings have been reviewed.",
-    "canonicalVocabularySha256": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4",
+    "canonicalVocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
     "supplementalSourceReview": {
       "date": "2026-10-20",
       "overlay": "data/authoring/source-update-2026-10.json",
-      "canonicalVocabularySha256": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4",
+      "canonicalVocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
       "scope": "Additive source-checked American spelling and list membership, targeted original meaning corrections and selected new senses; not a verification of every historical definition or publisher certification."
     }
   },
-  "sourceUpdateCanonicalHash": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4",
+  "sourceUpdateCanonicalHash": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
   "fullVocabularyReview": {
     "reviewId": "2026-10-full-vocabulary-review",
     "date": "2026-10-21",
-    "canonicalVocabularySha256": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4",
+    "canonicalVocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
     "reviewedEntries": 5558,
     "scope": "Explicit selected meanings and original bilingual contexts reviewed against directly read source evidence. Historical word-list facts are preserved separately; this is not publisher certification or a claim to cover every sense."
   },
   "essentialSenses": {
-    "reviewId": "essential-senses-2026-10-22",
-    "date": "2026-10-22",
-    "canonicalVocabularySha256": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4",
-    "addedEntries": 2,
-    "scope": "Append two directly source-reviewed foundational senses without replacing any existing spelling/POS/sense or stable ID. American facts identify exact homograph/POS; they do not certify authored Vietnamese translations."
+    "reviewId": "essential-senses-2026-10-24",
+    "date": "2026-10-24",
+    "canonicalVocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
+    "addedEntries": 23,
+    "scope": "Ordered additive essential-sense reviews; each batch retains its own baseline, source evidence and editorial scope.",
+    "reviewIds": [
+      "essential-senses-2026-10-22",
+      "essential-senses-2026-10-24"
+    ],
+    "reviews": [
+      {
+        "reviewId": "essential-senses-2026-10-22",
+        "date": "2026-10-22",
+        "baseline": {
+          "entryCount": 5558,
+          "idsSha256": "4175cfb9b4fb687dba11ef86ba896af47840fc926d9406eec13d206e99a55ea7",
+          "vocabularySha256": "86a5b8d2a4a907b2ce7d3d8997972494ff35621dad870a765bc665dcee744eb4"
+        },
+        "scope": "Append two directly source-reviewed foundational senses without replacing any existing spelling/POS/sense or stable ID. American facts identify exact homograph/POS; they do not certify authored Vietnamese translations.",
+        "addedEntries": 2,
+        "manifest": {
+          "path": "data/authoring/essential-senses-2026-10-22.json",
+          "sha256": "85b802bb0f2c197358d98a0d8f5f82f99b53be332a871301900545f4af6e51d2"
+        }
+      },
+      {
+        "reviewId": "essential-senses-2026-10-24",
+        "date": "2026-10-24",
+        "baseline": {
+          "entryCount": 5560,
+          "idsSha256": "fe3e85fad9bf9fdb5c6d651212b2278abe92e668754e21deb9b270014bf92639",
+          "vocabularySha256": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4"
+        },
+        "scope": "Append 21 directly source-reviewed foundational verb senses without replacing any existing spelling/POS/sense or stable ID. American facts identify exact homograph/POS; they do not certify authored Vietnamese translations. CEFR labels follow the pinned American Oxford 3000 facts, not a separately assessed level for each selected dictionary sense.",
+        "addedEntries": 21,
+        "manifest": {
+          "path": "data/authoring/essential-senses-2026-10-24.json",
+          "sha256": "e1d3a9c8445c48e5437ef68c0fea28cee970e82bb07982655f3104c6328265e6"
+        }
+      }
+    ]
   }
 }

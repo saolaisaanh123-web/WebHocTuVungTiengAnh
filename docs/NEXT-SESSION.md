@@ -1,5 +1,28 @@
 # Jeongyeon — ghi nhớ cho phiên sửa tiếp theo
 
+Cập nhật mới nhất **24/10/2026**: người dùng yêu cầu rà lỗi học tập, sau đó yêu cầu từ loại theo Cambridge American. Cambridge bị 403; họ đã đồng ý dùng Oxford American. Đã bổ sung nhãn Việt–Anh nhất quán và 21 mục động từ có nguồn. Kho hiện **5.581 mục / 5.352 đầu từ**, **367 IPA**; prefix 5.560 mục cũ giữ nguyên từng byte. Manifest mới `essential-senses-2026-10-24.json` nối tiếp manifest 22/10 bất biến. Hash hiện `7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e`.
+
+Báo cáo mới: [từ loại](part-of-speech-2026-10-24.md) và [audit các lỗi học tập](audit-learning-2026-10-24.md). Các phần 23/10 bên dưới là lịch sử. Người dùng đã cho phép commit/push sau khi nguồn và kiểm thử đạt; không hỏi lại. Không gắn nhãn Cambridge cho nguồn Oxford.
+
+**Ưu tiên sửa tiếp theo theo audit:**
+
+1. Đáp án đồng nghĩa hợp ngữ cảnh bị đánh sai và hạ lịch ôn.
+2. Preview tiếng Anh trước Start không ghi tiếp xúc, làm sai bằng chứng nhớ sau tám ngày.
+3. Nhãn retained phục hồi từ bằng chứng cũ sau một lần quên rồi đúng lại 60 giây sau ở phiên mới; chế độ từ yếu cũng bị ảnh hưởng.
+4. Chẩn đoán luyện nhiều còn yếu lấy cả lịch sử nghĩa cũ; đề xuất hội thoại bỏ danh sách ID và dùng lịch sử cũ.
+5. Quy tắc discuss-about còn sửa nhầm lượng xấp xỉ; giọng hội thoại có thể trộn US/GB dù ghi en-US.
+6. Offline với query URL, cache build cũ và trần snapshot 20 MiB cần xử lý theo bằng chứng trong báo cáo.
+
+Đợt từ loại **chưa sửa** các lỗi này. Đừng nhầm chúng với các lỗi đã sửa ở mốc 23/10.
+
+**Phần từ loại đã làm:** helper cho 22 nhãn; hiển thị ở Kho từ, sáu kỹ năng, đáp án, từ điển, bộ sưu tập, viết và giải nghĩa hội thoại. Che chữ English trong nhãn nếu nó trùng chính đáp án đang cần nhớ (ví dụ noun). Hội thoại kiểm thêm POS kỳ vọng. Nhãn cá nhân lạ giữ nguyên, thiếu nhãn hiện chưa khai báo, idiom/phrase có caption dạng từ/cụm.
+
+21 ID động từ mới gồm 19 mục A1 và book/search A2. Email chấp nhận e-mail. Không đổi schema hoặc ID cũ. Nguồn là PDF American Oxford và 21 bài Oxford American đã đọc trực tiếp. Khi append, kiểm hash prefix; khi replay đủ các đợt, giữ ghi chú prefix không thuộc lớp bổ sung và bytes đầu vào. Source-update phải gắn lại tail đã xác minh, không bỏ các đợt cũ. Xem kiểm thử Python về ghi chú riêng và replay CLI.
+
+Kiểm thử bản mới: **343 unit, 45 data, 114 Chromium**, TypeScript/build và production gốc/con/offline đạt; nguồn mới21/21 khớp body/receipt/NAmE IPA. Các test cũ vẫn giữ điều kiện dữ liệu/chấm bài, chỉ chuyển vị trí kiểm nhãn POS. Xem báo cáo đợt mới cho giới hạn kiểm thử.
+
+## Mốc bàn giao 23/10/2026
+
 Cập nhật 23/10/2026. Đợt sửa theo kiểm tra tổng thể đã triển khai các lỗi lịch khác nghĩa, thống kê không thống nhất, lựa chọn từ lặp, thứ tự kỹ năng, chấm đáp án mơ hồ, phản hồi discuss, nháp viết và mobile. Đã bổ sung hai nghĩa A1 của like/lie theo Oxford American, kho hiện có 5.560 mục sẵn học và 346 IPA. Giữ nguyên 5.558 mục cũ từng byte. Không cần rà lại nguồn từ đầu. Người dùng đã cho phép commit/push sau khi nguồn và kiểm thử đạt.
 
 **Kiểm thử bàn giao mới nhất:** 335 unit, 37 data và 109 E2E Chromium đạt; TypeScript/build, production đường dẫn gốc/con, offline và thông báo thiếu JavaScript đạt. Báo cáo hiện hành: [usage-expansion-2026-10-23.md](usage-expansion-2026-10-23.md). Đợt sửa độ tin cậy trước hai đợt mở rộng có 333 unit/100 E2E, xem [learning-reliability-2026-10-23.md](learning-reliability-2026-10-23.md). Không coi Supabase mô phỏng là kiểm thử cloud thật.

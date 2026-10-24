@@ -208,7 +208,7 @@ def apply_source_update(records, update):
     if [row["id"] for row in records] != [*current_ids[:size], *expected_ids]:
         raise ValueError("Source update changed the stable vocabulary ID order")
     records = FULL_REVIEW["apply_full_review"](records, latest_review) if latest_review else records
-    return ESSENTIAL_SENSES["apply_essential_senses"](records)
+    return ESSENTIAL_SENSES["apply_essential_senses"](records + _essential_tail)
 
 
 def corpus_coverage(records, previous):

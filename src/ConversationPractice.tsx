@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Headphones, Pause, Play, Square, Volume2 } from "lucide-react";
 import type { State } from "./core";
 import type { ConversationAttempt } from "./practice-data";
+import { formatPartOfSpeech, partOfSpeechCaption } from "./part-of-speech";
 import {
   availableDialogues,
   dialogues,
@@ -660,7 +661,15 @@ export function ConversationPractice({
               <dl>
                 {d.targets.map((t) => (
                   <div key={t.id}>
-                    <dt lang="en">{t.lemma}</dt>
+                    <dt>
+                      <span lang="en">{t.lemma}</span>{" "}
+                      <span
+                        className="part-of-speech"
+                        aria-label={partOfSpeechCaption(t.partOfSpeech)}
+                      >
+                        {formatPartOfSpeech(t.partOfSpeech)}
+                      </span>
+                    </dt>
                     <dd>{t.context}</dd>
                   </div>
                 ))}

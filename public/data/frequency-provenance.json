@@ -38,15 +38,15 @@
     "sha256": "8ced54ea9f49e335cb21a42a8cb6924a7eef74401d69af2af787a141c0557c40"
   },
   "coverage": {
-    "records": 5560,
+    "records": 5581,
     "scored": 4921,
-    "unscored": 639,
+    "unscored": 660,
     "unscoredByReason": {
       "no_exact_spelling_in_pinned_table": 20,
       "multiword_or_alternatives_not_an_observed_phrase_frequency": 10,
       "known_case_or_lemma_sense_conflation": 4,
       "outside_oxford_headwords": 207,
-      "new_source_entry_not_measured_in_pinned_frequency_table": 398
+      "new_source_entry_not_measured_in_pinned_frequency_table": 419
     },
     "caseNormalizedScoredHeadwords": 24,
     "caseConflationGroupsPresentInApp": []
@@ -3770,6 +3770,132 @@
       "word": "lie",
       "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
       "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "clean-verb-01",
+      "word": "clean",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "complete-verb-01",
+      "word": "complete",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "cost-verb-01",
+      "word": "cost",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "dress-verb-01",
+      "word": "dress",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "drink-verb-01",
+      "word": "drink",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "email-verb-01",
+      "word": "email",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "interest-verb-01",
+      "word": "interest",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "love-verb-01",
+      "word": "love",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "match-verb-01",
+      "word": "match",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "name-verb-01",
+      "word": "name",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "open-verb-01",
+      "word": "open",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "park-verb-01",
+      "word": "park",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "phone-verb-01",
+      "word": "phone",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "post-verb-01",
+      "word": "post",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "rain-verb-01",
+      "word": "rain",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "shop-verb-01",
+      "word": "shop",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "sound-verb-01",
+      "word": "sound",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "telephone-verb-01",
+      "word": "telephone",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "welcome-verb-01",
+      "word": "welcome",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "search-verb-01",
+      "word": "search",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
+    },
+    {
+      "id": "book-verb-01",
+      "word": "book",
+      "reason": "new_source_entry_not_measured_in_pinned_frequency_table",
+      "note": "No frequency estimate was invented for an additive source-review entry."
     }
   ],
   "outputAfterAttachingMetadata": {
@@ -3796,28 +3922,64 @@
   ],
   "currentCanonicalVocabulary": {
     "filename": "vocabulary.txt",
-    "sha256": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4"
+    "sha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e"
   },
   "historicalExportNote": "inputBeforeAttachingMetadata and outputAfterAttachingMetadata describe the original pinned frequency export, before later editorial corrections; currentCanonicalVocabulary identifies the current canonical TXT.",
-  "sourceUpdateCanonicalHash": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4",
+  "sourceUpdateCanonicalHash": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
   "supplementalSourceReview": {
     "date": "2026-10-20",
     "overlay": "data/authoring/source-update-2026-10.json",
-    "canonicalVocabularySha256": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4",
+    "canonicalVocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
     "scope": "Additive source-checked American spelling and list membership, targeted original meaning corrections and selected new senses; not a verification of every historical definition or publisher certification."
   },
   "fullVocabularyReview": {
     "reviewId": "2026-10-full-vocabulary-review",
     "date": "2026-10-21",
-    "canonicalVocabularySha256": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4",
+    "canonicalVocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
     "reviewedEntries": 5558,
     "scope": "Explicit selected meanings and original bilingual contexts reviewed against directly read source evidence. Historical word-list facts are preserved separately; this is not publisher certification or a claim to cover every sense."
   },
   "essentialSenses": {
-    "reviewId": "essential-senses-2026-10-22",
-    "date": "2026-10-22",
-    "canonicalVocabularySha256": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4",
-    "addedEntries": 2,
-    "scope": "Append two directly source-reviewed foundational senses without replacing any existing spelling/POS/sense or stable ID. American facts identify exact homograph/POS; they do not certify authored Vietnamese translations."
+    "reviewId": "essential-senses-2026-10-24",
+    "date": "2026-10-24",
+    "canonicalVocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
+    "addedEntries": 23,
+    "scope": "Ordered additive essential-sense reviews; each batch retains its own baseline, source evidence and editorial scope.",
+    "reviewIds": [
+      "essential-senses-2026-10-22",
+      "essential-senses-2026-10-24"
+    ],
+    "reviews": [
+      {
+        "reviewId": "essential-senses-2026-10-22",
+        "date": "2026-10-22",
+        "baseline": {
+          "entryCount": 5558,
+          "idsSha256": "4175cfb9b4fb687dba11ef86ba896af47840fc926d9406eec13d206e99a55ea7",
+          "vocabularySha256": "86a5b8d2a4a907b2ce7d3d8997972494ff35621dad870a765bc665dcee744eb4"
+        },
+        "scope": "Append two directly source-reviewed foundational senses without replacing any existing spelling/POS/sense or stable ID. American facts identify exact homograph/POS; they do not certify authored Vietnamese translations.",
+        "addedEntries": 2,
+        "manifest": {
+          "path": "data/authoring/essential-senses-2026-10-22.json",
+          "sha256": "85b802bb0f2c197358d98a0d8f5f82f99b53be332a871301900545f4af6e51d2"
+        }
+      },
+      {
+        "reviewId": "essential-senses-2026-10-24",
+        "date": "2026-10-24",
+        "baseline": {
+          "entryCount": 5560,
+          "idsSha256": "fe3e85fad9bf9fdb5c6d651212b2278abe92e668754e21deb9b270014bf92639",
+          "vocabularySha256": "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4"
+        },
+        "scope": "Append 21 directly source-reviewed foundational verb senses without replacing any existing spelling/POS/sense or stable ID. American facts identify exact homograph/POS; they do not certify authored Vietnamese translations. CEFR labels follow the pinned American Oxford 3000 facts, not a separately assessed level for each selected dictionary sense.",
+        "addedEntries": 21,
+        "manifest": {
+          "path": "data/authoring/essential-senses-2026-10-24.json",
+          "sha256": "e1d3a9c8445c48e5437ef68c0fea28cee970e82bb07982655f3104c6328265e6"
+        }
+      }
+    ]
   }
 }

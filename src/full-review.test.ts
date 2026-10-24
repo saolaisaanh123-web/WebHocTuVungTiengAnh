@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -46,7 +46,26 @@ const reviewById = new Map(reviewed.map((row) => [row.id, row]));
 const text = readFileSync("public/data/vocabulary.txt", "utf8");
 const words = parse(text);
 const reviewedWords = words.slice(0, review.baseline.entryCount);
-const essential = read("data/authoring/essential-senses-2026-10-22.json");
+type EssentialEntry = {
+  word: Word;
+  source: Evidence & { title: string };
+  americanFactIndex: number;
+  americanFact: { word: string; pos: string; cefr: string };
+};
+type EssentialReview = {
+  reviewId: string;
+  baseline: {
+    entryCount: number;
+    idsSha256: string;
+    vocabularySha256: string;
+  };
+  entries: EssentialEntry[];
+};
+const essentialReviews: EssentialReview[] = readdirSync("data/authoring")
+  .filter((name) => /^essential-senses-.*\.json$/.test(name))
+  .sort()
+  .map((name) => read(`data/authoring/${name}`));
+const essentialEntries = essentialReviews.flatMap((batch) => batch.entries);
 const byId = new Map(words.map((word) => [word.id, word]));
 const byWord = new Map<string, Word>();
 for (const word of words)
@@ -73,7 +92,7 @@ describe("Complete source-backed vocabulary review", () => {
     expect(review.expectedEntryCount).toBe(5558);
     expect(reviewed).toHaveLength(review.expectedEntryCount);
     expect(words).toHaveLength(
-      review.baseline.entryCount + essential.entries.length,
+      review.baseline.entryCount + essentialEntries.length,
     );
     expect(reviewed).toHaveLength(reviewedWords.length);
     expect(reviewById.size).toBe(reviewedWords.length);
@@ -81,7 +100,7 @@ describe("Complete source-backed vocabulary review", () => {
       [...reviewById.keys()].sort(),
     );
     expect(words.slice(review.baseline.entryCount)).toEqual(
-      essential.entries.map((entry: { word: Word }) => {
+      essentialEntries.map((entry) => {
         // TXT retains every authored field and materializes absent optional fields as absent.
         return entry.word;
       }),
@@ -92,6 +111,95 @@ describe("Complete source-backed vocabulary review", () => {
     expect(review.baseline.vocabularySha256).toBe(
       "19fb2f4dd2ffab355ac9fe59abf1442bfad79fbe036e7262d90197132667d004",
     );
+  });
+
+  it("appends each essential batch after its exact previous bytes and stable IDs", () => {
+    const blocks = text.split("\n---\n");
+    const newIds = essentialEntries.map(({ word }) => word.id);
+    const previousIds = new Set(reviewedWords.map((word) => word.id));
+    expect(new Set(newIds).size).toBe(newIds.length);
+    expect(newIds.every((id) => !previousIds.has(id))).toBe(true);
+    expect(essentialReviews[0].entries.map(({ word }) => word.id)).toEqual([
+      "like-verb-enjoy-01",
+      "lie-horizontal-01",
+    ]);
+    for (const [index, batch] of essentialReviews.entries()) {
+      const size = batch.baseline.entryCount;
+      const rawPrefix = blocks
+        .slice(0, size)
+        .join("\n---\n")
+        .replace(/\n*$/, "\n");
+      expect(hash(rawPrefix), batch.reviewId).toBe(
+        batch.baseline.vocabularySha256,
+      );
+      expect(
+        hash(
+          words
+            .slice(0, size)
+            .map((word) => word.id)
+            .join("\n"),
+        ),
+      ).toBe(batch.baseline.idsSha256);
+      const priorBatch = essentialReviews[index - 1];
+      if (priorBatch)
+        expect(size).toBe(
+          priorBatch.baseline.entryCount + priorBatch.entries.length,
+        );
+      expect(words.slice(size, size + batch.entries.length)).toEqual(
+        batch.entries.map((entry) => entry.word),
+      );
+    }
+    const newer = essentialReviews[1];
+    if (newer) {
+      expect(newer.baseline.entryCount).toBe(5560);
+      expect(newer.baseline.vocabularySha256).toBe(
+        "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4",
+      );
+      for (const { word } of newer.entries) {
+        const priorSenses = words
+          .slice(0, newer.baseline.entryCount)
+          .filter((prior) => prior.word === word.word);
+        expect(priorSenses.length, word.word).toBeGreaterThan(0);
+        expect(priorSenses.every((prior) => prior.id !== word.id)).toBe(true);
+        for (const prior of priorSenses) {
+          const historical = reviewById.get(prior.id);
+          if (historical)
+            expect(prior.part_of_speech).toBe(historical.part_of_speech);
+        }
+        expect(word.part_of_speech).toBe("verb");
+      }
+    }
+  });
+
+  it("retains exact American POS and CEFR facts and actual source receipts for each appended sense", () => {
+    const facts = read("data/lexicons/american-oxford-2026-10.json").facts;
+    for (const {
+      word,
+      source,
+      americanFact,
+      americanFactIndex,
+    } of essentialEntries) {
+      expect(americanFact).toEqual(facts[americanFactIndex]);
+      expect(americanFact.word).toBe(word.word);
+      expect(americanFact.pos.split(/\s*,\s*/)).toContain("v.");
+      expect(americanFact.cefr).toBe(word.level);
+      expect(word.part_of_speech).toBe("verb");
+      expect(word.source_fact_index).toBe("");
+      expect(word.content_status).toBe("reviewed");
+      expect(word.learning_status).toBe("ready");
+      expect(source.url).toMatch(
+        /^https:\/\/www\.oxfordlearnersdictionaries\.com\/definition\/american_english\/[^/]+$/,
+      );
+      expect(source.status).toBe(200);
+      expect(source.sha256).toMatch(/^[a-f0-9]{64}$/);
+      expect(source.checkedAt).toMatch(
+        /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2}))?$/,
+      );
+      expect(Number.isNaN(Date.parse(source.checkedAt))).toBe(false);
+      expect(source.title.length).toBeGreaterThan(10);
+      expect(source.scope.length).toBeGreaterThan(15);
+      expect(word.source).toContain(source.url);
+    }
   });
 
   it("protects every undeclared field instead of merely keeping the record count", () => {
@@ -288,6 +396,21 @@ describe("Complete source-backed vocabulary review", () => {
     expect(manifest.version).toBe(checksum);
     expect(manifest.entryCount).toBe(words.length);
     expect(manifest.bytes).toBe(Buffer.byteLength(text));
+    const essentialProvenance = read(
+      "public/data/essential-senses-provenance.json",
+    );
+    expect(essentialProvenance.canonicalVocabularySha256).toBe(checksum);
+    expect(essentialProvenance.addedEntries).toBe(essentialEntries.length);
+    expect(essentialProvenance.entries).toEqual(essentialEntries);
+    expect(essentialProvenance.reviews).toHaveLength(essentialReviews.length);
+    for (const [index, batch] of essentialReviews.entries()) {
+      expect(essentialProvenance.reviews[index]).toMatchObject({
+        reviewId: batch.reviewId,
+        baseline: batch.baseline,
+        addedEntries: batch.entries.length,
+        entries: batch.entries,
+      });
+    }
     for (const filename of [
       "oxford-provenance.json",
       "content-review-provenance.json",

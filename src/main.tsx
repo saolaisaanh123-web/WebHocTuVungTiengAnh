@@ -57,6 +57,7 @@ import "./style.css";
 import ErrorBoundary from "./ErrorBoundary";
 import WordDetail from "./DictionaryEntry";
 import UsageNotes from "./UsageNotes";
+import { formatPartOfSpeech, partOfSpeechCaption } from "./part-of-speech";
 import { attachStudyContexts, exerciseWord, getUsage } from "./usage";
 import { selectLearningEvidence } from "./evidence";
 import { mergeBackupSchedules } from "./schedule-state";
@@ -2007,6 +2008,12 @@ function App() {
                       <Volume2 size={17} />
                     </div>
                     <h3>{displayWord(e.word)}</h3>
+                    <span
+                      className="part-of-speech"
+                      aria-label={partOfSpeechCaption(e.word.part_of_speech)}
+                    >
+                      {formatPartOfSpeech(e.word.part_of_speech)}
+                    </span>
                     <p data-exposure-id={e.word.id}>{e.word.meaning_vi}</p>
                     <small>
                       {e.word.example_en ||
@@ -2318,13 +2325,19 @@ function App() {
                           ? "Điền từ đang học vào ngữ cảnh"
                           : w.meaning_vi}
                   </h2>
+                  <p
+                    className="part-of-speech"
+                    aria-label={partOfSpeechCaption(w.part_of_speech)}
+                  >
+                    {[1, 2, 3, 4].includes(task.skill)
+                      ? cloze({
+                          ...w,
+                          example_en: formatPartOfSpeech(w.part_of_speech),
+                        })
+                      : formatPartOfSpeech(w.part_of_speech)}
+                  </p>
                   {task.skill === 1 && (
                     <div className="recall-cues">
-                      <p>
-                        {w.part_of_speech
-                          ? "Từ loại: " + w.part_of_speech
-                          : "Chưa khai báo từ loại."}
-                      </p>
                       {w.definition_en && (
                         <p lang="en">
                           {cloze({ ...w, example_en: w.definition_en })}
@@ -2401,7 +2414,6 @@ function App() {
                     <>
                       <p className="recall-cues">
                         Nghĩa mục tiêu: {w.meaning_vi}
-                        {w.part_of_speech ? ` · ${w.part_of_speech}` : ""}
                       </p>
                       <p className="context" lang="en">
                         {cloze(exercise)}
@@ -2505,6 +2517,12 @@ function App() {
                           <Volume2 size={19} />
                         </button>
                       </h3>
+                      <p
+                        className="part-of-speech"
+                        aria-label={partOfSpeechCaption(w.part_of_speech)}
+                      >
+                        {formatPartOfSpeech(w.part_of_speech)}
+                      </p>
                       <p>{w.meaning_vi}</p>
                       {displayWord(w) !== w.word && (
                         <p>

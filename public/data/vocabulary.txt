@@ -206015,3 +206015,781 @@ learning_status: ready
 learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
 source_fact_index:
 definition_source: authored
+---
+id: clean-verb-01
+word: clean
+part_of_speech: verb
+meaning_vi: làm sạch; lau dọn
+definition_en: to wash or wipe something so that dirt is no longer on it
+ipa: /klin/
+level: A1
+topics: home,daily life
+collections: foundation,american-3000,essential-senses
+collocation: clean the kitchen; clean the windows
+example_en: We clean the kitchen together after dinner.
+example_vi: Chúng tôi cùng lau dọn nhà bếp sau bữa tối.
+audio_word:
+audio_example:
+accepted_answers: clean
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/clean_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Động từ chỉ hành động làm sạch; khác tính từ clean nghĩa là sạch. Có thể dùng clean something hoặc clean không có tân ngữ.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: complete-verb-01
+word: complete
+part_of_speech: verb
+meaning_vi: hoàn thành; làm xong
+definition_en: to do the last part of a task so that it is finished
+ipa: /kəmˈplit/
+level: A1
+topics: work,study
+collections: foundation,american-3000,essential-senses
+collocation: complete a task; complete a project
+example_en: I need to complete this report before lunch.
+example_vi: Tôi cần hoàn thành báo cáo này trước bữa trưa.
+audio_word:
+audio_example:
+accepted_answers: complete
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/complete_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Ở nghĩa này, complete là động từ có tân ngữ: complete a task. Khác tính từ complete nghĩa là đầy đủ hoặc hoàn chỉnh.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: cost-verb-01
+word: cost
+part_of_speech: verb
+meaning_vi: có giá; tốn (một số tiền)
+definition_en: to have a price that someone must pay
+ipa: /kɔst/
+level: A1
+topics: shopping,money
+collections: foundation,american-3000,essential-senses
+collocation: cost ten dollars; cost somebody money
+example_en: How much does a monthly bus pass cost?
+example_vi: Vé xe buýt tháng có giá bao nhiêu?
+audio_word:
+audio_example:
+accepted_answers: cost
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/cost_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Ở nghĩa có giá/tốn tiền: cost – cost – cost; ngôi thứ ba số ít là costs. Costed dùng cho nghĩa khác là tính hoặc ước tính chi phí.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: dress-verb-01
+word: dress
+part_of_speech: verb
+meaning_vi: mặc quần áo; mặc quần áo cho ai
+definition_en: to put on your clothes or help another person put on theirs
+ipa: /drɛs/
+level: A1
+topics: clothes,daily life
+collections: foundation,american-3000,essential-senses
+collocation: dress quickly; dress a child
+example_en: I help dress my little brother before school.
+example_vi: Tôi giúp em trai nhỏ mặc quần áo trước khi đi học.
+audio_word:
+audio_example:
+accepted_answers: dress
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/dress_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Dress có thể chỉ tự mặc quần áo hoặc mặc quần áo cho người khác. Get dressed nghĩa là mặc quần áo vào; khác danh từ dress nghĩa là váy.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: drink-verb-01
+word: drink
+part_of_speech: verb
+meaning_vi: uống
+definition_en: to take a liquid into your body through your mouth
+ipa: /drɪŋk/
+level: A1
+topics: food and drink,daily life
+collections: foundation,american-3000,essential-senses
+collocation: drink water; drink from a glass
+example_en: I drink a glass of water with breakfast every morning.
+example_vi: Tôi uống một cốc nước trong bữa sáng mỗi ngày.
+audio_word:
+audio_example:
+accepted_answers: drink
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/drink_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Động từ bất quy tắc: drink – drank – drunk. Nghĩa được chọn là uống chất lỏng nói chung, không riêng đồ uống có cồn.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: email-verb-01
+word: email
+part_of_speech: verb
+meaning_vi: gửi thư điện tử; gửi email cho ai
+definition_en: to contact someone or send them files using email
+ipa: /ˈimeɪl/
+level: A1
+topics: communication,technology
+collections: foundation,american-3000,essential-senses
+collocation: email somebody; email somebody a document
+example_en: Please email me the meeting agenda this afternoon.
+example_vi: Vui lòng gửi cho tôi chương trình cuộc họp qua email vào chiều nay.
+audio_word:
+audio_example:
+accepted_answers: email
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/e-mail_1 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Oxford American hiển thị động từ ở dạng e-mail; mục học dùng email theo cách viết trong American Oxford 3000. Dùng email somebody something hoặc email something to somebody. Cả email và e-mail đều được chấp nhận khi luyện từ.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+spelling_variants: e-mail
+---
+id: interest-verb-01
+word: interest
+part_of_speech: verb
+meaning_vi: khiến ai quan tâm; làm ai hứng thú
+definition_en: to make someone curious or eager to learn more
+ipa: /ˈɪntrəst/
+level: A1
+topics: communication,feelings
+collections: foundation,american-3000,essential-senses
+collocation: interest somebody; something to interest everyone
+example_en: Stories about space always interest my younger sister.
+example_vi: Những câu chuyện về vũ trụ luôn khiến em gái tôi hứng thú.
+audio_word:
+audio_example:
+accepted_answers: interest
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/interest_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Interest somebody nghĩa là làm ai quan tâm hoặc hứng thú: chủ ngữ là điều thu hút, tân ngữ là người. Khác danh từ interest.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: love-verb-01
+word: love
+part_of_speech: verb
+meaning_vi: yêu; yêu thương
+definition_en: to feel deep affection for someone
+ipa: /lʌv/
+level: A1
+topics: family,feelings
+collections: foundation,american-3000,essential-senses
+collocation: love somebody; love your family
+example_en: I love my grandparents and visit them every weekend.
+example_vi: Tôi yêu thương ông bà và đến thăm họ mỗi cuối tuần.
+audio_word:
+audio_example:
+accepted_answers: love
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/love_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Nghĩa được chọn là yêu thương ai đó. Ở nghĩa này, love thường không dùng trong các thì tiếp diễn.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: match-verb-01
+word: match
+part_of_speech: verb
+meaning_vi: khớp; trùng khớp; giống nhau
+definition_en: to agree with another thing in its details or appearance
+ipa: /mætʃ/
+level: A1
+topics: daily life,communication
+collections: foundation,american-3000,essential-senses
+collocation: match something; the numbers match
+example_en: The numbers on these two receipts do not match.
+example_vi: Các con số trên hai hóa đơn này không khớp nhau.
+audio_word:
+audio_example:
+accepted_answers: match
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/match_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Nghĩa được chọn là giống hoặc trùng khớp. Có thể dùng match something hoặc hai sự vật làm chủ ngữ của match; không phải danh từ match nghĩa là trận đấu.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: name-verb-01
+word: name
+part_of_speech: verb
+meaning_vi: đặt tên
+definition_en: to choose what a person or thing will be called
+ipa: /neɪm/
+level: A1
+topics: family,daily life
+collections: foundation,american-3000,essential-senses
+collocation: name a baby; name somebody after somebody
+example_en: We want to name our new cat Luna.
+example_vi: Chúng tôi muốn đặt tên cho con mèo mới là Luna.
+audio_word:
+audio_example:
+accepted_answers: name
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/name_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Dùng name somebody/something + tên để đặt tên. Name somebody after somebody là đặt tên theo một người khác.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: open-verb-01
+word: open
+part_of_speech: verb
+meaning_vi: mở
+definition_en: to move a door or window so that people or air can pass through
+ipa: /ˈoʊpən/
+level: A1
+topics: home,daily life
+collections: foundation,american-3000,essential-senses
+collocation: open the door; open a window
+example_en: Please open the window before you start cooking.
+example_vi: Vui lòng mở cửa sổ trước khi bạn bắt đầu nấu ăn.
+audio_word:
+audio_example:
+accepted_answers: open
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/open_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Nghĩa được chọn là mở cửa hoặc cửa sổ. Open là động từ trong open the door; khác tính từ open trong the door is open.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: park-verb-01
+word: park
+part_of_speech: verb
+meaning_vi: đỗ xe; đậu xe
+definition_en: to stop a vehicle and leave it in a place for a while
+ipa: /pɑrk/
+level: A1
+topics: travel,transport
+collections: foundation,american-3000,essential-senses
+collocation: park the car; park behind a building
+example_en: We can park behind the library for an hour.
+example_vi: Chúng ta có thể đỗ xe phía sau thư viện trong một giờ.
+audio_word:
+audio_example:
+accepted_answers: park
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/park_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Dùng park hoặc park a car/vehicle để nói về đỗ xe. Khác danh từ park nghĩa là công viên.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: phone-verb-01
+word: phone
+part_of_speech: verb
+meaning_vi: gọi điện thoại cho ai
+definition_en: to contact a person or organization by making a telephone call
+ipa: /foʊn/
+level: A1
+topics: communication,daily life
+collections: foundation,american-3000,essential-senses
+collocation: phone somebody; phone the dentist
+example_en: I will phone the dentist to change my appointment.
+example_vi: Tôi sẽ gọi điện cho nha sĩ để đổi lịch hẹn.
+audio_word:
+audio_example:
+accepted_answers: phone
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/phone_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Dùng phone somebody/something, không cần giới từ to trước người hoặc nơi được gọi. Call cũng là từ đồng nghĩa được nguồn nêu.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: post-verb-01
+word: post
+part_of_speech: verb
+meaning_vi: đăng (thông tin, ảnh) lên mạng
+definition_en: to share writing or pictures by putting them on a website
+ipa: /poʊst/
+level: A1
+topics: communication,technology
+collections: foundation,american-3000,essential-senses
+collocation: post a photo online; post something on a website
+example_en: I plan to post a photo of our garden on the neighborhood website.
+example_vi: Tôi định đăng một bức ảnh khu vườn của chúng tôi lên trang web của khu phố.
+audio_word:
+audio_example:
+accepted_answers: post
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/post_3 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Nghĩa được chọn là đăng nội dung lên mạng: post something on a website. Đây không phải nghĩa gửi thư qua bưu điện.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: rain-verb-01
+word: rain
+part_of_speech: verb
+meaning_vi: mưa; có mưa
+definition_en: used when drops of water are falling from clouds to the ground
+ipa: /reɪn/
+level: A1
+topics: weather,nature
+collections: foundation,american-3000,essential-senses
+collocation: it may rain; rain hard
+example_en: It may rain this afternoon, so take an umbrella.
+example_vi: Chiều nay trời có thể mưa, nên hãy mang theo ô.
+audio_word:
+audio_example:
+accepted_answers: rain
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/rain_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Khi nói về thời tiết, dùng chủ ngữ it: it rains, it is raining, it may rain. Khác danh từ rain nghĩa là mưa hoặc lượng mưa.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: shop-verb-01
+word: shop
+part_of_speech: verb
+meaning_vi: mua sắm; đi mua hàng
+definition_en: to go to stores to buy the things you need or want
+ipa: /ʃɑp/
+level: A1
+topics: shopping,daily life
+collections: foundation,american-3000,essential-senses
+collocation: shop for groceries; shop at a market
+example_en: We usually shop for groceries on Sunday mornings.
+example_vi: Chúng tôi thường đi mua thực phẩm vào các sáng Chủ nhật.
+audio_word:
+audio_example:
+accepted_answers: shop
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/shop_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Dùng shop for something để nói mua một loại hàng. Dạng quá khứ shopped và dạng -ing shopping đều gấp đôi p.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: sound-verb-01
+word: sound
+part_of_speech: verb
+meaning_vi: nghe có vẻ; có vẻ qua lời nói hoặc thông tin
+definition_en: to seem a certain way because of what someone hears or reads
+ipa: /saʊnd/
+level: A1
+topics: communication,feelings
+collections: foundation,american-3000,essential-senses
+collocation: sound excited; sound like a good idea
+example_en: You sound excited about your new job.
+example_vi: Nghe giọng bạn có vẻ hào hứng với công việc mới.
+audio_word:
+audio_example:
+accepted_answers: sound
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/sound_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Ở nghĩa này, sound là động từ nối: sound + tính từ hoặc sound like + danh từ. Thường không dùng trong các thì tiếp diễn; không phải danh từ sound nghĩa là âm thanh.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: telephone-verb-01
+word: telephone
+part_of_speech: verb
+meaning_vi: gọi điện thoại; nói chuyện qua điện thoại
+definition_en: to call someone and speak to them on the telephone
+ipa: /ˈtɛləˌfoʊn/
+level: A1
+topics: communication,work
+collections: foundation,american-3000,essential-senses
+collocation: telephone somebody; telephone the office
+example_en: Please telephone the office before sending the application.
+example_vi: Vui lòng gọi điện đến văn phòng trước khi gửi đơn.
+audio_word:
+audio_example:
+accepted_answers: telephone
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/telephone_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Nguồn đánh dấu động từ telephone là trang trọng. Dùng telephone somebody/something; call hoặc phone là các từ đồng nghĩa.
+content_status: reviewed
+example_type: authored
+register: formal
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: welcome-verb-01
+word: welcome
+part_of_speech: verb
+meaning_vi: chào đón; đón tiếp
+definition_en: to greet a person warmly when they come to a place
+ipa: /ˈwɛlkəm/
+level: A1
+topics: communication,travel
+collections: foundation,american-3000,essential-senses
+collocation: welcome a guest; welcome somebody to a place
+example_en: Our volunteers welcome visitors at the museum entrance.
+example_vi: Các tình nguyện viên của chúng tôi chào đón khách tham quan ở lối vào bảo tàng.
+audio_word:
+audio_example:
+accepted_answers: welcome
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/welcome_1 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Dùng welcome somebody hoặc welcome somebody to a place để chào đón người mới đến. Khác tính từ welcome và lời chào Welcome!
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: search-verb-01
+word: search
+part_of_speech: verb
+meaning_vi: tìm kiếm; lục tìm
+definition_en: to try to find someone or something by looking carefully
+ipa: /sərtʃ/
+level: A2
+topics: daily life,technology
+collections: foundation,american-3000,essential-senses
+collocation: search for your keys; search a room for something
+example_en: I need to search the kitchen for my missing keys.
+example_vi: Tôi cần lục tìm trong nhà bếp để kiếm chùm chìa khóa bị mất.
+audio_word:
+audio_example:
+accepted_answers: search
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/search_2 | A2 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Search for something là tìm một thứ; search a place for something là lục hoặc tìm trong một nơi để kiếm thứ đó. A2 theo mục động từ trong American Oxford 3000.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: book-verb-01
+word: book
+part_of_speech: verb
+meaning_vi: đặt trước (vé hoặc dịch vụ)
+definition_en: to arrange in advance to have a ticket or use a service on a future date
+ipa: /bʊk/
+level: A2
+topics: travel,transport
+collections: foundation,american-3000,essential-senses
+collocation: book a flight; book a ticket in advance
+example_en: We should book our flights before the ticket prices rise.
+example_vi: Chúng ta nên đặt mua vé máy bay trước khi giá vé tăng.
+audio_word:
+audio_example:
+accepted_answers: book
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/book_2 | A2 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Bài luyện dùng book để đặt vé trước, khác danh từ book nghĩa là sách. A2 theo mục động từ trong American Oxford 3000; mức này không xác nhận mọi nghĩa của đầu từ.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf:
+frequency_source:
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored

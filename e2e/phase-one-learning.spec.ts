@@ -159,7 +159,9 @@ test("a spelling-only corpus update keeps existing evidence, draft and queue, th
   await expect(page.getByRole("textbox", { name: "Câu trả lời" })).toHaveValue(
     "neighbor",
   );
-  await expect(page.locator(".recall-cues")).toContainText("Từ loại: noun");
+  await expect(page.locator(".study > .part-of-speech")).toHaveText(
+    "Danh từ · noun",
+  );
   await page.getByRole("button", { name: "Kiểm tra", exact: true }).click();
   await expect(page.getByText(/Chính xác!/)).toBeVisible();
   expect((await snapshot(page)).history.at(-1)?.correct).toBe(true);
@@ -178,7 +180,9 @@ test("a valid alternative to an underspecified Vietnamese cue is saved neutrally
   before.entries[entry("everybody").id].archived = true;
   await seed(page, before);
   await resume(page);
-  await expect(page.locator(".recall-cues")).toContainText("pronoun");
+  await expect(page.locator(".study > .part-of-speech")).toHaveText(
+    "Đại từ · pronoun",
+  );
   await page.getByRole("textbox", { name: "Câu trả lời" }).fill("everybody");
   await page.getByRole("button", { name: "Kiểm tra", exact: true }).click();
   await expect(page.getByText(/Chưa đủ căn cứ tính sai/)).toBeVisible();

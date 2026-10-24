@@ -4,7 +4,9 @@ from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
+import re
 import runpy
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -170,13 +172,26 @@ class EssentialSenseTests(unittest.TestCase):
         cls.review = cls.api["load_essential_senses"](required=True)
         cls.records = read_records(ROOT / "public/data/vocabulary.txt")
         cls.size = cls.review["baseline"]["entryCount"]
+        cls.batches = cls.review["_batches"]
 
     def test_only_declared_senses_are_appended_without_changing_any_previous_byte(self):
+        self.assertEqual(hashlib.sha256((ROOT / "data/authoring/essential-senses-2026-10-22.json").read_bytes()).hexdigest(), "85b802bb0f2c197358d98a0d8f5f82f99b53be332a871301900545f4af6e51d2")
         prefix = serialize_records(self.records[:self.size]).encode()
         self.assertEqual(hashlib.sha256(prefix).hexdigest(), self.review["baseline"]["vocabularySha256"])
         self.assertEqual(self.api["ids_digest"](self.records[:self.size]), self.review["baseline"]["idsSha256"])
         self.assertEqual(self.records[self.size:], [entry["word"] for entry in self.review["entries"]])
-        self.assertEqual([row["id"] for row in self.records[self.size:]], ["like-verb-enjoy-01", "lie-horizontal-01"])
+        self.assertEqual([row["id"] for row in self.records[self.size:self.size + 2]], ["like-verb-enjoy-01", "lie-horizontal-01"])
+        # Check the actual TXT bytes at every batch boundary, including the
+        # complete 5,560-record corpus that predates the 2026-10-24 additions.
+        blocks = (ROOT / "public/data/vocabulary.txt").read_bytes().split(b"\n---\n")
+        for batch in self.batches:
+            size = batch["baseline"]["entryCount"]
+            raw_prefix = b"\n---\n".join(blocks[:size]).rstrip(b"\n") + b"\n"
+            self.assertEqual(hashlib.sha256(raw_prefix).hexdigest(), batch["baseline"]["vocabularySha256"])
+            self.assertEqual(self.api["ids_digest"](self.records[:size]), batch["baseline"]["idsSha256"])
+        if len(self.batches) > 1:
+            self.assertEqual(self.batches[1]["baseline"]["entryCount"], 5560)
+            self.assertEqual(self.batches[1]["baseline"]["vocabularySha256"], "10392288d69ba11cc6e5fc74e02e0cc3654bea50cda229254236848d2d3a87f4")
 
     def test_applying_additions_twice_preserves_input_and_same_spelling_existing_senses(self):
         prefix = deepcopy(self.records[:self.size])
@@ -190,6 +205,143 @@ class EssentialSenseTests(unittest.TestCase):
         self.assertEqual(old_lie["meaning_vi"], "nói dối; cố ý nói điều không đúng sự thật")
         for old in (old_like, old_lie):
             self.assertEqual(next(row for row in once if row["id"] == old["id"]), old)
+
+    def test_later_batches_append_distinct_verbs_and_preserve_existing_nouns_and_adjectives(self):
+        for batch in self.batches[1:]:
+            size = batch["baseline"]["entryCount"]
+            prefix = self.records[:size]
+            old_ids = {row["id"] for row in prefix}
+            declared = [entry["word"] for entry in batch["entries"]]
+            new_words = {row["word"] for row in declared}
+            self.assertTrue(old_ids.isdisjoint(row["id"] for row in declared))
+            previous_senses = [row for row in prefix if row["word"] in new_words and row["part_of_speech"] in ("noun", "adjective")]
+            self.assertTrue(previous_senses)
+            self.assertTrue(all(row["part_of_speech"] == "verb" for row in declared))
+            result = self.api["apply_essential_senses"](prefix, self.review)
+            self.assertEqual(serialize_records(result[:size]), serialize_records(prefix))
+            by_id = {row["id"]: row for row in result}
+            for row in previous_senses:
+                self.assertEqual(by_id[row["id"]], row)
+
+    def test_pending_additions_require_every_pinned_prefix_checkpoint(self):
+        for field, value in (("id", "renamed-existing-id"), ("part_of_speech", "verb"), ("meaning_vi", "undeclared prior-content edit")):
+            changed = deepcopy(self.records[:self.batches[-1]["baseline"]["entryCount"]])
+            target = next(row for row in changed[:self.size] if row["part_of_speech"] in ("noun", "adjective")) if field == "part_of_speech" else changed[0]
+            target[field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                self.api["apply_essential_senses"](changed, self.review)
+        for field in ("idsSha256", "vocabularySha256"):
+            changed = deepcopy(self.review)
+            changed["_batches"][-1]["baseline"][field] = "0" * 64
+            with self.subTest(checkpoint=field), self.assertRaises(ValueError):
+                self.api["apply_essential_senses"](self.records[:self.size], changed)
+        if len(self.batches) > 1:
+            changed = deepcopy(self.records)
+            changed[self.size]["undeclared_extra_field"] = "must affect the 5560-record checkpoint"
+            with self.assertRaises(ValueError):
+                self.api["apply_essential_senses"](changed, self.review)
+            with self.assertRaises(ValueError):
+                self.api["separate_essential_senses"](changed, self.review)
+
+    def test_completed_replay_preserves_unowned_prefix_fields_but_keeps_ids_and_authored_tail_locked(self):
+        changed = deepcopy(self.records)
+        changed[0]["manual_unmentioned_field"] = "preserve this field"
+        result = self.api["apply_essential_senses"](changed, self.review)
+        self.assertEqual(result, changed)
+        self.assertEqual(self.api["apply_essential_senses"](result, self.review), changed)
+        self.assertEqual(OLD["apply_source_update"](changed, OLD["load_source_update"]()), changed)
+        for position, field, value in ((0, "id", "renamed-existing-id"), (-1, "manual_extra_field", "undeclared essential edit")):
+            bad = deepcopy(changed)
+            bad[position][field] = value
+            with self.subTest(position=position), self.assertRaises(ValueError):
+                self.api["apply_essential_senses"](bad, self.review)
+        pending = deepcopy(changed[:self.batches[-1]["baseline"]["entryCount"]])
+        with self.assertRaises(ValueError):
+            self.api["apply_essential_senses"](pending, self.review)
+
+    def test_cli_preserves_complete_custom_bytes_and_the_existing_prefix_when_appending(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            scripts = root / "scripts"
+            scripts.mkdir()
+            for name in ("apply-essential-senses.py", "apply-source-update.py", "apply-full-review.py", "corpus_io.py"):
+                shutil.copy2(ROOT / "scripts" / name, scripts / name)
+            (root / "data").symlink_to(ROOT / "data", target_is_directory=True)
+            data = root / "public/data"
+            data.mkdir(parents=True)
+            for name in ("oxford-provenance.json", "frequency-provenance.json", "content-review-provenance.json"):
+                shutil.copy2(ROOT / "public/data" / name, data / name)
+            changed = deepcopy(self.records)
+            changed[0]["manual_unmentioned_field"] = "keep my custom note exactly"
+            # A completed replay must preserve original bytes too, including an
+            # existing line ending that the field parser normalizes in memory.
+            original = serialize_records(changed).encode().replace(b"\n", b"\r\n", 1)
+            vocabulary = data / "vocabulary.txt"
+            vocabulary.write_bytes(original)
+            output = root / "preview.txt"
+            command = [sys.executable, str(scripts / "apply-essential-senses.py")]
+            subprocess.run(command + ["--output", str(output)], cwd=root, check=True, capture_output=True)
+            self.assertEqual(output.read_bytes(), original)
+            self.assertEqual(vocabulary.read_bytes(), original)
+            subprocess.run(command + ["--write"], cwd=root, check=True, capture_output=True)
+            self.assertEqual(vocabulary.read_bytes(), original)
+            self.assertEqual(json.loads((data / "vocabulary-version.json").read_text())["version"], hashlib.sha256(original).hexdigest())
+            prefix_size = self.batches[-1]["baseline"]["entryCount"]
+            prefix = serialize_records(self.records[:prefix_size]).encode()
+            vocabulary.write_bytes(prefix)
+            subprocess.run(command + ["--write"], cwd=root, check=True, capture_output=True)
+            appended = vocabulary.read_bytes()
+            self.assertEqual(appended, serialize_records(self.records).encode())
+            self.assertEqual(appended[:len(prefix)], prefix)
+
+    def test_a_new_verb_cannot_reuse_an_existing_noun_or_adjective_id(self):
+        old = next(row for row in self.records[:self.size] if row["part_of_speech"] in ("noun", "adjective"))
+        changed = deepcopy(self.review)
+        changed["entries"][-1]["word"]["id"] = old["id"]
+        changed["_batches"][-1]["entries"][-1]["word"]["id"] = old["id"]
+        with self.assertRaises(ValueError):
+            self.api["apply_essential_senses"](self.records[:self.size], changed)
+
+    def test_growth_from_the_previous_manifest_is_idempotent(self):
+        old = self.api["load_essential_senses"](ROOT / "data/authoring/essential-senses-2026-10-22.json", required=True)
+        prior = self.api["apply_essential_senses"](self.records[:self.size], old)
+        self.assertEqual(len(prior), self.size + 2)
+        latest = self.api["apply_essential_senses"](prior, self.review)
+        self.assertEqual(latest, self.records)
+        self.assertEqual(self.api["apply_essential_senses"](latest, self.review), latest)
+        self.assertEqual(serialize_records(latest[:len(prior)]), serialize_records(prior))
+
+    def test_ordered_loader_rejects_duplicate_ids_and_disconnected_batch_baselines(self):
+        original = deepcopy(self.batches[0])
+        subsequent = deepcopy(original)
+        subsequent.update(reviewId="essential-senses-2026-10-24", date="2026-10-24")
+        prior = self.api["apply_essential_senses"](self.records[:self.size], original)
+        subsequent["baseline"] = {"entryCount": len(prior), "idsSha256": self.api["ids_digest"](prior), "vocabularySha256": hashlib.sha256(serialize_records(prior).encode()).hexdigest()}
+        subsequent["entries"] = [deepcopy(subsequent["entries"][0])]
+        subsequent["entries"][0]["word"]["id"] = "fixture-distinct-verb"
+        facts = ROOT / "data/lexicons/american-oxford-2026-10.json"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            authoring = root / "data/authoring"
+            authoring.mkdir(parents=True)
+            (root / "data/lexicons").mkdir()
+            (root / "data/lexicons/american-oxford-2026-10.json").write_bytes(facts.read_bytes())
+            first_path = authoring / "essential-senses-2026-10-22.json"
+            next_path = authoring / "essential-senses-2026-10-24.json"
+            first_path.write_text(json.dumps(original))
+            with patch.dict(self.api["load_essential_senses"].__globals__, {"ROOT": root}):
+                next_path.write_text(json.dumps(subsequent))
+                combined = self.api["load_essential_senses"](required=True)
+                self.assertEqual(len(combined["entries"]), 3)
+                self.assertEqual(combined["baseline"], original["baseline"])
+                self.assertEqual(len(self.api["apply_essential_senses"](prior, combined)), len(prior) + 1)
+                for bad in (
+                    {**subsequent, "entries": original["entries"][:1]},
+                    {**subsequent, "baseline": {**subsequent["baseline"], "entryCount": len(prior) - 1}},
+                ):
+                    next_path.write_text(json.dumps(bad))
+                    with self.assertRaises(ValueError):
+                        self.api["load_essential_senses"](required=True)
 
     def test_tail_conflict_reordering_and_undeclared_records_fail_closed(self):
         for records in (
@@ -207,16 +359,27 @@ class EssentialSenseTests(unittest.TestCase):
         facts = json.loads((ROOT / "data/lexicons/american-oxford-2026-10.json").read_text())["facts"]
         for entry in self.review["entries"]:
             self.assertEqual(facts[entry["americanFactIndex"]], entry["americanFact"])
-            self.assertEqual(entry["americanFact"]["cefr"], "A1")
+            self.assertEqual(entry["americanFact"]["cefr"], entry["word"]["level"])
+            self.assertIn("v.", re.split(r"\s*,\s*", entry["americanFact"]["pos"]))
             self.assertEqual(entry["word"]["part_of_speech"], "verb")
             self.assertEqual(entry["word"]["source_fact_index"], "")
             self.assertEqual(entry["source"]["status"], 200)
+            self.assertRegex(entry["source"]["sha256"], r"^[a-f0-9]{64}$")
+            self.assertTrue(entry["source"]["title"])
+            self.assertTrue(entry["source"]["scope"])
             self.assertNotIn("definitions", entry["source"])
+        for entry in self.batches[0]["entries"]:
+            self.assertEqual(entry["americanFact"]["cefr"], "A1")
 
     def test_missing_evidence_or_wrong_homograph_fact_is_rejected(self):
         for mutate in (
             lambda review: review["entries"][0]["source"].update(status=403),
             lambda review: review["entries"][1]["americanFact"].update(homograph="2"),
+            lambda review: review["entries"][0]["word"].update(level="C2"),
+            lambda review: review["entries"][0]["word"].update(part_of_speech="noun"),
+            lambda review: review["entries"][0]["source"].update(checkedAt="2026-99-99Tinvalid"),
+            lambda review: review["entries"][0]["source"].update(sha256="not-a-receipt"),
+            lambda review: review["entries"][0]["source"].update(title=""),
         ):
             review = deepcopy(self.review)
             mutate(review)
@@ -234,11 +397,31 @@ class EssentialSenseTests(unittest.TestCase):
         self.assertEqual(historical["reviewedEntries"], self.size)
         self.assertEqual(len(historical["entries"]), self.size)
         self.assertEqual(additional["entries"], self.review["entries"])
+        self.assertEqual([batch["reviewId"] for batch in additional["reviews"]], [batch["reviewId"] for batch in self.batches])
+        for authored, recorded in zip(self.batches, additional["reviews"]):
+            self.assertEqual(recorded["baseline"], authored["baseline"])
+            self.assertEqual(recorded["entries"], authored["entries"])
+            self.assertEqual(recorded["manifest"], authored["_file"])
         self.assertEqual(additional["canonicalVocabularySha256"], checksum)
         self.assertEqual(historical["coverage"]["entryCount"], len(self.records))
         for filename in ("oxford-provenance.json", "frequency-provenance.json", "content-review-provenance.json", "source-update-provenance.json", "full-review-provenance.json"):
             doc = json.loads((data / filename).read_text())
             self.assertEqual(doc["essentialSenses"]["canonicalVocabularySha256"], checksum)
+
+    def test_generated_batch_provenance_preserves_historical_facts(self):
+        original = {"entries": [{"id": "historical", "sourceFactIndex": 17}], "baseline": {"vocabularySha256": "a" * 64}}
+        documents = {"historical.json": deepcopy(original)}
+        records = self.api["apply_essential_senses"](self.records[:self.size], self.review)
+        text = serialize_records(records)
+        updated = self.api["add_provenance"](documents, records, text, self.review)
+        self.assertEqual(updated["historical.json"]["entries"], original["entries"])
+        self.assertEqual(updated["historical.json"]["baseline"], original["baseline"])
+        current = updated["essential-senses-provenance.json"]
+        self.assertEqual(current["canonicalVocabularySha256"], hashlib.sha256(text.encode()).hexdigest())
+        self.assertEqual(current["addedEntries"], sum(len(batch["entries"]) for batch in self.batches))
+        self.assertEqual([batch["entries"] for batch in current["reviews"]], [batch["entries"] for batch in self.batches])
+        with self.assertRaises(ValueError):
+            self.api["add_provenance"]({}, records[:-1], serialize_records(records[:-1]), self.review)
 
     def test_every_older_preview_keeps_additions_and_canonical_metadata_unchanged(self):
         data = ROOT / "public/data"

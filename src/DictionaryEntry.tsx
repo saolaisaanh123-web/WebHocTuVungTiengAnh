@@ -12,6 +12,7 @@ import { preferredHeadword, youglishUsUrl } from "./american-english";
 import UsageNotes from "./UsageNotes";
 import { selectLearningEvidence } from "./evidence";
 import { pronunciationPrompt } from "./pronunciation";
+import { formatPartOfSpeech, partOfSpeechCaption } from "./part-of-speech";
 
 type DictionaryEntryProps = {
   entry: State["entries"][string];
@@ -160,10 +161,13 @@ export default function DictionaryEntry({
           </p>
         )}
         <div className="dict-grammar">
-          <span className="dict-pos" lang={w.part_of_speech ? "en" : "vi"}>
+          <span
+            className="dict-pos part-of-speech"
+            aria-label={partOfSpeechCaption(w.part_of_speech)}
+          >
             {reference
               ? "Từ loại nguồn cần đối chiếu"
-              : w.part_of_speech || "Chưa khai báo từ loại"}
+              : formatPartOfSpeech(w.part_of_speech)}
           </span>
           {w.level && !reference && (
             <span className="dict-level">{w.level}</span>

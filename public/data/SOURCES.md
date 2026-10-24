@@ -4,7 +4,7 @@ Kho mặc định hiện chứa **toàn bộ phạm vi Oxford 3000 và phần b�
 
 ## Rà toàn bộ nội dung học ngày 21/10/2026
 
-Đợt này đã rà **5.558 mục theo nghĩa/từ loại, đều đủ nội dung để luyện**. Hoàn thiện 4.497 mục trước đây chỉ tra cứu và đối chiếu lại 1.061 mục vốn đã học được; không chỉ đổi cờ `ready`. Mỗi mục có nghĩa Việt, giải nghĩa Anh, câu tiếng Anh hoàn chỉnh và bản dịch Việt. Một mục vẫn chỉ học một nghĩa được chọn, không bao gồm mọi nghĩa của đầu từ. Sau bổ sung hai nghĩa nền tảng ngày 23/10 bên dưới, tổng hiện tại là 5.560 mục.
+Đợt này đã rà **5.558 mục theo nghĩa/từ loại, đều đủ nội dung để luyện**. Hoàn thiện 4.497 mục trước đây chỉ tra cứu và đối chiếu lại 1.061 mục vốn đã học được; không chỉ đổi cờ `ready`. Mỗi mục có nghĩa Việt, giải nghĩa Anh, câu tiếng Anh hoàn chỉnh và bản dịch Việt. Một mục vẫn chỉ học một nghĩa được chọn, không bao gồm mọi nghĩa của đầu từ. Sau bổ sung hai nghĩa nền tảng ngày 23/10, kho đạt 5.560 mục. Đợt từ loại ngày 24/10 thêm 21 mục động từ có nguồn riêng, tổng hiện tại là 5.581 mục.
 
 - **Open English WordNet**, phiên bản khóa `45fdb60396dc804526b85f21a23c59983c2c396a`: chọn nghĩa và từ loại cụ thể qua synset/lemma. Nguồn này phát triển từ Princeton WordNet, dùng để đối chiếu ngữ nghĩa; không lấy thứ tự nghĩa làm bằng chứng thông dụng, CEFR hoặc ưu tiên Mỹ.
 - **Oxford American/Academic/Learner’s**: đọc các nghĩa phù hợp cho từ chức năng, nghĩa WordNet chưa bao phủ tốt, từ loại và khác biệt Anh–Mỹ. **Merriam-Webster** cùng các nguồn từ điển bổ sung được đọc cho tiếng lóng/cách dùng hiện đại; từng nguồn thật nằm trong bằng chứng của từng ID.
@@ -148,16 +148,16 @@ TXT đã commit là nội dung chuẩn; sửa trực tiếp không cần viết 
 
 ### Biến thể chính tả được chấp nhận
 
-Trường tùy chọn `spelling_variants` ghi các cách viết tương đương đã rà riêng theo nghĩa và từ loại, phân cách bằng `|`. Hiện có 10 mục, gồm `neighbour` → `neighbor`, động từ `practise` → `practice`, `characterize` → `characterise` và các cách ghép từ như `healthcare` → `health care`. Danh từ `practice` không nhận `practise`. Không suy ra tự động biến thể `-ise/-ize`, bỏ dấu gạch nối, từ đồng nghĩa hay cách chia động từ.
+Trường tùy chọn `spelling_variants` ghi các cách viết tương đương đã rà riêng theo nghĩa và từ loại, phân cách bằng `|`. Đợt rà ban đầu có 10 mục, gồm `neighbour` → `neighbor`, động từ `practise` → `practice`, `characterize` → `characterise` và các cách ghép từ như `healthcare` → `health care`. Danh từ `practice` không nhận `practise`. Không suy ra tự động biến thể `-ise/-ize`, bỏ dấu gạch nối, từ đồng nghĩa hay cách chia động từ.
 
-Danh sách biên tập nằm trong `scripts/corpus_policy.py`, được áp dụng lại qua `scripts/apply-content-review.py`; full builder giữ trường này như các chỉnh sửa canonical khác. Đây là phần rà chính tả của ứng dụng, không phải sự chứng nhận của Oxford. `accepted_answers`, ID, nghĩa, lịch sử nội dung và các quyết định `lookup`/`ready` không đổi chỉ vì bổ sung trường này. Chỉ 10 mục có biến thể mới xuất trường mới; định dạng TXT cũ vẫn được hỗ trợ.
+Danh sách biên tập nằm trong `scripts/corpus_policy.py`, được áp dụng lại qua `scripts/apply-content-review.py`; full builder giữ trường này như các chỉnh sửa canonical khác. Đây là phần rà chính tả của ứng dụng, không phải sự chứng nhận của Oxford. `accepted_answers`, ID, nghĩa, lịch sử nội dung và các quyết định `lookup`/`ready` không đổi chỉ vì bổ sung trường này. Ban đầu 10 mục có biến thể mới xuất trường mới; định dạng TXT cũ vẫn được hỗ trợ.
 
 ## Bổ sung nghĩa nền tảng ngày 23/10/2026
 
 Hai nghĩa có ID mới được thêm sau đợt rà 5.558 mục: `like-verb-enjoy-01`
 (động từ thích) và `lie-horizontal-01` (động từ nằm). Giữ nguyên từng byte
 của 5.558 mục cũ; không thay nghĩa giới từ `like` hoặc nghĩa nói dối của `lie`.
-Kho hiện có 5.560 mục. Hai bài Oxford Advanced American đã được đọc trực tiếp
+Kho tại mốc đó có 5.560 mục. Hai bài Oxford Advanced American đã được đọc trực tiếp
 ngày 22/10; URL, ngày, HTTP và SHA256 nằm trong
 `essential-senses-provenance.json`. IPA Mỹ được đối chiếu literal từ bài nguồn.
 Nguồn bài đúng từ loại: [like verb](https://www.oxfordlearnersdictionaries.com/definition/american_english/like_3), [lie¹ verb](https://www.oxfordlearnersdictionaries.com/definition/american_english/lie_1).
@@ -170,3 +170,18 @@ Lớp authoring: `data/authoring/essential-senses-2026-10-22.json`.
 Các pipeline nguồn, full-review và content-review cũ đều tái áp lớp bổ sung
 sau cùng, giữ nguyên ID/thứ tự và kết quả canonical. Đây là bổ sung hai nghĩa
 đã xác định thiếu, không phải tuyên bố đã nhập mọi nghĩa của mọi đầu từ.
+
+
+## Bổ sung cách dùng động từ và hiển thị từ loại — 24/10/2026
+
+Đã đọc trực tiếp 21 bài Oxford Advanced American Dictionary để thêm các mục động từ riêng cho clean, complete, cost, dress, drink, email, interest, love, match, name, open, park, phone, post, rain, shop, sound, telephone, welcome (19 mục A1) và book, search (A2). Mỗi mức CEFR đối chiếu đúng dòng gồm động từ trong American Oxford 3000; không suy mức của mọi nghĩa từ nhãn đầu từ. 21 IPA Mỹ được chép đúng dữ kiện phát âm trong bài nguồn, tổng kho có 367 mục IPA.
+
+Các mục mới có ID dạng `<word>-verb-01`, nghĩa Việt/giải nghĩa Anh/ví dụ song ngữ tự biên soạn và note phân biệt với từ loại cũ. Không đổi danh từ drink thành động từ uống, không gộp mọi từ loại vào cùng một nghĩa. Toàn bộ 5.560 mục trước đợt này giữ nguyên từng byte; tổng mới 5.581 mục theo nghĩa/từ loại, vẫn 5.352 đầu từ/cụm từ.
+
+Manifest mới `data/authoring/essential-senses-2026-10-24.json` giữ URL thực tế, HTTP, ngày đọc, tiêu đề, SHA256 và bản ghi nguồn PDF chính xác. Manifest ngày 22/10 giữ nguyên. Pipeline ghép các đợt theo thứ tự, kiểm baseline khi bổ sung và giữ tail đã áp dụng khi replay; không tự ghi vào bản chỉnh sửa trong trình duyệt. `essential-senses-provenance.json` ghi rõ từng đợt thay vì thay nguồn cũ bằng nguồn mới.
+
+Email được Oxford American hiển thị là e-mail; nguồn PDF dùng email. Mục động từ mới chấp nhận cả hai cách viết qua `spelling_variants: e-mail`. Đây là biến thể chính tả của cùng động từ, không phải từ đồng nghĩa. Kho hiện có 11 mục có trường biến thể được rà. Không tự gán tần suất cho 21 ID mới.
+
+Cambridge US đã thử bằng HTTP thường và Chromium nhưng trả HTTP 403/“Just a moment...”, không đọc được mục từ. Người dùng cho phép dùng Oxford American. Không mục nào của đợt này được ghi là đã xác minh trực tiếp Cambridge. Nội dung từ điển toàn văn chỉ được dùng trong kho nghiên cứu tạm ngoài repository; repository chỉ chứa dữ kiện nguồn và nội dung tự biên soạn.
+
+Nhãn từ loại trên giao diện diễn giải các trường hiện có, không thay dữ liệu TXT: ví dụ “Danh từ · noun”, “Động từ · verb”. Các nhãn phrase/idiom/clause được trình bày là dạng từ/cụm, không tự suy thành một từ loại khác. Bản cá nhân thiếu nhãn vẫn ghi chưa khai báo, nhãn lạ được giữ nguyên.

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { canPractice, frequencyScore, type Entry } from "./core";
 import { useVisibleExposure } from "./useVisibleExposure";
+import { formatPartOfSpeech, partOfSpeechCaption } from "./part-of-speech";
 import "./collection-browser.css";
 
 type CollectionBrowserProps = {
@@ -326,11 +327,12 @@ export default function CollectionBrowser({
               <article className="coll-card" key={word.id}>
                 <div className="coll-card-top">
                   <h2 lang="en">{word.word}</h2>
-                  {word.part_of_speech && (
-                    <span className="coll-pos" lang="en">
-                      {word.part_of_speech}
-                    </span>
-                  )}
+                  <span
+                    className="coll-pos part-of-speech"
+                    aria-label={partOfSpeechCaption(word.part_of_speech)}
+                  >
+                    {formatPartOfSpeech(word.part_of_speech)}
+                  </span>
                 </div>
                 {(word.expression_type ||
                   word.register ||

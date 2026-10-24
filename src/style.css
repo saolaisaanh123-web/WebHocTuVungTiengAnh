@@ -1889,6 +1889,26 @@ select,
   font-size: 11px;
   line-height: 1.6;
 }
+.part-of-speech {
+  display: inline-block;
+  max-width: 100%;
+  margin-block: 6px;
+  padding: 4px 8px;
+  border: 1px solid #dce6d5;
+  border-radius: 6px;
+  background: #edf2e7;
+  color: #435d3b;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.study > .part-of-speech,
+.word-card .part-of-speech {
+  font-size: 12px;
+  color: #435d3b;
+}
 .word-card .content-status {
   color: #6c582e;
   font-size: 12px !important;

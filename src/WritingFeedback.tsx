@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Check, RotateCcw } from "lucide-react";
 import { contentKey, type State, type WritingDraft } from "./core";
 import { preferredHeadword } from "./american-english";
+import { formatPartOfSpeech, partOfSpeechCaption } from "./part-of-speech";
 import type { WritingAttempt, WritingIssue } from "./practice-data";
 import {
   WRITING_LIMIT,
@@ -277,8 +278,14 @@ export default function WritingFeedback({
         <div>
           <h3 id={labelId}>Viết câu và nhận phản hồi</h3>
           <p>
-            Dùng <strong lang="en">{headword}</strong> theo nghĩa:{" "}
-            {entry.word.meaning_vi}
+            Dùng <strong lang="en">{headword}</strong>{" "}
+            <span
+              className="part-of-speech"
+              aria-label={partOfSpeechCaption(entry.word.part_of_speech)}
+            >
+              {formatPartOfSpeech(entry.word.part_of_speech)}
+            </span>{" "}
+            theo nghĩa: {entry.word.meaning_vi}
           </p>
         </div>
         <span className="writing-local">Trên thiết bị · miễn phí</span>

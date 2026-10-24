@@ -46,10 +46,14 @@ describe("Authored contextual conversation practice", () => {
         new Set(d.lines.map((l) => l.speaker)).size,
       ).toBeGreaterThanOrEqual(2);
       expect(d.lines.every((l) => l.vi && l.en)).toBe(true);
-      for (const target of d.targets)
+      for (const target of d.targets) {
+        expect(target.partOfSpeech).toBe(
+          state.entries[target.id].word.part_of_speech,
+        );
         expect(
           d.lines.some((l) => l.en.toLowerCase().includes(target.lemma)),
         ).toBe(true);
+      }
       expect(d.questions).toHaveLength(3);
       for (const q of d.questions) {
         expect(
@@ -65,7 +69,13 @@ describe("Authored contextual conversation practice", () => {
   });
 
   it("declines archived, lookup-only, missing or changed-sense targets", () => {
-    for (const kind of ["archive", "lookup", "missing", "sense"] as const) {
+    for (const kind of [
+      "archive",
+      "lookup",
+      "missing",
+      "sense",
+      "pos",
+    ] as const) {
       const state = source();
       const id = sample.targets[0].id;
       if (kind === "archive") state.entries[id].archived = true;
@@ -73,6 +83,7 @@ describe("Authored contextual conversation practice", () => {
       if (kind === "missing") delete state.entries[id];
       if (kind === "sense")
         state.entries[id].word.meaning_vi = "một nghĩa cá nhân khác";
+      if (kind === "pos") state.entries[id].word.part_of_speech = "verb";
       expect(availableDialogues(state).some((d) => d.id === sample.id)).toBe(
         false,
       );
