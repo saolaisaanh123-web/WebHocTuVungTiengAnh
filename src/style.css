@@ -770,6 +770,10 @@ main {
 .page-title p {
   font-size: 12px;
 }
+.page-title .add-word {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
 .toolbar {
   display: flex;
   gap: 10px;
@@ -1936,6 +1940,16 @@ select,
   overflow-wrap: anywhere;
 }
 @media (max-width: 600px) {
+  html {
+    scroll-padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  }
+  .study textarea,
+  .study button {
+    scroll-margin-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  }
+  main {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  }
   aside {
     height: calc(70px + env(safe-area-inset-bottom, 0px));
     padding-bottom: calc(5px + env(safe-area-inset-bottom, 0px));

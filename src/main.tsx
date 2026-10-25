@@ -180,6 +180,8 @@ function App() {
     [evidenceLimit, setEvidenceLimit] = useState(100),
     [practice, setPractice] = useState(1),
     [conversationOpen, setConversationOpen] = useState(false),
+    [conversationTargetIds, setConversationTargetIds] = useState<string[]>([]),
+    [, refreshClock] = useState(0),
     [offlineStatus, setOfflineStatus] = useState(getOfflineStatus),
     [writingReview, setWritingReview] = useState<{
       wordId: string;
@@ -201,6 +203,21 @@ function App() {
     window.addEventListener(offlineStatusEvent, update);
     update();
     return () => window.removeEventListener(offlineStatusEvent, update);
+  }, []);
+  useEffect(() => {
+    // Summary clocks can change while the learner leaves this tab open. The
+    // saved session itself stays fixed; only a newly started plan uses now.
+    const update = () => {
+      if (!document.hidden) refreshClock((value) => value + 1);
+    };
+    const timer = window.setInterval(update, 60_000);
+    window.addEventListener("focus", update);
+    document.addEventListener("visibilitychange", update);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", update);
+      document.removeEventListener("visibilitychange", update);
+    };
   }, []);
   useEffect(() => {
     if (!hasModal) return;
@@ -349,14 +366,15 @@ function App() {
   const exposeIds = (ids: string[]) => {
     if (!ids.length) return;
     const base = current.current;
-    const existing = ids.filter((id) => Object.hasOwn(base.entries, id));
+    const existing = [...new Set(ids)].filter((id) =>
+      Object.hasOwn(base.entries, id),
+    );
     if (!existing.length) return;
-    const exposures = { ...base.exposures };
     const time = Date.now();
-    existing.forEach((id) => {
-      exposures[id] = time;
-    });
-    commit({ ...base, exposures }, undefined, base).catch(notifyError);
+    // Keep each view, not only the latest map timestamp: a later phone view
+    // must not hide an earlier view that primed an answer on another device.
+    const next = existing.reduce((state, id) => expose(state, id, time), base);
+    commit(next, undefined, base).catch(notifyError);
   };
   const openDetail = (id: string) => {
     setDetail(id);
@@ -364,19 +382,79 @@ function App() {
     commit(expose(base, id), undefined, base).catch(notifyError);
   };
   useEffect(() => {
+    if (page === "learn") return;
     window.scrollTo({ top: 0, behavior: "instant" });
-    requestAnimationFrame(() =>
+    const frame = requestAnimationFrame(() =>
       document
         .querySelector<HTMLElement>(
           "main [data-page-heading], .workspace main h1",
         )
         ?.focus({ preventScroll: true }),
     );
-    if (page !== "learn") {
-      stopAudio();
-      persistDraft().catch(notifyError);
-    }
+    stopAudio();
+    persistDraft().catch(notifyError);
+    return () => cancelAnimationFrame(frame);
   }, [page]);
+  useEffect(() => {
+    if (page !== "learn") return;
+    let alive = true;
+    const input = document.querySelector<HTMLTextAreaElement>(
+      ".study textarea:not(:disabled)",
+    );
+    if (!input) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      return;
+    }
+    // Browser autofocus happens before the page effect/layout settles and
+    // ignores the fixed bottom navigation. Focus and reveal the answer after
+    // layout, and repeat when a mobile keyboard changes the visual viewport.
+    const revealInput = () => {
+      if (!alive || !input.isConnected || input.disabled) return;
+      const viewport = window.visualViewport;
+      const top = (viewport?.offsetTop || 0) + 16;
+      let bottom =
+        (viewport?.offsetTop || 0) +
+        (viewport?.height || window.innerHeight) -
+        16;
+      const navigation = document
+        .querySelector("aside")
+        ?.getBoundingClientRect();
+      if (
+        navigation &&
+        navigation.width >= window.innerWidth * 0.9 &&
+        navigation.top < bottom &&
+        navigation.bottom > top
+      )
+        bottom = Math.min(bottom, navigation.top - 16);
+      const box = input.getBoundingClientRect();
+      const actions = input
+        .closest(".study")
+        ?.querySelector(".study-actions")
+        ?.getBoundingClientRect();
+      const targetBottom =
+        actions && actions.bottom - box.top <= bottom - top
+          ? Math.max(box.bottom, actions.bottom)
+          : box.bottom;
+      if (targetBottom > bottom)
+        window.scrollBy({ top: targetBottom - bottom, behavior: "instant" });
+      else if (box.top < top)
+        window.scrollBy({ top: box.top - top, behavior: "instant" });
+    };
+    const frame = requestAnimationFrame(() => {
+      if (!alive) return;
+      input.focus({ preventScroll: true });
+      revealInput();
+    });
+    document.fonts.ready.then(revealInput);
+    window.visualViewport?.addEventListener("resize", revealInput);
+    window.addEventListener("resize", revealInput);
+    return () => {
+      alive = false;
+      cancelAnimationFrame(frame);
+      window.visualViewport?.removeEventListener("resize", revealInput);
+      window.removeEventListener("resize", revealInput);
+    };
+  }, [page, taskKey]);
   useEffect(() => {
     if (page !== "library") return;
     requestAnimationFrame(() => {
@@ -652,7 +730,7 @@ function App() {
       state.exposureEvents,
       state.writing,
       state.conversations,
-      day(now),
+      Math.floor(now / 60_000),
     ],
   );
   const learningEvidence = useMemo(
@@ -769,7 +847,8 @@ function App() {
     validatePracticeCollections(next);
     await commit(next, undefined, base);
   };
-  const openConversation = () => {
+  const openConversation = (ids: string[] = []) => {
+    setConversationTargetIds(ids);
     setConversationOpen(true);
     setPage("practice");
   };
@@ -808,7 +887,46 @@ function App() {
       let queue: Session["queue"] = [];
       let goal: Session["goal"];
       if (scheduled) {
-        queue = due
+        // Recompute from the latest persisted view and actual start time,
+        // rather than the Home render which may predate midnight/the due time.
+        const planningNow = Date.now();
+        const planningActive = sortForLearning(
+          Object.values(base.entries).filter((item) => !item.archived),
+        );
+        const planningDue = Object.entries(base.schedules).filter(
+          ([key, schedule]) => {
+            const separator = key.lastIndexOf(":");
+            const item = base.entries[key.slice(0, separator)];
+            return (
+              schedule.due <= planningNow &&
+              item &&
+              !item.archived &&
+              canPractice(item.word, Number(key.slice(separator + 1)))
+            );
+          },
+        );
+        const planningFresh = rankNewWords(
+          base,
+          freshForPreference(planningActive, base.learningFloor).filter(
+            (item) =>
+              (!level || item.word.level === level) &&
+              chosenStudySkills(base, item).length > 0,
+          ),
+          base.learningMode || "smart",
+          planningNow,
+        ).map((recommendation) => recommendation.entry);
+        const enrolledToday = planningActive.filter(
+          (item) =>
+            item.enrolled &&
+            item.enrolledAt &&
+            day(item.enrolledAt) === day(planningNow),
+        ).length;
+        const freshLimit = Math.min(
+          planningFresh.length,
+          Math.max(0, base.daily - enrolledToday),
+          planningDue.length > 20 ? 2 : base.daily,
+        );
+        queue = planningDue
           .sort((a, b) => a[1].due - b[1].due)
           .map(([k]) => ({
             id: k.slice(0, k.lastIndexOf(":")),
@@ -816,7 +934,10 @@ function App() {
             review: uid(),
           }));
         goal = { due: queue.length, continuing: 0, fresh: 0 };
-        filterPendingForPreference(base, pendingScheduledTasks(base, active))
+        filterPendingForPreference(
+          base,
+          pendingScheduledTasks(base, planningActive),
+        )
           .filter(
             (item) =>
               base.entries[item.id]?.goal !== "recognition" ||
@@ -833,7 +954,7 @@ function App() {
         queue = orderScheduledTasks(base, queue);
         queue = interleaveQueue(queue);
         const introductions: Session["queue"] = [];
-        fresh.slice(0, planned).forEach((e) =>
+        planningFresh.slice(0, freshLimit).forEach((e) =>
           chosenStudySkills(base, e).forEach((skill) => {
             if (canPractice(e.word, skill))
               introductions.push({ id: e.word.id, skill, review: uid() });
@@ -989,7 +1110,11 @@ function App() {
       }
     } else synth();
   }
-  async function submit(result?: boolean, hintOverride?: boolean) {
+  async function submit(
+    result?: boolean,
+    hintOverride?: boolean,
+    neutralNote?: string,
+  ) {
     if (!task || !w || !state.session || lock.current) return;
     if (entry?.archived || !exercise || !canPractice(w, task.skill)) {
       setNotice(
@@ -997,7 +1122,7 @@ function App() {
       );
       return;
     }
-    if ([2, 3].includes(task.skill) && !audioPlayed) {
+    if (!neutralNote && [2, 3].includes(task.skill) && !audioPlayed) {
       setNotice(
         "Hãy nghe hết âm thanh trước khi ghi nhận bài nghe. Nếu không phát được, chọn bỏ qua; lượt này không bị tính sai.",
       );
@@ -1010,8 +1135,9 @@ function App() {
       await persistDraft();
       const base = current.current;
       const self = [0, 2].includes(task.skill);
-      const assessment =
-        !self && task.skill !== 5
+      const assessment = neutralNote
+        ? { outcome: "ungraded" as const, message: neutralNote }
+        : !self && task.skill !== 5
           ? assessLearningAnswer(
               answer,
               exercise,
@@ -1065,6 +1191,19 @@ function App() {
         ),
       };
       let next = record(base, r, state.session.scheduled);
+      if (neutralNote) {
+        const item = next.entries[w.id];
+        next = {
+          ...next,
+          entries: {
+            ...next.entries,
+            [w.id]: {
+              ...item,
+              reports: [...(item.reports || []), neutralNote],
+            },
+          },
+        };
+      }
       let retryGap: number | undefined;
       if (
         !correct &&
@@ -1644,7 +1783,8 @@ function App() {
                     onClick={() => {
                       const r = learningReport.recommendations[0];
                       if (r.action === "writing") openWritingReview();
-                      else if (r.action === "conversation") openConversation();
+                      else if (r.action === "conversation")
+                        openConversation(r.ids);
                       else start(false, r.ids, r.skill);
                     }}
                   >
@@ -1864,7 +2004,7 @@ function App() {
                   </p>
                 </div>
                 <button
-                  className="primary"
+                  className="primary add-word"
                   onClick={() =>
                     setEditor(
                       "id: \nword: \nmeaning_vi: \nexample_en: \nexample_vi: \ncollections: personal\n",
@@ -2129,7 +2269,10 @@ function App() {
                 </p>
                 <button
                   className="primary"
-                  onClick={() => setConversationOpen((v) => !v)}
+                  onClick={() => {
+                    setConversationTargetIds([]);
+                    setConversationOpen((value) => !value);
+                  }}
                 >
                   {conversationOpen
                     ? "Thu gọn hội thoại"
@@ -2139,6 +2282,7 @@ function App() {
               {conversationOpen && (
                 <ConversationPractice
                   state={state}
+                  targetIds={conversationTargetIds}
                   onSave={saveConversation}
                   onExpose={exposeIds}
                   onClose={() => setConversationOpen(false)}
@@ -2217,9 +2361,7 @@ function App() {
               </p>
               {practiceRecommendations[0] ? (
                 <p className="fineprint">
-                  <strong>
-                    {displayWord(practiceRecommendations[0].entry.word)}:
-                  </strong>{" "}
+                  <strong>Lý do ưu tiên lượt đầu:</strong>{" "}
                   {practiceRecommendations[0].reason}
                 </p>
               ) : (
@@ -2448,7 +2590,6 @@ function App() {
                   {![0, 2, 5].includes(task.skill) && (
                     <textarea
                       aria-label="Câu trả lời"
-                      autoFocus
                       placeholder={
                         task.skill === 5 ? "Câu của bạn…" : "Gõ câu trả lời…"
                       }
@@ -2601,6 +2742,27 @@ function App() {
                         Tiếp tục <ArrowRight size={17} />
                       </button>
                     </div>
+                  )}
+                  {!feedback && [1, 3, 4].includes(task.skill) && (
+                    <button
+                      className="text-button"
+                      disabled={busy}
+                      onClick={() => {
+                        const reason = prompt(
+                          "Vì sao câu hỏi chưa rõ? (Có thể để trống.) Lượt này sẽ được lưu chưa chấm, không tính đúng/sai và không thay đổi lịch ôn.",
+                        );
+                        if (reason === null) return;
+                        const explanation =
+                          "Bạn đã chọn bỏ qua chấm vì câu hỏi có thể có đáp án khác. " +
+                          "Lượt này không tính đúng/sai, không xác nhận đã nhớ và không thay đổi lịch ôn." +
+                          (reason.trim()
+                            ? ` Ghi chú của bạn: ${reason.trim()}`
+                            : "");
+                        submit(undefined, undefined, explanation);
+                      }}
+                    >
+                      Bỏ qua chấm câu này
+                    </button>
                   )}
                   <button
                     className="text-button report"
@@ -2917,7 +3079,12 @@ function App() {
                   của ứng dụng, không phải chuẩn chứng nhận ngôn ngữ. Chỉ bằng
                   chứng có kiểm tra điều kiện độc lập của bản hiện tại được
                   dùng; lịch sử cũ vẫn được giữ. Tự đánh giá không đủ để kết
-                  luận kỹ năng vững. Ôn trễ không đồng nghĩa với quên.
+                  luận kỹ năng vững. Sau lần sai hoặc cần gợi ý, cần có lượt
+                  kiểm tra đúng độc lập sau ít nhất 24 giờ kể từ lần đó trước
+                  khi phục hồi trạng thái nhớ vững. Với bài tự viết lại mặt chữ,
+                  việc vừa nhìn thấy cùng chữ ở nghĩa hoặc từ loại khác cũng làm
+                  giảm bằng chứng truy hồi độc lập. Ôn trễ không đồng nghĩa với
+                  quên.
                 </p>
                 <p>
                   Lịch riêng cho mỗi kỹ năng: 1–3–7–14–30 ngày; sai quay về 1

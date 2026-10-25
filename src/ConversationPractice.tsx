@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Headphones, Pause, Play, Square, Volume2 } from "lucide-react";
 import type { State } from "./core";
 import type { ConversationAttempt } from "./practice-data";
+import { selectEnglishVoice } from "./american-english";
 import { formatPartOfSpeech, partOfSpeechCaption } from "./part-of-speech";
 import {
   availableDialogues,
@@ -17,6 +18,7 @@ export type ConversationPracticeProps = {
   onSave: (attempt: ConversationAttempt) => Promise<void>;
   onExpose: (ids: string[]) => void;
   onClose?: () => void;
+  targetIds?: readonly string[];
 };
 type Draft = {
   version: string;
@@ -115,11 +117,32 @@ function highlight(text: string, d: Dialogue): ReactNode[] {
   return result;
 }
 
+/** Preserve one configured accent for both speakers. A missing second voice
+ * is not a reason to switch the second speaker to a different regional accent. */
+export function selectConversationVoices<
+  T extends { lang: string; voiceURI?: string },
+>(voices: T[], preferred: string): [T, T] | undefined {
+  const first = selectEnglishVoice(voices, preferred);
+  if (!first) return undefined;
+  const locale = (value: string) => value.replace(/_/g, "-").toLowerCase();
+  const second =
+    voices.find(
+      (voice) =>
+        voice !== first &&
+        (!voice.voiceURI ||
+          !first.voiceURI ||
+          voice.voiceURI !== first.voiceURI) &&
+        locale(voice.lang) === locale(first.lang),
+    ) || first;
+  return [first, second];
+}
+
 export function ConversationPractice({
   state,
   onSave,
   onExpose,
   onClose,
+  targetIds = [],
 }: ConversationPracticeProps) {
   const [initial] = useState(readDrafts);
   const bank = useRef(initial.bank);
@@ -127,14 +150,24 @@ export function ConversationPractice({
   const [level, setLevel] = useState("");
   const [length, setLength] = useState("");
   const [weakOnly, setWeakOnly] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const requestedIds = showAll ? undefined : targetIds;
   const recommendations = useMemo(
-    () => recommendDialogues(state, { level, length, weakOnly }),
-    [state, level, length, weakOnly],
+    () =>
+      recommendDialogues(state, {
+        level,
+        length,
+        weakOnly,
+        targetIds: requestedIds,
+      }),
+    [state, level, length, weakOnly, requestedIds],
   );
   const [selected, setSelected] = useState(() =>
-    available.some((d) => d.id === initial.bank.selected)
-      ? initial.bank.selected!
-      : recommendations[0]?.dialogue.id || "",
+    targetIds.length
+      ? recommendations[0]?.dialogue.id || ""
+      : available.some((d) => d.id === initial.bank.selected)
+        ? initial.bank.selected!
+        : recommendations[0]?.dialogue.id || "",
   );
   const d = available.find((item) => item.id === selected);
   const britishTerms = d
@@ -172,10 +205,21 @@ export function ConversationPractice({
   const saveBusy = useRef(false);
   const report = state.conversations?.find((a) => a.id === draft.savedId);
   const allRecommendation = useMemo(
-    () => recommendDialogues(state).find((r) => r.dialogue.id === selected),
-    [state, selected],
+    () =>
+      recommendDialogues(state, { targetIds: requestedIds }).find(
+        (r) => r.dialogue.id === selected,
+      ),
+    [state, selected, requestedIds],
   );
-  const englishVoices = voices.filter((v) => /^en(?:-|$)/i.test(v.lang));
+  const speakerVoices = useMemo(
+    () => selectConversationVoices(voices, state.voice),
+    [voices, state.voice],
+  );
+  const actualVoice = speakerVoices?.[0];
+  const usingVoiceFallback =
+    !!actualVoice &&
+    actualVoice.lang.replace(/_/g, "-").toLowerCase() !==
+      state.voice.toLowerCase();
 
   function persist(next: Draft, current = d) {
     if (!current) return;
@@ -245,7 +289,7 @@ export function ConversationPractice({
   async function play(indices: number[]) {
     if (!d || !indices.length) return;
     stopAudio();
-    if (!("speechSynthesis" in window) || !englishVoices.length) {
+    if (!("speechSynthesis" in window) || !speakerVoices) {
       setAudioStatus(
         "Thiết bị chưa có giọng đọc tiếng Anh khả dụng. Bạn vẫn đọc và làm bài được; chưa ghi nhận đã nghe.",
       );
@@ -257,14 +301,7 @@ export function ConversationPractice({
     }
     const token = playback.current;
     const dialogueAtStart = d;
-    const voice =
-      englishVoices.find((v) => v.lang === state.voice) || englishVoices[0];
-    const otherVoice =
-      englishVoices.find(
-        (v) => v.voiceURI !== voice.voiceURI && v.lang === voice.lang,
-      ) ||
-      englishVoices.find((v) => v.voiceURI !== voice.voiceURI) ||
-      voice;
+    const [voice, otherVoice] = speakerVoices;
     const speakers = [...new Set(d.lines.map((l) => l.speaker))];
     setPlaying(
       indices.length === d.lines.length ? "all" : `line-${indices[0]}`,
@@ -435,6 +472,17 @@ export function ConversationPractice({
           {warning}
         </p>
       )}
+      {!!requestedIds?.length && (
+        <p className="conversation-note" role="status">
+          Đang ưu tiên đoạn có từ được đề xuất:{" "}
+          {requestedIds
+            .filter((id) => state.entries[id] && !state.entries[id].archived)
+            .map((id) => state.entries[id].word.word)
+            .join(", ")}
+          . Danh sách chỉ gồm bài có ít nhất một từ trong nhóm này.{" "}
+          <button onClick={() => setShowAll(true)}>Xem mọi hội thoại</button>
+        </p>
+      )}
       <div className="conversation-filters">
         <label>
           Mức độ
@@ -491,7 +539,7 @@ export function ConversationPractice({
           {recommendations.map((r) => (
             <option key={r.dialogue.id} value={r.dialogue.id}>
               {r.dialogue.title} · {r.studied}/{r.dialogue.targets.length} từ đã
-              tiếp xúc{r.weak ? ` · ${r.weak} từ cần củng cố` : ""}
+              chọn học/luyện{r.weak ? ` · ${r.weak} từ cần củng cố` : ""}
             </option>
           ))}
         </select>
@@ -621,11 +669,32 @@ export function ConversationPractice({
               Bản dịch tiếng Việt
             </label>
           </div>
-          <p className="conversation-note">
-            Giọng tổng hợp theo cài đặt hiện tại ({state.voice}, tốc độ{" "}
-            {state.rate}). Hai giọng khác nhau nếu thiết bị hỗ trợ; không phải
-            bản thu của người bản ngữ. Một số giọng cần Internet. Lịch sử ghi
-            nhận trạng thái nghe tại thời điểm lưu bài.
+          <p
+            className="conversation-note"
+            data-testid="conversation-voice-status"
+          >
+            {actualVoice ? (
+              <>
+                Giọng tổng hợp đang dùng: {actualVoice.lang}, tốc độ{" "}
+                {state.rate}.{" "}
+                {usingVoiceFallback && (
+                  <>
+                    Thiết bị chưa có giọng {state.voice}; đang dùng giọng tiếng
+                    Anh thay thế {actualVoice.lang}.{" "}
+                  </>
+                )}
+                {speakerVoices?.[0] === speakerVoices?.[1]
+                  ? "Hai nhân vật dùng chung một giọng để giữ cùng vùng phát âm. "
+                  : "Hai nhân vật dùng hai giọng cùng vùng phát âm. "}
+              </>
+            ) : (
+              <>
+                Chưa có giọng tiếng Anh khả dụng trên thiết bị; cài đặt mong
+                muốn {state.voice}.{" "}
+              </>
+            )}
+            Không phải bản thu của người bản ngữ. Một số giọng cần Internet.
+            Lịch sử ghi nhận trạng thái nghe tại thời điểm lưu bài.
           </p>
           <p role="status" className="conversation-audio-status">
             {audioStatus ||
@@ -694,6 +763,13 @@ export function ConversationPractice({
                   <legend>
                     {i + 1}. {q.prompt}
                   </legend>
+                  {q.kind === "cloze" && (
+                    <p className="conversation-note">
+                      Điền lại từ đã dùng trong đoạn. Bài này đối chiếu lời gốc;
+                      một cách điền khác có thể đúng ngữ pháp nhưng chưa khôi
+                      phục đúng từ đang luyện.
+                    </p>
+                  )}
                   {q.options ? (
                     q.options.map((option) => (
                       <label className="conversation-option" key={option}>

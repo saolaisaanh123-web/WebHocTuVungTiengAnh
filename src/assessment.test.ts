@@ -1,7 +1,16 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { assessLearningAnswer } from "./assessment";
-import { canPractice, parse, type Word } from "./core";
+import {
+  canPractice,
+  contentKey,
+  empty,
+  merge,
+  parse,
+  record,
+  type Word,
+} from "./core";
+import { selectLearningEvidence } from "./evidence";
 
 const words = parse(readFileSync("public/data/vocabulary.txt", "utf8"));
 const entry = (headword: string): Word => {
@@ -43,6 +52,59 @@ describe("fair target-word assessment on the real corpus", () => {
     expect(assess("decision", "decide", 1)).toEqual({ outcome: "incorrect" });
   });
 
+  it.each([
+    ["large", "big"],
+    ["big", "large"],
+    ["start", "begin"],
+    ["begin", "start"],
+    ["glad", "happy"],
+    ["happy", "glad"],
+  ])(
+    "keeps %s neutral for the reviewed ambiguous meaning cue of %s",
+    (answer, target) => {
+      expect(assess(answer, target, 1)).toMatchObject({
+        outcome: "ungraded",
+      });
+      expect(assess(target, target, 1)).toEqual({ outcome: "correct" });
+    },
+  );
+
+  it("treats reordered semicolon glosses alike without inferring equivalence from one shared gloss", () => {
+    const target = entry("big");
+    const alternative = entry("large");
+    expect(
+      assessLearningAnswer("large", target, 1, [target, alternative]),
+    ).toMatchObject({ outcome: "ungraded" });
+    for (const meaning_vi of ["lớn; quan trọng", "to", "lớn hơn"])
+      expect(
+        assessLearningAnswer("large", target, 1, [
+          target,
+          { ...alternative, meaning_vi },
+        ]),
+      ).toEqual({ outcome: "incorrect" });
+  });
+
+  it("binds reviewed meaning pairs to the current senses and part of speech of both entries", () => {
+    const begin = entry("begin");
+    const start = entry("start");
+    for (const changed of [
+      { ...start, meaning_vi: "khởi động máy" },
+      { ...start, part_of_speech: "noun" },
+      { ...start, learning_status: "lookup" },
+    ])
+      expect(assessLearningAnswer("start", begin, 1, [begin, changed])).toEqual(
+        { outcome: "incorrect" },
+      );
+    expect(
+      assessLearningAnswer(
+        "start",
+        { ...begin, meaning_vi: "có nguồn gốc" },
+        1,
+        [begin, start],
+      ),
+    ).toEqual({ outcome: "incorrect" });
+  });
+
   it("does not infer synonyms from a different Vietnamese cue or unchecked entry", () => {
     const target = entry("justice");
     for (const alternative of [
@@ -71,6 +133,14 @@ describe("fair target-word assessment on the real corpus", () => {
     ["everybody", "everyone"],
     ["everyone", "everybody"],
     ["movie", "film"],
+    ["large", "big"],
+    ["big", "large"],
+    ["start", "begin"],
+    ["begin", "start"],
+    ["hard", "difficult"],
+    ["difficult", "hard"],
+    ["glad", "happy"],
+    ["happy", "glad"],
   ])(
     "keeps the reviewed contextual alternative %s neutral for %s",
     (answer, target) => {
@@ -84,12 +154,80 @@ describe("fair target-word assessment on the real corpus", () => {
     for (const modified of [
       { ...film, example_en: "A thin film of oil covered the water." },
       { ...film, part_of_speech: "verb" },
+      { ...film, meaning_vi: "màng mỏng" },
     ])
       expect(assessLearningAnswer("movie", modified, 4, words)).toEqual({
         outcome: "incorrect",
       });
     // A matching Vietnamese cue alone is not a reviewed cloze alternative.
     expect(assess("fairness", "justice", 4)).toEqual({ outcome: "incorrect" });
+  });
+
+  it.each([
+    ["big", "large", 1],
+    ["begin", "start", 1],
+    ["difficult", "hard", 4],
+    ["happy", "glad", 4],
+  ] as const)(
+    "does not reset a due schedule or award recall evidence for %s → %s",
+    (target, answer, skill) => {
+      const word = entry(target);
+      const now = Date.now();
+      const state = merge(empty(), [word], "default");
+      state.exposures = { [word.id]: now - 8 * 86_400_000 };
+      state.schedules[`${word.id}:${skill}`] = {
+        step: 3,
+        last: now - 14 * 86_400_000,
+        due: now - 1,
+        contentVersion: contentKey(word, skill),
+      };
+      const before = structuredClone(state.schedules);
+      const assessment = assessLearningAnswer(answer, word, skill, words);
+      expect(assessment.outcome).toBe("ungraded");
+      const after = record(
+        state,
+        {
+          id: `ambiguous-${word.id}`,
+          wordId: word.id,
+          time: now,
+          skill,
+          answer,
+          correct: false,
+          hint: false,
+          method: "ungraded",
+          elapsed: 2_000,
+          session: "ambiguous-session",
+          review: "ambiguous-review",
+          gap: 0,
+          first: true,
+          independent: false,
+          evidenceVersion: 2,
+        },
+        true,
+      );
+      expect(after.schedules).toEqual(before);
+      expect(after.history).toHaveLength(1);
+      expect(after.history[0]).toMatchObject({ answer, method: "ungraded" });
+      expect(selectLearningEvidence(after, now).attempts).toEqual([]);
+    },
+  );
+
+  it("does not apply a reviewed contextual synonym to another skill or an unreviewed context", () => {
+    for (const [target, answer] of [
+      ["difficult", "hard"],
+      ["happy", "glad"],
+      ["big", "large"],
+    ]) {
+      expect(assess(answer, target, 3)).toEqual({ outcome: "incorrect" });
+      expect(
+        assessLearningAnswer(
+          answer,
+          { ...entry(target), example_en: `Another use of ${target}.` },
+          4,
+          words,
+        ),
+      ).toEqual({ outcome: "incorrect" });
+    }
   });
 
   it.each([

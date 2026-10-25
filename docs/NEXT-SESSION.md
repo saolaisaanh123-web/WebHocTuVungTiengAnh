@@ -1,6 +1,20 @@
 # Jeongyeon — ghi nhớ cho phiên sửa tiếp theo
 
-Cập nhật mới nhất **24/10/2026**: người dùng yêu cầu rà lỗi học tập, sau đó yêu cầu từ loại theo Cambridge American. Cambridge bị 403; họ đã đồng ý dùng Oxford American. Đã bổ sung nhãn Việt–Anh nhất quán và 21 mục động từ có nguồn. Kho hiện **5.581 mục / 5.352 đầu từ**, **367 IPA**; prefix 5.560 mục cũ giữ nguyên từng byte. Manifest mới `essential-senses-2026-10-24.json` nối tiếp manifest 22/10 bất biến. Hash hiện `7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e`.
+Cập nhật mới nhất **25/10/2026**: đã sửa đợt audit trên mốc 1657d31, không xây lại website. Báo cáo hiện hành: [learning-integrity-2026-10-25.md](learning-integrity-2026-10-25.md). Các phần 24/10 và trước đó phía dưới là lịch sử, không phải danh sách lỗi còn mở hiện tại.
+
+- Chấm trung tính cho các cặp/câu đã rà, thêm đường bỏ qua chấm đề chưa rõ; không phạt SRS hay cấp điểm nhớ từ đích. Không tuyên bố chấm mọi đồng nghĩa/ngữ pháp.
+- Ẩn đáp án preview; ghi sự kiện tiếp xúc bất biến cả khi đọc nhiều từ; priming cùng mặt chữ khác ID/POS làm giảm bằng chứng truy hồi chữ. Không gộp nghĩa/SRS. Sau lần quên/gợi ý phải có phục hồi độc lập sau ít nhất 24 giờ; sửa ngay không hồi sinh retained.
+- Chẩn đoán dùng đúng phiên bản nghĩa; 21 động từ mới dùng tần suất exact-spelling có provenance; từ yếu tự báo Hiểu nghĩa được luyện với nhãn riêng; tính lại due/hạn mức ngay khi lập phiên mới. Giữ queue đang học.
+- Ô nhập tránh fixed nav, có kiểm chạm thật ở 390 px và ngang; nút Thêm từ không ngắt chữ. Hội thoại truyền đúng ID, không cá nhân hóa theo nghĩa cũ, dùng đúng vùng giọng/fallback. Hai bài mới, tổng 14 bài / 55 ID mục tiêu; 12 bài cũ nguyên dữ liệu.
+- Kho **5.586 mục / 5.352 đầu từ**, **372 IPA**. Thêm work noun, fast/hard adverb, present gift, miss transport; 155 mục cách dùng, 42 ghi chú tính đếm được, 7 bảng dạng động từ. Đã đọc 15 URL Oxford (13 cho cách dùng và 2 cho vùng); 13/13 URL live và metadata của 155 mục / 177 URL đạt. Cambridge vẫn không được tự nhận đã đối chiếu. Năm mục mới có manifest/fact/receipt và giữ nguyên 5.581 mục cũ từng byte.
+- Hash TXT `bfedc90307e912b5dd19f2620f92a45e0704b67054ef7a1070273fe2464209bb`; prefix 5.581 mục có hash `7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e`. Loader/Python kiểm đúng từ loại và tiêu đề nguồn và cách viết được khai báo, các manifest 22/10 và 24/10 không đổi.
+- Bookmark UTM mở offline; dọn cache giữ asset cho tab cũ. Cloud dùng compact lossless + gzip, 50.000 Result kèm Exposure roundtrip đạt. Vẫn là snapshot CAS có giới hạn, chưa phải delta; client cũ cần cập nhật để đọc transport mới. JSON backup và schema State giữ nguyên, không cần API trả phí.
+- **Còn lại:** mở rộng coverage theo nghĩa/cấu trúc đã đọc (5.431 mục chưa có cách dùng bổ sung), nghe vẫn phần lớn dựa TTS, chưa kiểm Safari/iPhone thật, chưa có Supabase thật. Bundle chưa tách gói; cần thiết kế cache offline tương thích trước khi chia.
+- Kiểm thử cuối: **417 unit, 46 data, 131 Chromium E2E**, TypeScript và production root/subpath/offline/UTM đạt. Nguồn usage mới live 13/13; metadata 155 mục / 177 URL đạt. Người dùng đã cho phép commit/push sau kiểm tra; không hỏi lại.
+
+## Mốc bàn giao 24/10/2026 (lịch sử)
+
+Cập nhật **24/10/2026**: người dùng yêu cầu rà lỗi học tập, sau đó yêu cầu từ loại theo Cambridge American. Cambridge bị 403; họ đã đồng ý dùng Oxford American. Đã bổ sung nhãn Việt–Anh nhất quán và 21 mục động từ có nguồn. Kho hiện **5.581 mục / 5.352 đầu từ**, **367 IPA**; prefix 5.560 mục cũ giữ nguyên từng byte. Manifest mới `essential-senses-2026-10-24.json` nối tiếp manifest 22/10 bất biến. Hash hiện `7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e`.
 
 Báo cáo mới: [từ loại](part-of-speech-2026-10-24.md) và [audit các lỗi học tập](audit-learning-2026-10-24.md). Các phần 23/10 bên dưới là lịch sử. Người dùng đã cho phép commit/push sau khi nguồn và kiểm thử đạt; không hỏi lại. Không gắn nhãn Cambridge cho nguồn Oxford.
 

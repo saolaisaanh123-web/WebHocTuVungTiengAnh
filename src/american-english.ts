@@ -1,4 +1,17 @@
 import type { Word } from "./core";
+import regionalUsage from "../data/authoring/regional-usage-2026-10-25.json";
+
+/** Editorial regional guidance belongs to an exact sense. It is display-only:
+ * it never turns US equivalents into accepted spellings or changes old IDs. */
+export function getRegionalUsage(w: Word) {
+  return regionalUsage.find(
+    (entry) =>
+      entry.wordId === w.id &&
+      entry.headword === w.word &&
+      entry.partOfSpeech === w.part_of_speech &&
+      entry.meaningVi === w.meaning_vi,
+  );
+}
 
 // This is an editorially verified spelling alias, never a replacement ID or sense.
 // A saved British-English preference remains the learner's choice.

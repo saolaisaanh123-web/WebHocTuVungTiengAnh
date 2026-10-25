@@ -6,6 +6,7 @@ import type {
 import { validatePracticeCollections } from "./practice-data";
 import {
   appendExposureEvent,
+  lastObservedExposure,
   validateExposureEvents,
   type ExposureEvent,
 } from "./exposure-events";
@@ -426,10 +427,12 @@ export function independence(
   state: State,
   id: string,
   time = Date.now(),
+  skill = 0,
 ): boolean {
-  let last = state.exposures?.[id] || 0;
-  for (const r of state.history)
-    if (r.wordId === id) last = Math.max(last, r.time);
+  const last = lastObservedExposure(state, id, time, {
+    skill,
+    includeEqualLegacy: true,
+  });
   return !last || time - last >= 86400000;
 }
 export function interleaveQueue<T extends { id: string }>(tasks: T[]): T[] {
@@ -580,10 +583,11 @@ export function record(state: State, r: Result, scheduled: boolean) {
         (old.review === r.review || old.session === r.session),
     );
   let previous = 0;
-  let lastExposure = state.exposures?.[r.wordId] || 0;
+  const lastExposure = lastObservedExposure(state, r.wordId, r.time, {
+    skill: r.skill,
+    includeEqualLegacy: true,
+  });
   for (const old of state.history) {
-    if (old.wordId === r.wordId && old.time <= r.time)
-      lastExposure = Math.max(lastExposure, old.time);
     if (
       old.wordId === r.wordId &&
       old.skill === r.skill &&
@@ -609,7 +613,7 @@ export function record(state: State, r: Result, scheduled: boolean) {
             r.independent === true &&
             !r.hint &&
             first &&
-            independence(state, r.wordId, r.time),
+            independence(state, r.wordId, r.time, r.skill),
         }
       : {}),
     ...(audioUnavailable

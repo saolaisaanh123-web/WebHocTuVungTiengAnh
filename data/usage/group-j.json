@@ -1,0 +1,303 @@
+[
+  {
+    "wordId": "ox-4cd0e21a9a0795-01",
+    "headword": "go",
+    "partOfSpeech": "verb",
+    "meaningVi": "đi",
+    "patterns": [
+      {
+        "form": "go to + địa điểm",
+        "explanation": "Nói đi đến một nơi, chẳng hạn thư viện hoặc nhà ga."
+      },
+      {
+        "form": "go home / go here / go there",
+        "explanation": "Home, here và there trong các cụm chỉ hướng này không cần to đứng trước."
+      },
+      {
+        "form": "go to + động từ nguyên mẫu",
+        "explanation": "Nêu mục đích của việc đi, chẳng hạn đi gặp một người."
+      }
+    ],
+    "principalParts": {
+      "past": "went",
+      "pastParticiple": "gone",
+      "ing": "going",
+      "thirdPerson": "goes"
+    },
+    "note": "Dạng quá khứ là went, không phải goed. Ở nghĩa đi đến một nơi, has gone to thường nói người đó đã đi và chưa trở về; has been to nói đã đến và trở về. Been trong cách dùng này không thay thế gone trong mọi cấu trúc. Các dạng ở đây để tra cứu; không tự trở thành đáp án chung cho mọi bài điền từ.",
+    "mistake": {
+      "incorrect": "We go to home after our evening class.",
+      "correct": "We go home after our evening class.",
+      "explanation": "Khi home chỉ hướng về nhà sau go, dùng go home, không thêm to. Với danh từ địa điểm như the station, vẫn dùng go to the station."
+    },
+    "example": {
+      "id": "usage-go-2026-10-25",
+      "en": "We can go to the library after lunch if it stops raining.",
+      "vi": "Chúng ta có thể đi đến thư viện sau bữa trưa nếu trời ngừng mưa.",
+      "alternatives": [
+        "walk",
+        "head"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/go_1",
+        "title": "go verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:04.692687+00:00",
+        "sha256": "4a913c407275c3489782356cb09143981db73f48c17f9fd34ca330b5d6f61ef5"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-2998b3232d29e8-01",
+    "headword": "get",
+    "partOfSpeech": "verb",
+    "meaningVi": "nhận được",
+    "patterns": [
+      {
+        "form": "get + thứ nhận được",
+        "explanation": "Nói nhận được tin nhắn, thư, quà hoặc một thứ khác; ở đây chỉ luyện nghĩa nhận."
+      },
+      {
+        "form": "get something from somebody",
+        "explanation": "Thêm from để nói rõ người gửi hoặc nguồn của thứ nhận được."
+      }
+    ],
+    "principalParts": {
+      "past": "got",
+      "pastParticiple": "gotten",
+      "ing": "getting",
+      "thirdPerson": "gets"
+    },
+    "note": "Trong tiếng Anh Mỹ, gotten là phân từ thường gặp với nghĩa nhận được đang học. Không áp dụng máy móc cho mọi cách dùng get: cụm have got diễn đạt sở hữu vẫn dùng got, như I have got a key. Get còn có nhiều nghĩa khác; bảng này không gộp chúng thành một nghĩa nhận.",
+    "mistake": {
+      "incorrect": "Did you got the invitation I sent?",
+      "correct": "Did you get the invitation I sent?",
+      "explanation": "Sau trợ động từ did, dùng nguyên mẫu get. Got là dạng quá khứ khi động từ chính tự mang dấu hiệu quá khứ, chẳng hạn I got the invitation."
+    },
+    "example": {
+      "id": "usage-get-2026-10-25",
+      "en": "I usually get a confirmation email within a few minutes of booking.",
+      "vi": "Tôi thường nhận được email xác nhận trong vòng vài phút sau khi đặt chỗ.",
+      "alternatives": [
+        "receive"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/get",
+        "title": "get verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:04.870106+00:00",
+        "sha256": "43e4a85b6638e87956a16351ed23568e0c70fd6603ae1b33c116891c8556d25a"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/have_1",
+        "title": "have verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T19:00:14.624852+00:00",
+        "sha256": "7ab26ca5bb52bc77eb767db1e5cca27ac0b3c0535eb2b26d3d4f24476143e56a"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-d1905cf90af29a-01",
+    "headword": "take",
+    "partOfSpeech": "verb",
+    "meaningVi": "cầm hoặc nắm lấy",
+    "patterns": [
+      {
+        "form": "take somebody/something",
+        "explanation": "Cầm, nắm hoặc đưa tay ôm/giữ người hay vật; đây là nghĩa thể chất đang luyện."
+      },
+      {
+        "form": "take somebody by the hand",
+        "explanation": "Nắm tay một người, chẳng hạn để dẫn người đó đi."
+      },
+      {
+        "form": "take somebody in your arms",
+        "explanation": "Đưa tay ôm hoặc bế một người vào lòng."
+      }
+    ],
+    "principalParts": {
+      "past": "took",
+      "pastParticiple": "taken",
+      "ing": "taking",
+      "thirdPerson": "takes"
+    },
+    "note": "Took là quá khứ; taken là phân từ, chẳng hạn sau have/has. Taking bỏ e cuối của take. Các cấu trúc take a bus hoặc take time thuộc những nghĩa khác, không phải nghĩa cầm/nắm của thẻ này.",
+    "mistake": {
+      "incorrect": "He has took the rope in both hands.",
+      "correct": "He has taken the rope in both hands.",
+      "explanation": "Trong hiện tại hoàn thành has + phân từ, dùng taken. Took dùng cho quá khứ đơn, chẳng hạn He took the rope."
+    },
+    "example": {
+      "id": "usage-take-2026-10-25",
+      "en": "Take the rope with both hands and hold it steady.",
+      "vi": "Hãy nắm sợi dây bằng cả hai tay và giữ cho chắc.",
+      "alternatives": [
+        "grasp",
+        "hold",
+        "grip",
+        "grab"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/take_1",
+        "title": "take verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:04.211441+00:00",
+        "sha256": "847133c924240e3a3ca9cfd35344fe1c25c0d63b06f353db1f339f69833048dd"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-e8197b20f8e71e-01",
+    "headword": "buy",
+    "partOfSpeech": "verb",
+    "meaningVi": "mua",
+    "patterns": [
+      {
+        "form": "buy something from somebody/something",
+        "explanation": "Nói mua một vật từ người bán hoặc cửa hàng nào."
+      },
+      {
+        "form": "buy somebody something / buy something for somebody",
+        "explanation": "Hai cách nêu người được mua cho: đặt người đó sau buy hoặc dùng for sau món hàng."
+      },
+      {
+        "form": "buy something for + số tiền",
+        "explanation": "Nêu số tiền trả để mua món hàng; không nhầm với from chỉ người bán."
+      }
+    ],
+    "principalParts": {
+      "past": "bought",
+      "pastParticiple": "bought",
+      "ing": "buying",
+      "thirdPerson": "buys"
+    },
+    "note": "Buy là động từ bất quy tắc: quá khứ và phân từ đều là bought. Dạng buying giữ y; ngôi thứ ba hiện tại là buys. Bài American đối chiếu nghĩa/cấu trúc, còn bảng Verb Forms của Oxford Learner xác nhận rõ cả quá khứ lẫn phân từ bought.",
+    "mistake": {
+      "incorrect": "I buyed a new notebook yesterday.",
+      "correct": "I bought a new notebook yesterday.",
+      "explanation": "Không thêm -ed vào buy để tạo quá khứ; dùng dạng bất quy tắc bought."
+    },
+    "example": {
+      "id": "usage-buy-2026-10-25",
+      "en": "We can buy fresh bread from the bakery across the street.",
+      "vi": "Chúng ta có thể mua bánh mì mới ở tiệm bánh bên kia đường.",
+      "alternatives": [
+        "purchase",
+        "get"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/buy_1",
+        "title": "buy verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:03.587059+00:00",
+        "sha256": "776118d15543196c769e0c2a6fd2c4d8c48e9d95eaeb1980a50325618d39fd49"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/buy_1",
+        "title": "buy verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T19:00:13.487030+00:00",
+        "sha256": "3230088c363e366a24243edcf899f519507a4bb5eefade8342bf2e17c6942597"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-acba25512100f8-01",
+    "headword": "run",
+    "partOfSpeech": "verb",
+    "meaningVi": "chạy bộ",
+    "patterns": [
+      {
+        "form": "run + cụm chỉ hướng hoặc nơi chốn",
+        "explanation": "Nêu nơi chạy hoặc hướng di chuyển, chẳng hạn run home hoặc run in the park."
+      },
+      {
+        "form": "run + khoảng cách",
+        "explanation": "Đặt khoảng cách sau run để nói chạy bao xa, chẳng hạn run two miles."
+      },
+      {
+        "form": "go running",
+        "explanation": "Nói đi chạy bộ như một hoạt động thể thao."
+      }
+    ],
+    "principalParts": {
+      "past": "ran",
+      "pastParticiple": "run",
+      "ing": "running",
+      "thirdPerson": "runs"
+    },
+    "note": "Phân biệt ran (quá khứ) với run (nguyên mẫu hoặc phân từ). Running gấp đôi n. Ở đây chỉ luyện chạy bằng chân; run a company hoặc a machine runs thuộc các nghĩa khác.",
+    "mistake": {
+      "incorrect": "He has ran three miles today.",
+      "correct": "He has run three miles today.",
+      "explanation": "Sau has trong hiện tại hoàn thành dùng phân từ run. Ran dùng ở quá khứ đơn: He ran three miles yesterday."
+    },
+    "example": {
+      "id": "usage-run-2026-10-25",
+      "en": "We run along the river on weekends when the weather is cool.",
+      "vi": "Chúng tôi chạy dọc bờ sông vào cuối tuần khi trời mát.",
+      "alternatives": [
+        "jog"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/run_1",
+        "title": "run verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:03.718795+00:00",
+        "sha256": "405ae84d31d9910880afb2d116c582017e9221acf4a2f050c0f8e91541b976ee"
+      }
+    ]
+  },
+  {
+    "wordId": "write-01",
+    "headword": "write",
+    "partOfSpeech": "verb",
+    "meaningVi": "viết",
+    "patterns": [
+      {
+        "form": "write something",
+        "explanation": "Viết chữ, số hoặc một nội dung như tên, câu trả lời hay văn bản."
+      },
+      {
+        "form": "write something on + bề mặt",
+        "explanation": "Dùng on để chỉ bề mặt được viết lên, chẳng hạn một tấm thẻ hoặc bảng."
+      },
+      {
+        "form": "write with + dụng cụ / write in pen or pencil",
+        "explanation": "With nêu dụng cụ; in pen hoặc in pencil nói viết bằng bút mực hoặc bút chì."
+      }
+    ],
+    "principalParts": {
+      "past": "wrote",
+      "pastParticiple": "written",
+      "ing": "writing",
+      "thirdPerson": "writes"
+    },
+    "note": "Wrote là quá khứ, written là phân từ. Writing bỏ e cuối của write; written có hai chữ t. Không thêm các dạng này làm đáp án chung: hình thức cần dùng phụ thuộc cấu trúc của từng câu.",
+    "mistake": {
+      "incorrect": "She has wrote her address on the envelope.",
+      "correct": "She has written her address on the envelope.",
+      "explanation": "Sau has trong hiện tại hoàn thành dùng written. Wrote dùng trong quá khứ đơn: She wrote her address on the envelope."
+    },
+    "example": {
+      "id": "usage-write-2026-10-25",
+      "en": "Please write your phone number on the back of this card.",
+      "vi": "Vui lòng viết số điện thoại của bạn vào mặt sau tấm thẻ này.",
+      "alternatives": [
+        "print"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/write",
+        "title": "write verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:03.883095+00:00",
+        "sha256": "a20de7ae274e0eb40abdc795d04464fd45f9fe7cdd392b307ed031777b3b18cd"
+      }
+    ]
+  }
+]

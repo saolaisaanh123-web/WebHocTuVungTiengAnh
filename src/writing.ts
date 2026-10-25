@@ -53,11 +53,18 @@ const gerunds: Record<string, string> = {
   read: "reading",
   work: "working",
   play: "playing",
-  travel: "travelling",
+  travel: "traveling",
   swim: "swimming",
 };
 const preserveCase = (source: string, value: string) =>
   /^[A-Z]/.test(source) ? value[0].toUpperCase() + value.slice(1) : value;
+
+// About may introduce an approximate quantity or an independent time/place
+// adjunct. A regex cannot reliably distinguish all of those from a topic.
+// Only correct the small set of clearly topic-like noun phrases below; an
+// unrecognized continuation remains ungraded, not a grammar endorsement.
+const clearDiscussTopic =
+  /^(?:(?:the|this|that|these|those|my|your|his|her|our|their)\s+)?(?:schedules?|plans?|budgets?|projects?|problems?|issues?|proposals?|reports?|results?|options?|ideas?|decisions?|polic(?:y|ies)|work|art|music|politics)\b/i;
 const rules: Rule[] = [
   {
     id: "suggest-object-infinitive",
@@ -77,16 +84,14 @@ const rules: Rule[] = [
     category: "preposition",
     message: "Discuss nhận chủ đề trực tiếp, thường không thêm about.",
     explanation:
-      "Dùng discuss + chủ đề. Nếu muốn giữ about, có thể đổi sang talk about + chủ đề. Quy tắc này áp dụng cho động từ discuss, không áp dụng cho danh từ discussion about.",
+      "Khi about chỉ có ý nối discuss với chủ đề, dùng discuss + chủ đề hoặc talk about + chủ đề. About vẫn có thể mang nghĩa xấp xỉ hay thuộc trạng ngữ thời gian, nên không phải cứ thấy discuss và about đứng cạnh nhau là sai. Bộ kiểm tra chỉ gợi ý sửa một số cụm chủ đề rõ ràng; không áp dụng cho danh từ discussion about.",
     example: "We discussed the schedule. / We talked about the schedule.",
     replace: () => "",
     focus: (m) => [m[1].length, m[0].length],
-    // About can modify a quantity, as in "discussed about twenty cases".
-    // Ambiguous cases stay ungraded instead of receiving a false correction.
+    // A positive scope avoids endlessly extending an incomplete blacklist of
+    // quantities (double, another ten, almost twice...) and time expressions.
     skip: (m, text) =>
-      /^(?:\d|as\b|a\b|an\b|one\b|two\b|three\b|four\b|five\b|six\b|seven\b|eight\b|nine\b|ten\b|eleven\b|twelve\b|thirteen\b|fourteen\b|fifteen\b|sixteen\b|seventeen\b|eighteen\b|nineteen\b|twenty\b|thirty\b|forty\b|fifty\b|sixty\b|seventy\b|eighty\b|ninety\b|hundred\b|thousand\b|million\b|billion\b|half\b|twice\b|thrice\b|several\b|some\b|many\b|most\b|all\b|the\s+(?:same|right|usual|expected)\b)/i.test(
-        text.slice(m.index! + m[0].length).trimStart(),
-      ),
+      !clearDiscussTopic.test(text.slice(m.index! + m[0].length).trimStart()),
   },
   {
     id: "look-forward-gerund",

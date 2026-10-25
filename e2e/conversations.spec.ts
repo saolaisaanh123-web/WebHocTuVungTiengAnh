@@ -128,7 +128,7 @@ test("personalized authored conversation appends results and retries without alt
   await seed(page, saved);
   await openConversation(page);
   await expect(page.locator(".conversation-reason")).toContainText(
-    "3/4 từ đã học hoặc tiếp xúc",
+    "3/4 từ đã chọn học hoặc luyện theo nghĩa hiện tại",
   );
   await expect(page.locator(".conversation-reason")).toContainText(
     "1 từ cần củng cố",

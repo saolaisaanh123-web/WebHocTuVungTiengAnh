@@ -1,6 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
-import { empty, merge, parse, type Result, type State } from "./core";
+import {
+  contentKey,
+  empty,
+  merge,
+  parse,
+  type Result,
+  type State,
+} from "./core";
 import type { ConversationAttempt, WritingAttempt } from "./practice-data";
 import {
   bindSyncAccount,
@@ -53,6 +60,22 @@ const result = (id: string, time = 100): Result => ({
   first: true,
 });
 const memory = new Map<string, string>();
+async function gzipEnvelope(value: unknown) {
+  const raw = new TextEncoder().encode(JSON.stringify(value));
+  const bytes = new Uint8Array(
+    await new Response(
+      new Blob([raw]).stream().pipeThrough(new CompressionStream("gzip")),
+    ).arrayBuffer(),
+  );
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 8192)
+    binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+  return {
+    transport: "jeongyeon-gzip-v1",
+    uncompressedBytes: raw.length,
+    data: btoa(binary),
+  };
+}
 function authenticate(id = "account-a") {
   memory.set(
     "jeongyeon-auth",
@@ -314,6 +337,7 @@ describe("Supabase protocol and account boundaries", () => {
     );
     expect(await decodeCloudPayload(encoded)).toEqual(cloudPayload(state));
     expect(await decodeCloudPayload(state)).toEqual(state);
+    expect(await decodeCloudPayload(await gzipEnvelope(state))).toEqual(state);
     await expect(
       decodeCloudPayload({
         transport: "jeongyeon-gzip-v1",
@@ -325,6 +349,114 @@ describe("Supabase protocol and account boundaries", () => {
       await expect(
         decodeCloudPayload({ ...encoded, uncompressedBytes: 1 }),
       ).rejects.toThrow(/kích thước/);
+  });
+  it("roundtrips the full corpus with twenty thousand answers/exposures beyond the former raw ceiling", async () => {
+    const words = parse(
+      readFileSync(
+        new URL("../public/data/vocabulary.txt", import.meta.url),
+        "utf8",
+      ),
+    );
+    const state = merge(empty(), words, "default");
+    state.entries[words[0].id].notes = "Ghi chú cá nhân cần giữ nguyên.";
+    state.exposures = {};
+    state.exposureEvents = [];
+    for (let i = 0; i < 20_000; i++) {
+      const word = words[i % words.length];
+      const time = 1_792_915_200_000 + i;
+      const id = `transport-history-${i}`;
+      state.history.push({
+        ...result(id, time),
+        wordId: word.id,
+        answer: word.word,
+        contentVersion: contentKey(word, 1),
+        evidenceVersion: 2,
+        independent: true,
+        exposureGap: 86_400_000,
+        scheduled: true,
+      });
+      state.exposures[word.id] = time;
+      state.exposureEvents.push({
+        id: `transport-view-${i}`,
+        wordId: word.id,
+        time,
+        resultId: id,
+      });
+    }
+    expect(
+      new TextEncoder().encode(JSON.stringify(cloudPayload(state))).length,
+    ).toBeGreaterThan(20 * 1024 * 1024);
+    const encoded = await encodeCloudPayload(state);
+    expect("transport" in encoded).toBe(true);
+    if ("transport" in encoded)
+      expect(encoded.uncompressedBytes).toBeLessThan(20 * 1024 * 1024);
+    const restored = await decodeCloudPayload(encoded);
+    expect(restored).toEqual(cloudPayload(state));
+    expect(restored.history).toHaveLength(20_000);
+    expect(restored.exposureEvents).toHaveLength(20_000);
+  }, 30_000);
+
+  it.each([
+    { strings: ["valid"], shapes: [], state: { s: 3 } },
+    { strings: [], shapes: [["version", "version"]], state: { o: [0, 1, 1] } },
+    { strings: [], shapes: [["version"]], state: { o: [0] } },
+    { strings: [], shapes: [], state: { o: [-1] } },
+    { strings: [], shapes: [], state: { unexpected: 1 } },
+  ])(
+    "rejects malformed compact references/shapes before restoring data",
+    async (malformed) => {
+      const encoded = await gzipEnvelope({
+        format: "jeongyeon-compact-state-v1",
+        ...malformed,
+      });
+      await expect(decodeCloudPayload(encoded)).rejects.toThrow(
+        /rút gọn không hợp lệ/,
+      );
+    },
+  );
+
+  it("bounds dictionary expansion before constructing a large learner state", async () => {
+    const encoded = await gzipEnvelope({
+      format: "jeongyeon-compact-state-v1",
+      strings: ["x".repeat(1024 * 1024)],
+      shapes: [],
+      state: Array.from({ length: 65 }, () => ({ s: 0 })),
+    });
+    await expect(decodeCloudPayload(encoded)).rejects.toThrow(
+      /giải nén vượt giới hạn/,
+    );
+  });
+  it("preserves literal marker-like objects, UTF-8 and dangerous-looking keys without changing prototypes", async () => {
+    const state = sample() as State & Record<string, unknown>;
+    state.entries.word.notes = "Nghĩa tiếng Việt: ‘gợi ý’ 📝 \ud800";
+    state.extra = {
+      s: 12,
+      o: ["literal content"],
+      nested: { constructor: "literal" },
+    };
+    Object.defineProperty(state.extra, "__proto__", {
+      value: { polluted: "must stay an own property" },
+      enumerable: true,
+    });
+    const restored = (await decodeCloudPayload(
+      await encodeCloudPayload(state),
+    )) as State & Record<string, unknown>;
+    expect(restored).toEqual(cloudPayload(state));
+    expect(Object.getPrototypeOf(restored.extra)).toBe(Object.prototype);
+    expect(Object.hasOwn(restored.extra as object, "__proto__")).toBe(true);
+    expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+  });
+
+  it("continues to support small plain payloads when browser gzip is unavailable", async () => {
+    const state = sample();
+    vi.stubGlobal("CompressionStream", undefined);
+    expect(await encodeCloudPayload(state)).toEqual(cloudPayload(state));
+  });
+  it("measures the legacy plain limit in UTF-8 bytes rather than JavaScript characters", async () => {
+    const state = sample();
+    state.entries.word.notes = "ệ".repeat(7 * 1024 * 1024);
+    expect(JSON.stringify(state).length).toBeLessThan(20 * 1024 * 1024);
+    await expect(decodeCloudPayload(state)).rejects.toThrow(/quá lớn/);
   });
   it("checks only the revision when cloud has not changed", async () => {
     authenticate();

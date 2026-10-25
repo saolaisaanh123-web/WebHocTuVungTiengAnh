@@ -159,4 +159,45 @@ describe("shared current-sense evidence", () => {
       isRetainedEvidence(attempts.map((r) => ({ ...r, exposureGap: DAY }))),
     ).toBe(false);
   });
+
+  it("keeps a lapse weak after an immediate repair and restores old retained evidence only after a spaced recovery", () => {
+    const retained = [50, 40, 30].map((days) =>
+      result(`retained-${days}`, NOW - days * DAY),
+    );
+    const lapse = result("lapse", NOW - 2 * DAY, { correct: false });
+    const immediate = result("repair", lapse.time + 60_000, {
+      independent: false,
+      exposureGap: 60_000,
+    });
+    const attempts = [...retained, lapse, immediate];
+    const before = structuredClone(attempts);
+    expect(isWeakEvidence(attempts)).toBe(true);
+    expect(isRetainedEvidence(attempts)).toBe(false);
+    expect(attempts).toEqual(before);
+
+    const supported = result("hinted-recovery", NOW, {
+      hint: true,
+      independent: false,
+      exposureGap: 2 * DAY - 60_000,
+    });
+    expect(isRetainedEvidence([...attempts, supported])).toBe(false);
+
+    const recovery = result("spaced-recovery", NOW, {
+      exposureGap: 2 * DAY - 60_000,
+    });
+    expect(isWeakEvidence([...attempts, recovery])).toBe(false);
+    expect(isRetainedEvidence([...attempts, recovery])).toBe(true);
+    // A later lapse starts a new recovery period, even after past recovery.
+    expect(
+      isWeakEvidence([
+        ...attempts,
+        recovery,
+        result("new-lapse", NOW + DAY, { correct: false }),
+        result("new-immediate", NOW + DAY + 60_000, {
+          independent: false,
+          exposureGap: 60_000,
+        }),
+      ]),
+    ).toBe(true);
+  });
 });

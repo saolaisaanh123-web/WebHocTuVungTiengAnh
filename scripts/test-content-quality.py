@@ -348,5 +348,24 @@ class SourceOverlaySafetyTests(unittest.TestCase):
             SOURCE_UPDATE["apply_source_update"](self.records, update)
 
 
+class UsageSourceIdentityTests(unittest.TestCase):
+    def test_british_secondary_source_keeps_strict_header_and_dictionary_identity(self):
+        api = runpy.run_path(str(ROOT / "scripts/check-usage-sources.py"))
+        article = api["ArticleInfo"]()
+        article.feed('<title>buy verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner&apos;s Dictionary at OxfordLearnersDictionaries.com</title><div id="entryContent" class="oald"><h1 class="headword">buy</h1><span class="pos">verb</span><span class="def">A real definition body.</span></div>')
+        self.assertEqual(article.text("headword"), "buy")
+        self.assertEqual(api["title_identity"](article.text("title")), {"headword": "buy", "pos": "verb"})
+        receipt = {
+            "url": "https://www.oxfordlearnersdictionaries.com/definition/english/buy_1",
+            "title": article.text("title"), "checkedAt": "2026-10-25", "sha256": "a" * 64,
+        }
+        self.assertEqual(api["validate_receipt"](receipt), receipt["url"])
+        with self.assertRaises(ValueError):
+            api["validate_receipt"]({**receipt, "url": receipt["url"].replace("/english/", "/american_english/")})
+        for suffix in ("?token=private", "?utm_source=test"):
+            with self.assertRaises(ValueError):
+                api["valid_url"](receipt["url"] + suffix)
+
+
 if __name__ == "__main__":
     unittest.main()

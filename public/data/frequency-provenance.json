@@ -38,8 +38,8 @@
     "sha256": "8ced54ea9f49e335cb21a42a8cb6924a7eef74401d69af2af787a141c0557c40"
   },
   "coverage": {
-    "records": 5581,
-    "scored": 4921,
+    "records": 5586,
+    "scored": 4926,
     "unscored": 660,
     "unscoredByReason": {
       "no_exact_spelling_in_pinned_table": 20,
@@ -3922,32 +3922,33 @@
   ],
   "currentCanonicalVocabulary": {
     "filename": "vocabulary.txt",
-    "sha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e"
+    "sha256": "bfedc90307e912b5dd19f2620f92a45e0704b67054ef7a1070273fe2464209bb"
   },
   "historicalExportNote": "inputBeforeAttachingMetadata and outputAfterAttachingMetadata describe the original pinned frequency export, before later editorial corrections; currentCanonicalVocabulary identifies the current canonical TXT.",
-  "sourceUpdateCanonicalHash": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
+  "sourceUpdateCanonicalHash": "bfedc90307e912b5dd19f2620f92a45e0704b67054ef7a1070273fe2464209bb",
   "supplementalSourceReview": {
     "date": "2026-10-20",
     "overlay": "data/authoring/source-update-2026-10.json",
-    "canonicalVocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
+    "canonicalVocabularySha256": "bfedc90307e912b5dd19f2620f92a45e0704b67054ef7a1070273fe2464209bb",
     "scope": "Additive source-checked American spelling and list membership, targeted original meaning corrections and selected new senses; not a verification of every historical definition or publisher certification."
   },
   "fullVocabularyReview": {
     "reviewId": "2026-10-full-vocabulary-review",
     "date": "2026-10-21",
-    "canonicalVocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
+    "canonicalVocabularySha256": "bfedc90307e912b5dd19f2620f92a45e0704b67054ef7a1070273fe2464209bb",
     "reviewedEntries": 5558,
     "scope": "Explicit selected meanings and original bilingual contexts reviewed against directly read source evidence. Historical word-list facts are preserved separately; this is not publisher certification or a claim to cover every sense."
   },
   "essentialSenses": {
-    "reviewId": "essential-senses-2026-10-24",
-    "date": "2026-10-24",
-    "canonicalVocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e",
-    "addedEntries": 23,
+    "reviewId": "essential-senses-2026-10-25",
+    "date": "2026-10-25",
+    "canonicalVocabularySha256": "bfedc90307e912b5dd19f2620f92a45e0704b67054ef7a1070273fe2464209bb",
+    "addedEntries": 28,
     "scope": "Ordered additive essential-sense reviews; each batch retains its own baseline, source evidence and editorial scope.",
     "reviewIds": [
       "essential-senses-2026-10-22",
-      "essential-senses-2026-10-24"
+      "essential-senses-2026-10-24",
+      "essential-senses-2026-10-25"
     ],
     "reviews": [
       {
@@ -3978,6 +3979,21 @@
         "manifest": {
           "path": "data/authoring/essential-senses-2026-10-24.json",
           "sha256": "e1d3a9c8445c48e5437ef68c0fea28cee970e82bb07982655f3104c6328265e6"
+        }
+      },
+      {
+        "reviewId": "essential-senses-2026-10-25",
+        "date": "2026-10-25",
+        "baseline": {
+          "entryCount": 5581,
+          "idsSha256": "7ceffeb71ae69b6673148d0f69eaaf1a9da7336630d7752d77f408101ba8bac5",
+          "vocabularySha256": "7b7f899ff643473eb48e80d3d64a3cfaa8293c7c27571151dd52a613f30aae2e"
+        },
+        "scope": "Append five directly read Oxford American senses/POS gaps: work noun activity, fast speed adverb, hard effort adverb, present gift noun and miss transport verb. Preserve every previous ID and byte; American PDF CEFR applies to the listed word/POS, not certification of each authored sense.",
+        "addedEntries": 5,
+        "manifest": {
+          "path": "data/authoring/essential-senses-2026-10-25.json",
+          "sha256": "c80d83baaeeac6f5c6a423cc75569a706053a09f5e0762c80c49a87443d074e6"
         }
       }
     ]

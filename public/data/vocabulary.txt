@@ -206793,3 +206793,188 @@ learning_status: ready
 learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
 source_fact_index:
 definition_source: authored
+---
+id: work-noun-activity-01
+word: work
+part_of_speech: noun
+meaning_vi: công việc; việc cần làm
+definition_en: tasks or duties that require your time and effort
+ipa: /wərk/
+level: A1
+topics: work,daily life
+collections: foundation,american-3000,essential-senses
+collocation: do some work; finish your work
+example_en: I have some work to finish before dinner.
+example_vi: Tôi có một ít việc cần làm xong trước bữa tối.
+audio_word:
+audio_example:
+accepted_answers: work
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/work_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Ở nghĩa công việc/nhiệm vụ nói chung, work là danh từ không đếm được: some work, a lot of work; dùng a job hoặc a task để nói một công việc/nhiệm vụ riêng. A work of art là nghĩa tác phẩm riêng, không áp quy tắc này cho mọi nghĩa của work.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf: 5.96
+frequency_source: wordfreq-3.1.1-en-large
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: fast-adverb-speed-01
+word: fast
+part_of_speech: adverb
+meaning_vi: nhanh; với tốc độ cao
+definition_en: at a high speed
+ipa: /fæst/
+level: A1
+topics: transport,daily life
+collections: foundation,american-3000,essential-senses
+collocation: drive fast; run fast
+example_en: Please do not drive so fast on this narrow road.
+example_vi: Xin đừng lái xe nhanh như vậy trên con đường hẹp này.
+audio_word:
+audio_example:
+accepted_answers: fast
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/fast_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Fast có thể là tính từ hoặc trạng từ mà không đổi dạng. A fast car: tính từ bổ nghĩa cho car; drive fast: trạng từ bổ nghĩa cho drive. Không dùng fastly trong tiếng Anh chuẩn; so sánh faster, fastest.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf: 5.13
+frequency_source: wordfreq-3.1.1-en-large
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: hard-adverb-effort-01
+word: hard
+part_of_speech: adverb
+meaning_vi: chăm chỉ; với nhiều nỗ lực
+definition_en: with a lot of effort
+ipa: /hɑrd/
+level: A1
+topics: work,study
+collections: foundation,american-3000,essential-senses
+collocation: work hard; try hard
+example_en: We work hard to finish every order on time.
+example_vi: Chúng tôi làm việc chăm chỉ để hoàn thành mọi đơn hàng đúng hạn.
+audio_word:
+audio_example:
+accepted_answers: hard
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/hard_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Trong work hard, hard là trạng từ chỉ nỗ lực; không đổi thành hardly. Hardly nghĩa là hầu như không và không thay thế hard trong nghĩa này. So sánh harder, hardest.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf: 5.53
+frequency_source: wordfreq-3.1.1-en-large
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: present-noun-gift-01
+word: present
+part_of_speech: noun
+meaning_vi: món quà
+definition_en: something you give to another person as a gift
+ipa: /ˈprɛznt/
+level: A1
+topics: daily life,relationships
+collections: foundation,american-3000,essential-senses
+collocation: a birthday present; give somebody a present
+example_en: I want to buy a birthday present for my sister.
+example_vi: Tôi muốn mua một món quà sinh nhật cho chị gái.
+audio_word:
+audio_example:
+accepted_answers: present
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/present_2 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Ở nghĩa món quà, present là danh từ đếm được: a present, two presents. Phân biệt với the present nghĩa hiện tại và động từ present /prɪˈzɛnt/ nhấn âm hai; danh từ quà tặng nhấn âm đầu.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf: 5.18
+frequency_source: wordfreq-3.1.1-en-large
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored
+---
+id: miss-verb-transport-01
+word: miss
+part_of_speech: verb
+meaning_vi: lỡ xe hoặc chuyến bay vì đến muộn
+definition_en: to arrive too late to catch a bus, train, plane, or other service
+ipa: /mɪs/
+level: A1
+topics: travel,transport
+collections: foundation,american-3000,essential-senses
+collocation: miss the bus; miss a flight
+example_en: If we leave any later, we may miss the last bus.
+example_vi: Nếu đi muộn hơn nữa, chúng ta có thể lỡ chuyến xe buýt cuối cùng.
+audio_word:
+audio_example:
+accepted_answers: miss
+source: Đối chiếu nghĩa/từ loại/IPA Mỹ: https://www.oxfordlearnersdictionaries.com/definition/american_english/miss_1 | A1 theo American Oxford 3000. Nghĩa Việt, giải nghĩa Anh và ví dụ song ngữ do Jeongyeon biên soạn.
+note: Ở nghĩa lỡ chuyến vì đến muộn: miss + phương tiện/chuyến đi, không cần giới từ. Misses, missed, missing là các dạng của động từ. Phân biệt với miss somebody nghĩa nhớ ai; không gộp hai nghĩa thành một bằng chứng thành thạo.
+content_status: reviewed
+example_type: authored
+register:
+region: General; ưu tiên đối chiếu Anh–Mỹ
+case_sensitive:
+frequency_zipf: 5.22
+frequency_source: wordfreq-3.1.1-en-large
+expression_type:
+news_source:
+news_title:
+news_url:
+news_date:
+news_excerpt:
+news_context_vi:
+news_source_type:
+learning_status: ready
+learning_note: Nghĩa nền tảng bổ sung đã đối chiếu trực tiếp Oxford American; đây là một nghĩa được chọn, không phải toàn bộ mục từ.
+source_fact_index:
+definition_source: authored

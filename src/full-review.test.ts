@@ -181,9 +181,15 @@ describe("Complete source-backed vocabulary review", () => {
     } of essentialEntries) {
       expect(americanFact).toEqual(facts[americanFactIndex]);
       expect(americanFact.word).toBe(word.word);
-      expect(americanFact.pos.split(/\s*,\s*/)).toContain("v.");
+      const factPos = {
+        verb: "v.",
+        noun: "n.",
+        adjective: "adj.",
+        adverb: "adv.",
+      }[word.part_of_speech as "verb" | "noun" | "adjective" | "adverb"];
+      expect(factPos).toBeDefined();
+      expect(americanFact.pos.split(/\s*,\s*/)).toContain(factPos);
       expect(americanFact.cefr).toBe(word.level);
-      expect(word.part_of_speech).toBe("verb");
       expect(word.source_fact_index).toBe("");
       expect(word.content_status).toBe("reviewed");
       expect(word.learning_status).toBe("ready");

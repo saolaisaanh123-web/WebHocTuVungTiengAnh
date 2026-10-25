@@ -32,11 +32,27 @@ const calendarDay = (time: number) => {
 /** First attempts with support can reveal weakness, but never improve the
  * independent accuracy denominator. All callers use the same four-attempt window. */
 export function isWeakEvidence(attempts: readonly Result[]): boolean {
-  const recent = [...attempts].sort(chronological).slice(-4);
+  const ordered = [...attempts].sort(chronological);
+  const recent = ordered.slice(-4);
   const latest = recent.at(-1);
+  const lapse = ordered
+    .filter((result) => !result.correct || result.hint)
+    .at(-1);
+  // A repair immediately after forgetting is useful practice, not proof that
+  // recall has recovered. Preserve weakness until a real post-lapse spaced
+  // check; older retained results alone cannot clear a new lapse.
+  const awaitingRecovery =
+    !!lapse &&
+    !ordered.some(
+      (result) =>
+        result.time - lapse.time >= EVIDENCE_DAY &&
+        result.correct &&
+        isDelayedEvidence(result),
+    );
   return (
     !!latest &&
-    (!latest.correct ||
+    (awaitingRecovery ||
+      !latest.correct ||
       latest.hint ||
       recent.filter((result) => !result.correct || result.hint).length >= 2)
   );

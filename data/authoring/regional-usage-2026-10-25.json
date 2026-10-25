@@ -1,0 +1,30 @@
+[
+  {
+    "wordId": "ox-00b109cf1123a5-01",
+    "headword": "queue",
+    "partOfSpeech": "noun",
+    "meaningVi": "hàng người hoặc xe chờ",
+    "label": "Anh–Anh; tại Mỹ thường dùng line",
+    "note": "Trong nghĩa hàng người/xe chờ, queue thiên Anh–Anh. Trong giao tiếp Mỹ, thường nói stand in line hoặc wait in line. Không coi line là biến thể chính tả của queue; queue trong tin học là nghĩa khác.",
+    "source": {
+      "url": "https://www.oxfordlearnersdictionaries.com/definition/english/queue_1",
+      "title": "queue noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+      "checkedAt": "2026-10-25T18:58:03.283666+00:00",
+      "sha256": "23581bd46c66fc2b273cf9b723fa8225d32b6bb16088ee427d0be9dada04cca2"
+    }
+  },
+  {
+    "wordId": "ox-71ca7d932e5a9b-01",
+    "headword": "rubbish",
+    "partOfSpeech": "noun",
+    "meaningVi": "rác, đồ bỏ đi",
+    "label": "Chủ yếu Anh–Anh; tại Mỹ thường dùng garbage/trash",
+    "note": "Trong nghĩa rác vật chất đang học, rubbish chủ yếu dùng ở Anh–Anh. Tại Mỹ thường dùng garbage hoặc trash tùy ngữ cảnh. Đây là các từ khác nhau, không phải biến thể chính tả; rubbish nghĩa lời vô lý là nghĩa khác.",
+    "source": {
+      "url": "https://www.oxfordlearnersdictionaries.com/definition/english/rubbish_1",
+      "title": "rubbish noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+      "checkedAt": "2026-10-25T18:58:03.267232+00:00",
+      "sha256": "ac2d0d91d6ada50a8ca5e387df6954babea1cc097dcbbd7e4fa05420797ec54b"
+    }
+  }
+]

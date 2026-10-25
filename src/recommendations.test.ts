@@ -9,6 +9,7 @@ import {
   type State,
 } from "./core";
 import { rankNewWords, recommendWords } from "./recommendations";
+import { selectLearningEvidence } from "./evidence";
 
 const DAY = 86400000;
 const NOW = new Date(2026, 9, 19, 12).getTime();
@@ -125,6 +126,129 @@ describe("Personal learning recommendations", () => {
     });
     expect(ids(smart)[0]).toBe("weak");
     expect(smart[0].reason).toContain("1/1 lượt gần nhất sai hoặc cần gợi ý");
+  });
+
+  it("offers self-reported forgotten recognition words with an explicit non-objective reason", () => {
+    const e = entry("appointment");
+    let s = state(e);
+    for (let n = 0; n < 3; n++) {
+      s = record(
+        s,
+        result(e, {
+          id: `self-forgot-${n}`,
+          skill: 0,
+          correct: false,
+          method: "self",
+          time: NOW - (3 - n) * DAY,
+          session: `self-session-${n}`,
+          review: `self-review-${n}`,
+          contentVersion: contentKey(e.word, 0),
+        }),
+        true,
+      );
+    }
+    const before = structuredClone(s);
+    const options = { mode: "weak", skill: 0, now: NOW } as const;
+    const recommendations = recommendWords(s, [e], options);
+    expect(ids(recommendations)).toEqual([e.word.id]);
+    expect(recommendations[0].reason).toContain(
+      "Bạn tự báo chưa nhớ; chưa phải kết quả kiểm tra khách quan",
+    );
+    expect(recommendations[0].reason).not.toContain("lượt gần nhất sai");
+    expect(ids(recommendWords(s, [e], { mode: "weak", now: NOW }))).toEqual([
+      e.word.id,
+    ]);
+    expect(recommendWords(s, [e], { ...options, skill: 1 })).toEqual([]);
+    expect(selectLearningEvidence(s, NOW).attempts).toEqual([]);
+    expect(selectLearningEvidence(s, NOW).objective).toEqual([]);
+    expect(selectLearningEvidence(s, NOW).delayed).toEqual([]);
+    expect(s.schedules[`${e.word.id}:0`].step).toBe(0);
+    expect(s).toEqual(before);
+  });
+
+  it("clears a self-reported practice request after a newer first self-rating or unhinted valid recognition check", () => {
+    const e = entry("appointment");
+    const forgotten = result(e, {
+      id: "self-forgotten",
+      skill: 0,
+      correct: false,
+      method: "self",
+      time: NOW - DAY,
+    });
+    for (const method of ["self", "rule"] as const) {
+      const s = state(e);
+      s.history = [
+        forgotten,
+        result(e, {
+          id: `recovered-${method}`,
+          skill: 0,
+          method,
+          time: NOW,
+          correct: true,
+        }),
+      ];
+      expect(
+        recommendWords(s, [e], { mode: "weak", skill: 0, now: NOW }),
+      ).toEqual([]);
+    }
+    const ungraded = state(e);
+    ungraded.history = [
+      forgotten,
+      result(e, { id: "ungraded", skill: 0, method: "ungraded", time: NOW }),
+    ];
+    expect(
+      recommendWords(ungraded, [e], { mode: "weak", skill: 0, now: NOW })[0]
+        .reason,
+    ).toContain("Bạn tự báo chưa nhớ");
+  });
+
+  it("does not clear the first self-reported lapse with a same-session immediate repair", () => {
+    const e = entry("appointment");
+    const s = state(e);
+    const first = result(e, {
+      id: "first-self",
+      skill: 0,
+      method: "self",
+      correct: false,
+    });
+    s.history = [
+      first,
+      result(e, {
+        id: "later-self",
+        skill: 0,
+        method: "self",
+        correct: true,
+        time: first.time + 60_000,
+        session: first.session,
+        review: "later-review",
+        first: true,
+      }),
+    ];
+    expect(
+      recommendWords(s, [e], { mode: "weak", now: NOW })[0].reason,
+    ).toContain("Bạn tự báo chưa nhớ");
+  });
+
+  it("excludes obsolete, future, repeated, archived and manually-known self-ratings", () => {
+    const e = entry("appointment");
+    const first = result(e, { skill: 0, method: "self", correct: false });
+    for (const patch of [
+      { contentVersion: "previous-POS-or-meaning" },
+      { time: NOW + 1 },
+      { first: false },
+    ]) {
+      const s = state(e);
+      s.history = [{ ...first, ...patch }];
+      expect(recommendWords(s, [e], { mode: "weak", now: NOW })).toEqual([]);
+    }
+    for (const patch of [{ archived: true }, { known: true }]) {
+      const changed = { ...e, ...patch };
+      const s = state(changed);
+      s.history = [first];
+      expect(recommendWords(s, [changed], { mode: "weak", now: NOW })).toEqual(
+        [],
+      );
+    }
   });
 
   it("only calls free-practiced errors new when they have not entered the scheduled course", () => {

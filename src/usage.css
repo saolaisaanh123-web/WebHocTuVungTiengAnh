@@ -28,6 +28,25 @@
 .usage-countability {
   font-weight: 600;
 }
+.usage-forms dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.6rem;
+  margin: 0.5rem 0;
+}
+.usage-forms dl > div {
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  background: #f2f6ef;
+}
+.usage-forms dt {
+  color: #505c56;
+  font-size: 0.85rem;
+}
+.usage-forms dd {
+  margin: 0;
+  font-weight: 600;
+}
 .usage-notes summary {
   cursor: pointer;
   min-height: 44px;

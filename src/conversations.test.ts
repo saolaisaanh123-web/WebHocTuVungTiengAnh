@@ -31,14 +31,15 @@ const result = (wordId: string, overrides: Partial<Result> = {}): Result => ({
   review: "test",
   gap: 0,
   first: true,
+  evidenceVersion: 2,
   ...overrides,
 });
 
 describe("Authored contextual conversation practice", () => {
-  it("maps all 12 authored dialogues to reviewed corpus senses and actual English occurrences", () => {
+  it("maps all 14 authored dialogues to reviewed corpus senses and actual English occurrences", () => {
     const state = source();
-    expect(availableDialogues(state)).toHaveLength(12);
-    expect(new Set(dialogues.map((d) => d.id)).size).toBe(12);
+    expect(availableDialogues(state)).toHaveLength(14);
+    expect(new Set(dialogues.map((d) => d.id)).size).toBe(14);
     for (const d of dialogues) {
       expect(d.targets.length).toBeGreaterThanOrEqual(3);
       expect(d.targets.length).toBeLessThanOrEqual(7);

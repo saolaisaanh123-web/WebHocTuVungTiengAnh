@@ -38,6 +38,7 @@ describe("bounded, offline sentence feedback", () => {
     ["We discussed about the schedule.", "We discussed the schedule."],
     ["I look forward to meet you.", "I look forward to meeting you."],
     ["She enjoys to study English.", "She enjoys studying English."],
+    ["I enjoy to travel.", "I enjoy traveling."],
     ["Despite of the rain, we went out.", "Despite the rain, we went out."],
     [
       "You should to confirm the appointment.",
@@ -72,12 +73,29 @@ describe("bounded, offline sentence feedback", () => {
       "We discussed about as few cases as last week.",
       "We discussed about as much as I expected.",
       "We discussed about as little as possible.",
+      "We discussed about double the usual number of cases.",
+      "We discussed about another ten cases before lunch.",
+      "We discussed about almost twice the usual number of cases.",
+      "We discussed about noon whether to postpone the meeting.",
+      "We discussed about midnight what we should do next.",
+      "We discussed about the same time whether to cancel.",
+      "We discussed about how many people to invite.",
       "I need a can to make a lantern.",
       "It is a must to visit the museum.",
       'The phrase "despite of" is wrong.',
       "The phrase 'despite of' is wrong.",
     ])
       expect(checkWritingLocally(text)).toEqual([]);
+  });
+
+  it("leaves uncertain discuss-about continuations unchanged and ungraded", () => {
+    const text = "We discussed about double the usual number of cases.";
+    const attempt = makeWritingAttempt(word, text);
+    expect(attempt.status).toBe("ungraded");
+    expect(attempt.issues).toEqual([]);
+    expect(attempt).not.toHaveProperty("correctedText");
+    expect(applyWritingSuggestions(text, attempt.issues)).toBe(text);
+    expect(attempt.assessment.grammar).toBe("uncertain");
   });
 
   it("retains modal-to detection with a clear pronoun subject and exact offsets", () => {

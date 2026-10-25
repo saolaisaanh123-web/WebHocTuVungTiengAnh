@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   answerForms,
@@ -13,6 +14,7 @@ import {
 } from "./core";
 import {
   headwordSearchText,
+  getRegionalUsage,
   preferredHeadword,
   selectEnglishVoice,
   youglishUsUrl,
@@ -29,6 +31,25 @@ const original: Word = {
 const american: Word = { ...original, preferred_us_spelling: "neighbor" };
 
 describe("Reviewed American-English preference", () => {
+  it("binds regional guidance to the reviewed queue/rubbish senses without accepting American equivalents as spellings", () => {
+    const words = parse(readFileSync("public/data/vocabulary.txt", "utf8"));
+    for (const headword of ["queue", "rubbish"]) {
+      const word = words.find((w) => w.word === headword)!;
+      const key = contentKey(word, 1);
+      const usage = getRegionalUsage(word)!;
+      expect(usage.label).toContain("Anh–Anh");
+      expect(usage.source.url).toContain("/definition/english/");
+      expect(usage.source.sha256).toMatch(/^[a-f0-9]{64}$/);
+      expect(
+        getRegionalUsage({ ...word, meaning_vi: "nghĩa cá nhân khác" }),
+      ).toBeUndefined();
+      expect(
+        getRegionalUsage({ ...word, part_of_speech: "verb" }),
+      ).toBeUndefined();
+      expect(contentKey(word, 1)).toBe(key);
+      expect(grade(headword === "queue" ? "line" : "trash", word)).toBe(false);
+    }
+  });
   it("uses American English for new profiles and preserves an existing British preference in backups", () => {
     expect(empty().voice).toBe("en-US");
     const previous = {

@@ -58,11 +58,11 @@ function result(overrides: Partial<Result> = {}): Result {
 }
 
 describe("source-reviewed usage and contextual recall", () => {
-  it("ships 144 distinct, complete, sense-matched supplements with real source receipts", () => {
-    expect(usageEntries).toHaveLength(144);
-    expect(new Set(usageEntries.map((entry) => entry.wordId)).size).toBe(144);
+  it("ships 155 distinct, complete, sense-matched supplements with real source receipts", () => {
+    expect(usageEntries).toHaveLength(155);
+    expect(new Set(usageEntries.map((entry) => entry.wordId)).size).toBe(155);
     expect(new Set(usageEntries.map((entry) => entry.example.id)).size).toBe(
-      144,
+      155,
     );
     for (const entry of usageEntries) {
       const word = corpus.find((w) => w.id === entry.wordId)!;
@@ -87,7 +87,9 @@ describe("source-reviewed usage and contextual recall", () => {
         const url = new URL(source.url);
         expect(url.protocol).toBe("https:");
         expect(url.hostname).toBe("www.oxfordlearnersdictionaries.com");
-        expect(url.pathname).toContain("/definition/american_english/");
+        expect(url.pathname).toMatch(
+          /^\/definition\/(?:american_english|english)\//,
+        );
         expect(source.title.toLowerCase()).toContain("oxford");
         expect(source.sha256).toMatch(/^[a-f0-9]{64}$/);
         expect(Number.isFinite(Date.parse(source.checkedAt))).toBe(true);

@@ -89,7 +89,7 @@ export function LearningInsights({
   state: State;
   onPractice: (skill: number, ids: string[]) => void;
   onWritingReview: () => void;
-  onConversation: () => void;
+  onConversation: (ids: string[]) => void;
   onReviewDue?: () => void;
 }) {
   const report = useMemo(() => analyzeLearning(state), [state]);
@@ -130,7 +130,7 @@ export function LearningInsights({
                 r.action === "writing"
                   ? onWritingReview()
                   : r.action === "conversation"
-                    ? onConversation()
+                    ? onConversation(r.ids)
                     : onPractice(r.skill!, r.ids)
               }
             >

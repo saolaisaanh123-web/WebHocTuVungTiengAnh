@@ -36,7 +36,8 @@ export const selectionModes: {
   {
     value: "weak",
     label: "Củng cố từ yếu",
-    description: "Chỉ chọn từ có bài trả lời sai hoặc cần gợi ý còn phù hợp.",
+    description:
+      "Chọn từ còn yếu qua kiểm tra; bài Hiểu nghĩa còn nhận từ bạn tự báo chưa nhớ, có ghi rõ nguồn tự đánh giá.",
   },
   {
     value: "mixed",
@@ -80,6 +81,48 @@ const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const levelOf = (e: Entry) =>
   levels.indexOf((e.word.level || "").trim().toUpperCase());
 const compareIds = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+
+const SHARED_FREQUENCY_SOURCE = "wordfreq-3.1.1-en-large";
+// Keep the exporter's documented case/lemma exclusions. In particular, a score
+// for "may" must not silently fill the deliberately unscored month "May".
+const frequencyConflations = new Set(["IT", "May", "March", "found"]);
+function sharedFrequencyKey(entry: Entry): string | undefined {
+  const word = entry.word;
+  const spelling = word.word.trim();
+  const collections = new Set(
+    (word.collections || "").split(",").map((value) => value.trim()),
+  );
+  if (
+    entry.origin !== "default" ||
+    frequencyConflations.has(spelling) ||
+    !/^[a-z]+(?:-[a-z]+)*$/i.test(spelling) ||
+    collections.has("slang") ||
+    word.expression_type?.trim() ||
+    !["oxford-3000", "oxford-5000", "american-3000", "american-5000"].some(
+      (name) => collections.has(name),
+    )
+  )
+    return;
+  return spelling.toLowerCase();
+}
+
+/** Scores measure written forms across meanings/POS. A new reviewed sense may
+ * reuse an exact spelling's pinned score from the default corpus, including
+ * when the donor is outside the selected filter. Personal edits, expressions,
+ * undocumented sources and conflicting scores cannot supply that fallback.
+ * This derived lookup never modifies TXT, entries, or an existing session. */
+function sharedSpellingFrequencies(state: State): Map<string, number | null> {
+  const scores = new Map<string, number | null>();
+  for (const entry of Object.values(state.entries)) {
+    if (entry.word.frequency_source !== SHARED_FREQUENCY_SOURCE) continue;
+    const spelling = sharedFrequencyKey(entry);
+    const score = frequencyScore(entry.word);
+    if (spelling === undefined || score === undefined) continue;
+    const old = scores.get(spelling);
+    scores.set(spelling, old === undefined || old === score ? score : null);
+  }
+  return scores;
+}
 
 // This is only a visual-form heuristic, never a claim of semantic similarity.
 function wordFamily(text: string): string {
@@ -204,6 +247,37 @@ function indexEvidence(
   return evidence;
 }
 
+/** A recognition self-rating can request practice without becoming objective
+ * evidence. Only the first current-sense rating/check of a session counts; an
+ * immediate retry must not erase the learner's original request for support. */
+function selfReportedWeakness(state: State, now: number): Map<string, Result> {
+  const evidence = selectLearningEvidence(state, now);
+  const validSuccesses = new Set(
+    evidence.attempts
+      .filter((r) => r.skill === 0 && r.correct && !r.hint)
+      .map((r) => r.id),
+  );
+  const ratings = new Map<string, Result>();
+  const seenReviews = new Set<string>();
+  const seenSessions = new Set<string>();
+  for (const r of evidence.current) {
+    if (r.skill !== 0) continue;
+    const review = JSON.stringify([r.wordId, r.review || r.id]);
+    const session = JSON.stringify([r.wordId, r.session]);
+    if (seenReviews.has(review) || seenSessions.has(session)) continue;
+    seenReviews.add(review);
+    seenSessions.add(session);
+    if (!r.first) continue;
+    if (r.method === "self") {
+      if (r.correct) ratings.delete(r.wordId);
+      else ratings.set(r.wordId, r);
+    } else if (validSuccesses.has(r.id)) {
+      ratings.delete(r.wordId);
+    }
+  }
+  return ratings;
+}
+
 function supportedLevel(
   entries: Entry[],
   evidence: Map<string, Evidence>,
@@ -239,7 +313,9 @@ function memoryReason(proof: Evidence | undefined, exposed: boolean): string {
       ? "Đã tiếp xúc; chưa có lượt trả lời được chấm phù hợp."
       : "Chưa có lượt trả lời được chấm phù hợp.";
   if (proof.weak)
-    return `${proof.mistakes}/${proof.recent.length} lượt gần nhất sai hoặc cần gợi ý.`;
+    return proof.mistakes
+      ? `${proof.mistakes}/${proof.recent.length} lượt gần nhất sai hoặc cần gợi ý.`
+      : "Có lần sai/cần gợi ý trước đó; chưa có kiểm tra phục hồi độc lập sau khoảng nghỉ.";
   if (proof.stable)
     return "Ít nhất một kỹ năng đã trả lời độc lập trên ít nhất 3 ngày, có khoảng cách không tiếp xúc từ 7 ngày; giảm ưu tiên luyện lại.";
   if (proof.independentDays.size)
@@ -290,6 +366,11 @@ export function recommendWords(
     intent === "new" ? collectFresh(state, entries) : entries
   ).filter((e) => !e.archived && !e.known && canPractice(e.word, skill ?? 0));
   const evidence = indexEvidence(state, entries, now, skill);
+  const selfReported =
+    mode === "weak" && (skill === undefined || skill === 0)
+      ? selfReportedWeakness(state, now)
+      : new Map<string, Result>();
+  const sharedFrequencies = sharedSpellingFrequencies(state);
   // Recency controls optional practice variety, not mastery. Self-ratings and
   // saved writing still represent time spent, even when they cannot establish
   // objective recall. Keep the latest current-sense result so a newer failure
@@ -311,8 +392,19 @@ export function recommendWords(
     if (seenIds.has(id)) continue;
     seenIds.add(id);
     const proof = evidence.get(id);
-    if (mode === "weak" && !proof?.weak) continue;
-    const frequency = frequencyScore(entry.word);
+    const selfRating = selfReported.get(id);
+    if (mode === "weak" && !proof?.weak && !selfRating) continue;
+    const ownFrequency = frequencyScore(entry.word);
+    const sharedKey = sharedFrequencyKey(entry);
+    const inheritedFrequency =
+      ownFrequency === undefined &&
+      !entry.word.frequency_zipf?.trim() &&
+      !entry.word.frequency_source?.trim() &&
+      !entry.word.frequency_note?.trim() &&
+      sharedKey !== undefined
+        ? sharedFrequencies.get(sharedKey)
+        : undefined;
+    const frequency = ownFrequency ?? inheritedFrequency ?? undefined;
     const level = levelOf(entry);
     const affinity =
       level < 0 ? 0 : Math.max(-4, 6 - 2 * Math.abs(level - target));
@@ -365,9 +457,11 @@ export function recommendWords(
       }
     } else if (mode === "weak") {
       score =
-        (proof!.recent[0].correct && !proof!.recent[0].hint ? 0 : 26) +
-        proof!.mistakes * 8 +
-        (proof!.mistakes / proof!.recent.length) * 16 +
+        (proof?.weak
+          ? (proof.recent[0].correct && !proof.recent[0].hint ? 0 : 26) +
+            proof.mistakes * 8 +
+            (proof.mistakes / proof.recent.length) * 16
+          : 18) +
         Math.min(10, age) +
         (frequency ?? 2.5) * 2;
     } else if (mode === "mixed") {
@@ -389,11 +483,14 @@ export function recommendWords(
     const frequencyReason =
       frequency === undefined
         ? "Chưa có số liệu tần suất."
-        : `Tần suất Zipf ${frequency.toFixed(2)}${entry.word.level ? `; CEFR ${entry.word.level}` : ""}.`;
+        : `Tần suất Zipf ${frequency.toFixed(2)}${entry.word.level ? `; CEFR ${entry.word.level}` : ""}.${ownFrequency === undefined ? " Dùng số liệu wordfreq 3.1.1 của cùng mặt chữ; không phải tần suất riêng của nghĩa hoặc từ loại này." : ""}`;
+    const memoryExplanation = selfRating
+      ? `${proof?.weak ? `${memoryReason(proof, !!state.exposures?.[id])} ` : ""}Bạn tự báo chưa nhớ; chưa phải kết quả kiểm tra khách quan.`
+      : memoryReason(proof, !!state.exposures?.[id]);
     ranked.push({
       entry,
       score,
-      reason: `${frequencyReason} ${memoryReason(proof, !!state.exposures?.[id])}${mode === "mixed" ? " Thứ tự trộn cố định trong ngày." : ""}${practiceTier === 2 ? (recentPractice === "self" ? " Vừa tự đánh giá; tạm nhường lượt cho từ khác trong 24 giờ, chưa xác nhận nhớ độc lập." : recentPractice === "writing" ? " Vừa luyện viết; tạm nhường lượt cho từ khác trong 24 giờ, câu chưa được chấm đúng." : " Vừa trả lời đúng; tạm giảm ưu tiên trong 24 giờ nếu còn từ khác cần luyện.") : practiceTier === 1 ? " Ưu tiên từ cần học khác trước khi luyện lại từ đã vững." : ""}`,
+      reason: `${frequencyReason} ${memoryExplanation}${mode === "mixed" ? " Thứ tự trộn cố định trong ngày." : ""}${practiceTier === 2 ? (recentPractice === "self" ? " Vừa tự đánh giá; tạm nhường lượt cho từ khác trong 24 giờ, chưa xác nhận nhớ độc lập." : recentPractice === "writing" ? " Vừa luyện viết; tạm nhường lượt cho từ khác trong 24 giờ, câu chưa được chấm đúng." : " Vừa trả lời đúng; tạm giảm ưu tiên trong 24 giờ nếu còn từ khác cần luyện.") : practiceTier === 1 ? " Ưu tiên từ cần học khác trước khi luyện lại từ đã vững." : ""}`,
       family: wordFamily(entry.word.word),
       part: firstTag(entry.word.part_of_speech),
       topic: firstTag(entry.word.topics),

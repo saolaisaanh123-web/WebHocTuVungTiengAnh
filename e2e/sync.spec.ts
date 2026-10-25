@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
-import { gzipSync, gunzipSync } from "node:zlib";
+import { gzipSync } from "node:zlib";
+import { decodeCloudPayload } from "../src/sync";
 import {
   empty,
   merge,
@@ -42,12 +43,6 @@ const encode = (state: State) => {
     uncompressedBytes: Buffer.byteLength(text),
     data: gzipSync(text).toString("base64"),
   };
-};
-const decode = (payload: unknown): State => {
-  const value = payload as { transport?: string; data: string };
-  return value.transport
-    ? JSON.parse(gunzipSync(Buffer.from(value.data, "base64")).toString("utf8"))
-    : (payload as State);
 };
 async function stored(page: Page): Promise<State> {
   return page.evaluate(async () => {
@@ -137,7 +132,9 @@ async function setup(page: Page, concurrent = false, conflicting = false) {
     }
     if (body.expected_revision !== revision)
       return route.fulfill({ json: null });
-    remote = decode(body.new_payload);
+    // Supabase stores the transport opaquely. Decode only so this emulator can
+    // inspect the resulting history and simulate a second device's edits.
+    remote = await decodeCloudPayload(body.new_payload);
     revision++;
     return route.fulfill({ json: revision });
   });

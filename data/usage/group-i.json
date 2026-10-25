@@ -1,0 +1,185 @@
+[
+  {
+    "wordId": "work-noun-activity-01",
+    "headword": "work",
+    "partOfSpeech": "noun",
+    "meaningVi": "công việc; việc cần làm",
+    "patterns": [
+      {
+        "form": "do some work",
+        "explanation": "Làm một lượng công việc; dùng do với danh từ work ở nghĩa này."
+      },
+      {
+        "form": "a piece of work / a task",
+        "explanation": "Nói một phần công việc hoặc một nhiệm vụ riêng."
+      }
+    ],
+    "note": "Do không đổi danh từ work thành động từ; I work và I do some work có cấu trúc khác nhau.",
+    "mistake": {
+      "incorrect": "I have many works to finish today.",
+      "correct": "I have a lot of work to finish today.",
+      "explanation": "Ở nghĩa việc cần làm nói chung, work không đếm được; nếu đếm nhiệm vụ riêng có thể dùng tasks."
+    },
+    "example": {
+      "id": "usage-work-noun-activity-01",
+      "en": "I usually do some work in the garden before breakfast.",
+      "vi": "Tôi thường làm một ít việc trong vườn trước bữa sáng."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/work_2",
+        "title": "work noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:03.167135+00:00",
+        "sha256": "fbe56b9830457449fa3409834df417ba4396fc5b0e8f34702ad5747a915abffd"
+      }
+    ],
+    "countability": "Ở nghĩa công việc/việc cần làm, work không đếm được: some work, much work; không dùng a work hoặc works để chỉ các nhiệm vụ thông thường. Work nghĩa tác phẩm là cách dùng đếm được khác."
+  },
+  {
+    "wordId": "fast-adverb-speed-01",
+    "headword": "fast",
+    "partOfSpeech": "adverb",
+    "meaningVi": "nhanh; với tốc độ cao",
+    "patterns": [
+      {
+        "form": "verb + fast",
+        "explanation": "Fast bổ nghĩa cho động từ nói về tốc độ, ví dụ run fast hoặc drive fast."
+      },
+      {
+        "form": "faster / fastest",
+        "explanation": "Dùng các dạng so sánh này, không thêm -ly vào fast."
+      }
+    ],
+    "note": "Fast có cùng hình thức ở tính từ và trạng từ. Quickly rộng hơn trong nhiều ngữ cảnh; không thay máy móc fast bằng quickly hoặc ngược lại ở mọi câu.",
+    "mistake": {
+      "incorrect": "The train moves fastly.",
+      "correct": "The train moves fast.",
+      "explanation": "Trạng từ chỉ tốc độ là fast; không có dạng fastly trong cách dùng chuẩn này."
+    },
+    "example": {
+      "id": "usage-fast-adverb-speed-01",
+      "en": "How fast can you run along this path?",
+      "vi": "Bạn có thể chạy nhanh đến mức nào trên con đường này?"
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/fast_2",
+        "title": "fast adverb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:02.937855+00:00",
+        "sha256": "9010d6256483cbbf9efc7600619d5eea4c641beb72a191611b138274420d2ad6"
+      }
+    ]
+  },
+  {
+    "wordId": "hard-adverb-effort-01",
+    "headword": "hard",
+    "partOfSpeech": "adverb",
+    "meaningVi": "chăm chỉ; với nhiều nỗ lực",
+    "patterns": [
+      {
+        "form": "work / study / try hard",
+        "explanation": "Hard đứng với động từ để nói nỗ lực nhiều."
+      },
+      {
+        "form": "harder / hardest",
+        "explanation": "Dùng harder hoặc hardest khi so sánh mức độ nỗ lực."
+      }
+    ],
+    "note": "Hardly có nghĩa hầu như không, không phải dạng trạng từ thay cho hard. Work hard là làm việc chăm chỉ; hardly work là hầu như không làm việc.",
+    "mistake": {
+      "incorrect": "I study hardly to improve my English.",
+      "correct": "I study hard to improve my English.",
+      "explanation": "Nếu ý là học chăm chỉ, dùng hard; hardly làm thay đổi nghĩa thành hầu như không."
+    },
+    "example": {
+      "id": "usage-hard-adverb-effort-01",
+      "en": "I try hard to remember the new words without looking at my notes.",
+      "vi": "Tôi cố gắng hết sức nhớ các từ mới mà không nhìn ghi chú."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/hard_2",
+        "title": "hard adverb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:03.126154+00:00",
+        "sha256": "da0c01fcf4658837068270c911ec5d32a151c5e23e49250d320b386b7c455ae7"
+      }
+    ]
+  },
+  {
+    "wordId": "present-noun-gift-01",
+    "headword": "present",
+    "partOfSpeech": "noun",
+    "meaningVi": "món quà",
+    "patterns": [
+      {
+        "form": "give somebody a present / give a present to somebody",
+        "explanation": "Tặng ai một món quà."
+      },
+      {
+        "form": "a present for somebody",
+        "explanation": "Một món quà dành cho ai."
+      }
+    ],
+    "note": "Danh từ present nhấn âm đầu; không dùng trọng âm động từ present khi nói về món quà. Đây là thẻ nghĩa quà tặng, khác thẻ nghĩa hiện tại.",
+    "mistake": {
+      "incorrect": "I bought two present for my parents.",
+      "correct": "I bought two presents for my parents.",
+      "explanation": "Sau two, danh từ đếm được ở nghĩa này cần số nhiều presents."
+    },
+    "example": {
+      "id": "usage-present-noun-gift-01",
+      "en": "We want to give our teacher a small present at the end of the year.",
+      "vi": "Chúng tôi muốn tặng giáo viên một món quà nhỏ vào cuối năm."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/present_2",
+        "title": "present noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:02.963209+00:00",
+        "sha256": "10add5adc3959f618a2c44346305af4d082f36cb0450e4bb4600d619722d950c"
+      }
+    ],
+    "countability": "Present nghĩa món quà đếm được: a present, two presents. The present nghĩa hiện tại là nghĩa khác, thường ở số ít."
+  },
+  {
+    "wordId": "miss-verb-transport-01",
+    "headword": "miss",
+    "partOfSpeech": "verb",
+    "meaningVi": "lỡ xe hoặc chuyến bay vì đến muộn",
+    "patterns": [
+      {
+        "form": "miss + the bus / a train / a flight",
+        "explanation": "Lỡ chuyến vì không có mặt kịp; không thêm giới từ trước phương tiện/chuyến đi."
+      },
+      {
+        "form": "may / might + miss",
+        "explanation": "Sau động từ khuyết thiếu dùng miss nguyên mẫu; không thêm -ed hoặc -s."
+      }
+    ],
+    "note": "Miss ở đây chỉ lỡ chuyến, không phải nhớ ai. Missed là quá khứ và phân từ quá khứ; misses ở ngôi thứ ba số ít, missing ở dạng -ing.",
+    "mistake": {
+      "incorrect": "If we are late, we may miss to the bus.",
+      "correct": "If we are late, we may miss the bus.",
+      "explanation": "Miss nhận tân ngữ trực tiếp ở nghĩa lỡ chuyến, không dùng to trước the bus."
+    },
+    "example": {
+      "id": "usage-miss-verb-transport-01",
+      "en": "We should leave now so that we do not miss our flight.",
+      "vi": "Chúng ta nên đi ngay để không lỡ chuyến bay."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/miss_1",
+        "title": "miss verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-25T18:58:02.936888+00:00",
+        "sha256": "146dc49fb4ca483d2ca6ed76a419d865f644fbd84c94aa6ee2e18655faf1e574"
+      }
+    ],
+    "principalParts": {
+      "past": "missed",
+      "pastParticiple": "missed",
+      "ing": "missing",
+      "thirdPerson": "misses"
+    }
+  }
+]

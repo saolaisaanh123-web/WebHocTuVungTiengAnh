@@ -8,7 +8,11 @@ import {
   strength,
 } from "./core";
 import "./dictionary.css";
-import { preferredHeadword, youglishUsUrl } from "./american-english";
+import {
+  getRegionalUsage,
+  preferredHeadword,
+  youglishUsUrl,
+} from "./american-english";
 import UsageNotes from "./UsageNotes";
 import { selectLearningEvidence } from "./evidence";
 import { pronunciationPrompt } from "./pronunciation";
@@ -74,6 +78,8 @@ export default function DictionaryEntry({
   const evidence = useMemo(() => selectLearningEvidence(state), [state]);
   const headword = preferredHeadword(w, state.voice);
   const usHeadword = preferredHeadword(w, "en-US");
+  const regional = w.region?.trim() ? undefined : getRegionalUsage(w);
+  const region = w.region || regional?.label;
   const [confirmedMeaning, setConfirmedMeaning] = useState(false);
   const [confirmedExamples, setConfirmedExamples] = useState(false);
   useEffect(() => {
@@ -173,7 +179,7 @@ export default function DictionaryEntry({
             <span className="dict-level">{w.level}</span>
           )}
         </div>
-        {(expressionLabels[w.expression_type] || w.register || w.region) && (
+        {(expressionLabels[w.expression_type] || w.register || region) && (
           <div className="dict-expression-tags">
             {expressionLabels[w.expression_type] && (
               <span>{expressionLabels[w.expression_type]}</span>
@@ -184,13 +190,25 @@ export default function DictionaryEntry({
                 {w.register}
               </span>
             )}
-            {w.region && (
+            {region && (
               <span>
                 <span className="dict-tag-label">Vùng miền: </span>
-                {w.region}
+                {region}
               </span>
             )}
           </div>
+        )}
+        {regional && (
+          <p className="dict-spelling-note">
+            {regional.note}{" "}
+            <a
+              href={regional.source.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Đối chiếu Oxford <ExternalLink size={13} aria-hidden="true" />
+            </a>
+          </p>
         )}
         <p className="dict-level-note">
           {reference

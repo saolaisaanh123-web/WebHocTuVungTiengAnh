@@ -132,23 +132,27 @@ export function exposureEventsForSnapshot(
 
 type Observation = { time: number; resultId?: string };
 type ObservationIndex = {
+  entries: State["entries"];
   history: State["history"];
   historyLength: number;
   events: State["exposureEvents"];
   eventsLength: number;
   byWord: Map<string, Observation[]>;
+  writtenForms: Map<string, Set<string>>;
+  formsByWord: Map<string, string[]>;
 };
 const indexes = new WeakMap<State, ObservationIndex>();
 function observationIndex(state: State) {
   const cached = indexes.get(state);
   if (
     cached &&
+    cached.entries === state.entries &&
     cached.history === state.history &&
     cached.events === state.exposureEvents &&
     cached.historyLength === state.history.length &&
     cached.eventsLength === (state.exposureEvents?.length || 0)
   )
-    return cached.byWord;
+    return cached;
   const index = new Map<string, Observation[]>();
   const add = (wordId: string, point: Observation) => {
     if (!isTime(point.time)) return;
@@ -161,14 +165,97 @@ function observationIndex(state: State) {
   for (const result of state.history)
     add(result.wordId, { time: result.time, resultId: result.id });
   for (const values of index.values()) values.sort((a, b) => a.time - b.time);
-  indexes.set(state, {
+  const writtenForms = new Map<string, Set<string>>();
+  const formsByWord = new Map<string, string[]>();
+  for (const [id, entry] of Object.entries(state.entries)) {
+    // These are written forms of the same headword, never general synonyms or
+    // pronunciation equivalents. In particular, record n/v can prime spelling
+    // without establishing that the other pronunciation or meaning was heard.
+    const forms = [
+      ...new Set(
+        [
+          entry.word.word,
+          entry.word.preferred_us_spelling || "",
+          ...(entry.word.spelling_variants || "").split("|"),
+        ]
+          .map((form) =>
+            form.normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase(),
+          )
+          .filter(Boolean),
+      ),
+    ];
+    formsByWord.set(id, forms);
+    for (const form of forms) {
+      const ids = writtenForms.get(form) || new Set<string>();
+      ids.add(id);
+      writtenForms.set(form, ids);
+    }
+  }
+  const built = {
+    entries: state.entries,
     history: state.history,
     historyLength: state.history.length,
     events: state.exposureEvents,
     eventsLength: state.exposureEvents?.length || 0,
     byWord: index,
-  });
-  return index;
+    writtenForms,
+    formsByWord,
+  };
+  indexes.set(state, built);
+  return built;
+}
+
+/** Most skills test a particular meaning. Written retrieval also needs a
+ * quiet interval for the answer's form, even when another POS has its own ID.
+ * This lookup only lowers confidence; it never merges meaning or SRS state. */
+export function lastObservedExposure(
+  state: State,
+  wordId: string,
+  time: number,
+  options: {
+    skill?: number;
+    excludeResultId?: string;
+    includeEqualLegacy?: boolean;
+  } = {},
+): number | undefined {
+  const index = observationIndex(state);
+  const ids = new Set([wordId]);
+  if ([1, 3, 4].includes(options.skill ?? 0)) {
+    for (const form of index.formsByWord.get(wordId) || [])
+      for (const id of index.writtenForms.get(form) || []) ids.add(id);
+  }
+  let previous: number | undefined;
+  for (const id of ids) {
+    const observations = index.byWord.get(id) || [];
+    let left = 0,
+      right = observations.length;
+    while (left < right) {
+      const middle = (left + right) >>> 1;
+      if (observations[middle].time <= time) left = middle + 1;
+      else right = middle;
+    }
+    for (let i = left - 1; i >= 0; i--) {
+      if (
+        options.excludeResultId !== undefined &&
+        observations[i].resultId === options.excludeResultId
+      )
+        continue;
+      previous = Math.max(previous ?? 0, observations[i].time);
+      break;
+    }
+    // After an answer, the equal legacy map timestamp usually belongs to that
+    // answer. Explicit distinct same-time events remain visible above. Before
+    // recording an answer no own event exists, so an equal timestamp is recent.
+    const latestLegacy = state.exposures?.[id];
+    if (
+      isTime(latestLegacy) &&
+      (latestLegacy < time ||
+        ((options.includeEqualLegacy || id !== wordId) &&
+          latestLegacy === time))
+    )
+      previous = Math.max(previous ?? 0, latestLegacy);
+  }
+  return previous;
 }
 
 /** Reconcile derived evidence against the combined observation chronology.
@@ -178,25 +265,10 @@ export function deriveResultExposure(
   state: State,
   result: Result,
 ): { independent: boolean; exposureGap?: number } {
-  const observations = observationIndex(state).get(result.wordId) || [];
-  let left = 0,
-    right = observations.length;
-  while (left < right) {
-    const middle = (left + right) >>> 1;
-    if (observations[middle].time <= result.time) left = middle + 1;
-    else right = middle;
-  }
-  let previous: number | undefined;
-  for (let i = left - 1; i >= 0; i--) {
-    if (observations[i].resultId === result.id) continue;
-    previous = observations[i].time;
-    break;
-  }
-  // Equal legacy timestamps usually describe this answer's own exposure.
-  // Distinct same-time observations are handled explicitly by the event log.
-  const latestLegacy = state.exposures?.[result.wordId];
-  if (isTime(latestLegacy) && latestLegacy < result.time)
-    previous = Math.max(previous ?? 0, latestLegacy);
+  const previous = lastObservedExposure(state, result.wordId, result.time, {
+    skill: result.skill,
+    excludeResultId: result.id,
+  });
   const observedGap =
     previous === undefined ? undefined : Math.max(0, result.time - previous);
   const savedGap = isTime(result.exposureGap) ? result.exposureGap : undefined;

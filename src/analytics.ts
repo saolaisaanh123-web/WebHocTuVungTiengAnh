@@ -10,6 +10,7 @@ import {
   isDelayedEvidence,
   selectLearningEvidence,
 } from "./evidence";
+import { conversationPracticeIds } from "./conversations";
 
 const DAY = 86_400_000;
 export type KnowledgeStatus =
@@ -266,7 +267,7 @@ export function analyzeLearning(state: State, now = Date.now()) {
     const reasons: string[] = [];
     if (weakSkills.length)
       reasons.push(
-        `Lượt kiểm tra gần nhất sai/cần gợi ý hoặc ít nhất 2 lượt cần hỗ trợ trong 4 lượt gần nhất ở: ${weakSkills.map((s) => skills[s]).join(", ")}.`,
+        `Có lần sai/cần gợi ý chưa được kiểm tra phục hồi độc lập sau khoảng nghỉ, hoặc ít nhất 2 lượt cần hỗ trợ trong 4 lượt gần nhất ở: ${weakSkills.map((s) => skills[s]).join(", ")}.`,
       );
     else if (status === "active")
       reasons.push(
@@ -484,7 +485,8 @@ export function analyzeLearning(state: State, now = Date.now()) {
     .filter(
       (w) =>
         w.status === "weak" &&
-        (allByWord.get(w.id)?.length || 0) >= 8 &&
+        (attemptsByWord.get(w.id)?.filter((r) => w.weakSkills.includes(r.skill))
+          .length || 0) >= 8 &&
         w.retainedSkills.length === 0,
     )
     .sort((a, b) => b.attempts - a.attempts)
@@ -569,13 +571,17 @@ export function analyzeLearning(state: State, now = Date.now()) {
     (w) =>
       w.status === "learning" || w.status === "retained" || w.status === "weak",
   );
-  if (conversationCandidates.length >= 3)
+  const conversationTargets = conversationPracticeIds(
+    state,
+    conversationCandidates.map((w) => w.id),
+  );
+  if (conversationTargets.length >= 3)
     recommendations.push({
       id: "apply-context",
       title: "Thử dùng từ trong hội thoại",
-      reason: `${conversationCandidates.length} mục có kết quả kiểm tra hiện tại. Luyện ngữ cảnh giúp kiểm tra cách dùng; đọc hội thoại không được tính thành thạo.`,
+      reason: `${conversationTargets.length} mục có kết quả kiểm tra hiện tại và có bài hội thoại phù hợp. Luyện ngữ cảnh giúp kiểm tra cách dùng; đọc hội thoại không được tính thành thạo.`,
       action: "conversation",
-      ids: conversationCandidates.map((w) => w.id),
+      ids: conversationTargets,
     });
 
   return {

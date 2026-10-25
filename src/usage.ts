@@ -16,6 +16,12 @@ export type UsageEntry = {
   meaningVi: string;
   patterns: { form: string; explanation: string }[];
   countability?: string;
+  principalParts?: {
+    past: string;
+    pastParticiple?: string;
+    ing: string;
+    thirdPerson: string;
+  };
   note: string;
   mistake: { incorrect: string; correct: string; explanation: string };
   example: { id: string; en: string; vi: string; alternatives?: string[] };

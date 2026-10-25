@@ -261,8 +261,17 @@ try {
     await checkGrammar(page);
     await checkUsage(page);
     assert.deepEqual(errors, []);
+    await page.goto(`${appURL}?utm_source=bookmark`);
+    await page
+      .getByRole("heading", { name: "Hôm nay, mình học gì?" })
+      .waitFor();
+    await page.getByRole("button", { name: "Kho từ", exact: true }).click();
+    assert.equal(
+      Number(await page.locator(".word-grid").getAttribute("data-total-items")),
+      expectedCount,
+    );
     console.log(
-      `PASS: production ${path} reloads offline with ${expectedCount} entries, grammar and source-reviewed usage; private/API requests are not cached`,
+      `PASS: production ${path} reloads offline at canonical and UTM bookmark URLs with ${expectedCount} entries, grammar and source-reviewed usage; private/API requests are not cached`,
     );
     await page.close();
   }

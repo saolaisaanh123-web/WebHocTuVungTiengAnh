@@ -132,6 +132,15 @@ for (const viewport of [
       await page.waitForTimeout(950);
       const afterOpen = await read(page);
       const initiallyExposed = changedExposures(before, afterOpen);
+      for (const id of initiallyExposed)
+        expect(
+          afterOpen.exposureEvents?.some(
+            (event) =>
+              event.wordId === id &&
+              event.time === afterOpen.exposures?.[id] &&
+              event.resultId === undefined,
+          ),
+        ).toBe(true);
       expect(initiallyExposed.every((id) => visibleIds.includes(id))).toBe(
         true,
       );
@@ -150,11 +159,23 @@ for (const viewport of [
         .toBeGreaterThan(afterOpen.exposures?.[targetId!] || 0);
       const afterScroll = await read(page);
       const recordedAt = afterScroll.exposures?.[targetId!];
+      const targetEvents = afterScroll.exposureEvents?.filter(
+        (event) => event.wordId === targetId,
+      );
+      expect(targetEvents).toHaveLength(1);
+      expect(targetEvents?.[0]).toMatchObject({
+        time: recordedAt,
+        wordId: targetId,
+      });
+      expect(targetEvents?.[0].resultId).toBeUndefined();
       // The exposure write re-renders the component. It must not re-arm the
       // observer and repeatedly refresh that same exposure timestamp.
       await page.waitForTimeout(1100);
       const settled = await read(page);
       expect(settled.exposures?.[targetId!]).toBe(recordedAt);
+      expect(
+        settled.exposureEvents?.filter((event) => event.wordId === targetId),
+      ).toEqual(targetEvents);
       expect(settled.history).toEqual(before.history);
       expect(settled.schedules).toEqual(before.schedules);
       expect(settled.session).toEqual(before.session);

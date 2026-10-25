@@ -32,7 +32,7 @@ from corpus_io import read_records
 
 ROOT = Path(__file__).resolve().parents[1]
 HOST = "www.oxfordlearnersdictionaries.com"
-ARTICLE_PATH = "/definition/american_english/"
+ARTICLE_PATHS = ("/definition/american_english/", "/definition/english/")
 MAX_RESPONSE_BYTES = 3 * 1024 * 1024
 VOID_TAGS = {
     "area", "base", "br", "col", "embed", "hr", "img", "input", "link",
@@ -42,7 +42,7 @@ TITLE_PATTERN = re.compile(
     r"^(?P<headword>.+?) (?P<pos>phrasal verb|modal verb|auxiliary verb|"
     r"verb|noun|adjective|adverb|preposition|pronoun|determiner|conjunction|"
     r"exclamation|number|prefix|suffix|abbreviation) - Definition,.*"
-    r"Oxford Advanced American Dictionary at OxfordLearnersDictionaries\.com$",
+    r"Oxford Advanced (?:American Dictionary|Learner's Dictionary) at OxfordLearnersDictionaries\.com$",
     re.IGNORECASE,
 )
 
@@ -61,17 +61,17 @@ def valid_url(url):
     if (
         parsed.scheme != "https" or parsed.hostname != HOST
         or parsed.username or parsed.password or parsed.port
-        or not parsed.path.startswith(ARTICLE_PATH)
-        or len(parsed.path) <= len(ARTICLE_PATH) or parsed.query
+        or not any(parsed.path.startswith(prefix) and len(parsed.path) > len(prefix) for prefix in ARTICLE_PATHS)
+        or parsed.query
     ):
-        raise ValueError("Expected an HTTPS Oxford American dictionary article URL")
+        raise ValueError("Expected an HTTPS Oxford dictionary article URL")
     return urllib.parse.urlunsplit(parsed._replace(fragment=""))
 
 
 def title_identity(title):
     match = TITLE_PATTERN.fullmatch(" ".join(html.unescape(title).split()))
     if not match:
-        raise ValueError("Receipt title does not identify an Oxford American article")
+        raise ValueError("Receipt title does not identify an Oxford dictionary article")
     return {key: normalized(value) for key, value in match.groupdict().items()}
 
 
@@ -101,7 +101,7 @@ class ArticleInfo(HTMLParser):
         field = None
         if tag == "title":
             field = "title"
-        elif inside and tag in ("h1", "h2") and "h" in classes:
+        elif inside and tag in ("h1", "h2") and {"h", "headword"}.intersection(classes):
             field = "headword"
         elif inside and tag == "span" and "pos" in classes:
             field = "pos"
@@ -159,6 +159,9 @@ def validate_receipt(receipt):
             raise ValueError(f"Missing source receipt {key}")
     url = valid_url(receipt["url"])
     title_identity(receipt["title"])
+    expected = "Oxford Advanced American Dictionary" if "/american_english/" in url else "Oxford Advanced Learner's Dictionary"
+    if expected not in html.unescape(receipt["title"]):
+        raise ValueError("Source receipt title disagrees with the dictionary URL")
     if not re.fullmatch(r"[a-f0-9]{64}", receipt["sha256"]):
         raise ValueError("Source receipt needs a lowercase SHA256")
     try:
@@ -203,8 +206,8 @@ def fetch_article(url, timeout):
             definitionCount=article.definition_count,
         )
         identity = title_identity(title)
-        if not article.entry_found or not article.american_entry:
-            raise ValueError("No Oxford American entryContent container")
+        if not article.entry_found or ("/american_english/" in url and not article.american_entry):
+            raise ValueError("No expected Oxford entryContent container")
         if article.definition_count < 1 or article.article_characters < 80:
             raise ValueError("No substantial dictionary definition body")
         if identity != {

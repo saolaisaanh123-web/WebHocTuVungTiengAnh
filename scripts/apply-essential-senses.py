@@ -8,6 +8,7 @@ import argparse
 from copy import deepcopy
 from datetime import date, datetime
 import hashlib
+import html
 import json
 from pathlib import Path
 import re
@@ -66,9 +67,14 @@ def _validate_review(review, facts):
         url = urlparse(source.get("url", ""))
         if (url.scheme != "https" or url.netloc != "www.oxfordlearnersdictionaries.com" or
                 not url.path.startswith("/definition/american_english/") or url.username or url.password or
+                url.query or url.fragment or
                 source.get("status") != 200 or not source.get("title") or not source.get("scope") or
                 not re.fullmatch(r"[a-f0-9]{64}", source.get("sha256", ""))):
             raise ValueError("Essential senses need directly read American dictionary evidence")
+        spellings = [word["word"], word.get("preferred_us_spelling", ""), *word.get("spelling_variants", "").split("|")]
+        expected_headers = [f"{spelling.strip()} {word['part_of_speech']} - Definition,".casefold() for spelling in spellings if spelling.strip()]
+        if not any(html.unescape(source["title"]).casefold().startswith(header) for header in expected_headers):
+            raise ValueError("Essential dictionary receipt must identify the exact headword and part of speech")
         try:
             checked = source.get("checkedAt", "")
             if len(checked) == 10:
@@ -79,8 +85,12 @@ def _validate_review(review, facts):
                     raise ValueError("Evidence timestamp needs a timezone")
         except (TypeError, ValueError):
             raise ValueError("Essential dictionary evidence requires an actual date or zoned receipt timestamp") from None
+        # The additive layer also supports explicitly reviewed noun/adverb
+        # senses. A word-level list match must still include the exact POS;
+        # sharing a spelling with an existing verb is not sufficient evidence.
+        fact_pos = {"verb": "v.", "noun": "n.", "adjective": "adj.", "adverb": "adv."}.get(word["part_of_speech"])
         if (fact.get("word") != word["word"] or fact.get("cefr") != word.get("level") or
-                "v." not in re.split(r"\s*,\s*", fact.get("pos", "")) or word["part_of_speech"] != "verb"):
+                not fact_pos or fact_pos not in re.split(r"\s*,\s*", fact.get("pos", ""))):
             raise ValueError("Essential sense/POS/CEFR must match the exact American list fact")
         index = entry.get("americanFactIndex")
         if type(index) is not int or index < 0 or index >= len(facts) or facts[index] != fact:

@@ -206,7 +206,7 @@ class EssentialSenseTests(unittest.TestCase):
         for old in (old_like, old_lie):
             self.assertEqual(next(row for row in once if row["id"] == old["id"]), old)
 
-    def test_later_batches_append_distinct_verbs_and_preserve_existing_nouns_and_adjectives(self):
+    def test_later_batches_append_distinct_senses_and_preserve_previous_senses(self):
         for batch in self.batches[1:]:
             size = batch["baseline"]["entryCount"]
             prefix = self.records[:size]
@@ -214,9 +214,9 @@ class EssentialSenseTests(unittest.TestCase):
             declared = [entry["word"] for entry in batch["entries"]]
             new_words = {row["word"] for row in declared}
             self.assertTrue(old_ids.isdisjoint(row["id"] for row in declared))
-            previous_senses = [row for row in prefix if row["word"] in new_words and row["part_of_speech"] in ("noun", "adjective")]
+            previous_senses = [row for row in prefix if row["word"] in new_words]
             self.assertTrue(previous_senses)
-            self.assertTrue(all(row["part_of_speech"] == "verb" for row in declared))
+            self.assertTrue(all(row["part_of_speech"] in ("verb", "noun", "adjective", "adverb") for row in declared))
             result = self.api["apply_essential_senses"](prefix, self.review)
             self.assertEqual(serialize_records(result[:size]), serialize_records(prefix))
             by_id = {row["id"]: row for row in result}
@@ -360,8 +360,8 @@ class EssentialSenseTests(unittest.TestCase):
         for entry in self.review["entries"]:
             self.assertEqual(facts[entry["americanFactIndex"]], entry["americanFact"])
             self.assertEqual(entry["americanFact"]["cefr"], entry["word"]["level"])
-            self.assertIn("v.", re.split(r"\s*,\s*", entry["americanFact"]["pos"]))
-            self.assertEqual(entry["word"]["part_of_speech"], "verb")
+            fact_pos = {"verb": "v.", "noun": "n.", "adjective": "adj.", "adverb": "adv."}[entry["word"]["part_of_speech"]]
+            self.assertIn(fact_pos, re.split(r"\s*,\s*", entry["americanFact"]["pos"]))
             self.assertEqual(entry["word"]["source_fact_index"], "")
             self.assertEqual(entry["source"]["status"], 200)
             self.assertRegex(entry["source"]["sha256"], r"^[a-f0-9]{64}$")
@@ -380,6 +380,8 @@ class EssentialSenseTests(unittest.TestCase):
             lambda review: review["entries"][0]["source"].update(checkedAt="2026-99-99Tinvalid"),
             lambda review: review["entries"][0]["source"].update(sha256="not-a-receipt"),
             lambda review: review["entries"][0]["source"].update(title=""),
+            lambda review: review["entries"][0]["source"].update(title=review["entries"][0]["source"]["title"].replace(" verb -", " noun -")),
+            lambda review: review["entries"][0]["source"].update(url=review["entries"][0]["source"]["url"] + "?token=private"),
         ):
             review = deepcopy(self.review)
             mutate(review)

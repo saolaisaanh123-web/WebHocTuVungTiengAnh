@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { contentKey, empty, type Result, type State } from "./core";
+import {
+  contentKey,
+  empty,
+  expose,
+  merge,
+  record,
+  type Result,
+  type State,
+} from "./core";
 import {
   appendExposureEvent,
   deriveResultExposure,
@@ -56,7 +64,160 @@ const older: ExposureEvent = {
   time: NOW - 8 * DAY,
 };
 
+function pairedForms(): State {
+  return merge(
+    empty(),
+    [
+      {
+        id: "drink-noun",
+        word: "drink",
+        part_of_speech: "noun",
+        meaning_vi: "đồ uống",
+        example_en: "Your drink is ready.",
+        example_vi: "Đồ uống của bạn đã sẵn sàng.",
+      },
+      {
+        id: "drink-verb",
+        word: "drink",
+        part_of_speech: "verb",
+        meaning_vi: "uống",
+        example_en: "I drink water with lunch.",
+        example_vi: "Tôi uống nước trong bữa trưa.",
+      },
+    ],
+    "default",
+  );
+}
+
+function verbResult(state: State, skill = 1): Result {
+  return result({
+    id: `verb-answer-${skill}`,
+    wordId: "drink-verb",
+    time: NOW,
+    skill,
+    answer: "drink",
+    audioPlayed: [2, 3].includes(skill) ? true : undefined,
+    contentVersion: contentKey(state.entries["drink-verb"].word, skill),
+    exposureGap: 8 * DAY,
+  });
+}
+
 describe("immutable cross-device exposure evidence", () => {
+  it("does not count just-seen spelling in another POS as independent written recall, without merging schedules or meaning IDs", () => {
+    for (const skill of [1, 3, 4]) {
+      let current = pairedForms();
+      current.exposures = {
+        "drink-noun": NOW - 8 * DAY,
+        "drink-verb": NOW - 8 * DAY,
+      };
+      current.schedules[`drink-verb:${skill}`] = {
+        due: NOW + DAY,
+        last: NOW - 8 * DAY,
+        step: 3,
+        contentVersion: contentKey(current.entries["drink-verb"].word, skill),
+      };
+      current = expose(current, "drink-noun", NOW - 1000);
+      const before = structuredClone(current);
+      const after = record(current, verbResult(current, skill), false);
+      expect(after.history[0]).toMatchObject({
+        independent: false,
+        exposureGap: 1000,
+        correct: true,
+      });
+      expect(deriveResultExposure(after, after.history[0])).toEqual({
+        independent: false,
+        exposureGap: 1000,
+      });
+      expect(after.schedules).toEqual(before.schedules);
+      expect(Object.keys(after.entries)).toEqual(["drink-noun", "drink-verb"]);
+      expect(current).toEqual(before);
+    }
+  });
+
+  it("keeps meaning recognition separate from a same-spelling POS and ignores unrelated or future forms", () => {
+    for (const skill of [0, 2]) {
+      let current = pairedForms();
+      current.exposures = { "drink-verb": NOW - 8 * DAY };
+      current = expose(current, "drink-noun", NOW - 1000);
+      const after = record(current, verbResult(current, skill), false);
+      expect(after.history[0]).toMatchObject({
+        independent: true,
+        exposureGap: 8 * DAY,
+      });
+    }
+    let current = pairedForms();
+    current.entries["drink-noun"].word.word = "drinking";
+    current.exposures = { "drink-verb": NOW - 8 * DAY };
+    current = expose(current, "drink-noun", NOW - 1000);
+    expect(
+      record(current, verbResult(current), false).history[0].independent,
+    ).toBe(true);
+    const future = expose(pairedForms(), "drink-noun", NOW + 1);
+    expect(
+      record(future, verbResult(future), false).history[0].exposureGap,
+    ).toBeUndefined();
+  });
+
+  it("reconciles a cross-device observation of another POS without rewriting the saved answer", () => {
+    const base = pairedForms();
+    base.exposures = { "drink-verb": NOW - 8 * DAY };
+    const local = record(base, verbResult(base), false);
+    const answer = local.history[0];
+    expect(answer.independent).toBe(true);
+    const phone = expose(base, "drink-noun", NOW - 1000);
+    const merged = mergeCloudState(base, local, phone);
+    expect(merged.conflicts).toEqual([]);
+    expect(deriveResultExposure(merged.state, merged.state.history[0])).toEqual(
+      { independent: false, exposureGap: 1000 },
+    );
+    expect(merged.state.history[0]).toEqual(answer);
+    expect(local.history[0]).toMatchObject({
+      independent: true,
+      exposureGap: 8 * DAY,
+    });
+  });
+
+  it("retains both same-form phone views straddling a remote answer instead of trusting only the later map timestamp", () => {
+    const base = pairedForms();
+    base.exposures = {
+      "drink-noun": NOW - 8 * DAY,
+      "drink-verb": NOW - 8 * DAY,
+    };
+    const local = record(base, verbResult(base), false);
+    const answer = structuredClone(local.history[0]);
+    expect(answer.independent).toBe(true);
+
+    const beforeAnswer = expose(base, "drink-noun", NOW - 1000);
+    const afterAnswer = expose(beforeAnswer, "drink-noun", NOW + 1000);
+    expect(afterAnswer.exposures?.["drink-noun"]).toBe(NOW + 1000);
+    const merged = mergeCloudState(base, local, afterAnswer);
+    expect(merged.conflicts).toEqual([]);
+    expect(
+      merged.state.exposureEvents
+        ?.filter((event) => event.wordId === "drink-noun")
+        .map((event) => event.time),
+    ).toEqual([NOW - 8 * DAY, NOW - 1000, NOW + 1000]);
+    expect(deriveResultExposure(merged.state, merged.state.history[0])).toEqual(
+      { independent: false, exposureGap: 1000 },
+    );
+    expect(merged.state.history[0]).toEqual(answer);
+    expect(local.history[0]).toEqual(answer);
+    expect(merged.state.schedules).toEqual({});
+    expect(base.exposureEvents).toBeUndefined();
+  });
+
+  it("treats an equal legacy timestamp on another POS as a distinct exposure, not this answer's own map entry", () => {
+    const current = pairedForms();
+    const answer = verbResult(current);
+    current.history = [answer];
+    current.exposures = { "drink-noun": NOW, "drink-verb": NOW };
+    expect(deriveResultExposure(current, answer)).toEqual({
+      independent: false,
+      exposureGap: 0,
+    });
+    expect(answer.independent).toBe(true);
+  });
+
   it("unions event IDs deterministically without losing older observations or changing inputs", () => {
     const phone = { id: "phone", wordId: "word", time: NOW - 90_000 };
     const left = [phone, older],

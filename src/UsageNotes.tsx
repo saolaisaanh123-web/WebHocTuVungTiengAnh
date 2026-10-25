@@ -26,6 +26,33 @@ export default function UsageNotes({ word, speak, compact = false }: Props) {
       {usage.countability && (
         <p className="usage-countability">{usage.countability}</p>
       )}
+      {usage.principalParts && (
+        <div className="usage-forms" aria-label="Các dạng động từ đã đối chiếu">
+          <p>
+            <strong>Các dạng động từ</strong>
+          </p>
+          <dl>
+            <div>
+              <dt>Quá khứ</dt>
+              <dd lang="en">{usage.principalParts.past}</dd>
+            </div>
+            {usage.principalParts.pastParticiple && (
+              <div>
+                <dt>Phân từ quá khứ</dt>
+                <dd lang="en">{usage.principalParts.pastParticiple}</dd>
+              </div>
+            )}
+            <div>
+              <dt>Dạng -ing</dt>
+              <dd lang="en">{usage.principalParts.ing}</dd>
+            </div>
+            <div>
+              <dt>Ngôi thứ ba số ít</dt>
+              <dd lang="en">{usage.principalParts.thirdPerson}</dd>
+            </div>
+          </dl>
+        </div>
+      )}
       <p>{usage.note}</p>
       <details className="usage-mistake">
         <summary>Lỗi dễ gặp trong cách dùng này</summary>

@@ -556,6 +556,187 @@ export function cloudPayload(state: State): State {
 export type CloudSnapshot = { revision: number; payload: State };
 const MAX_RAW_BYTES = 20 * 1024 * 1024;
 const MAX_WIRE_BYTES = 20 * 1024 * 1024;
+// Shared strings and record shapes remove duplicated vocabulary metadata and
+// history keys before the existing 20 MiB transport limit. No canonical corpus
+// needs to be downloaded to decode: personal edits and old meanings stay exact.
+const MAX_EXPANDED_BYTES = 64 * 1024 * 1024;
+type Packed =
+  | null
+  | boolean
+  | number
+  | string
+  | Packed[]
+  | { s: number }
+  | { o: [number, ...Packed[]] };
+type CompactState = {
+  format: "jeongyeon-compact-state-v1";
+  strings: string[];
+  shapes: string[][];
+  state: Packed;
+};
+const invalidCompact = () =>
+  Error("Cấu trúc bản đồng bộ rút gọn không hợp lệ.");
+
+function compactState(state: State): CompactState {
+  const frequencies = new Map<string, number>();
+  function count(value: unknown, depth = 0) {
+    if (depth > 80) throw invalidCompact();
+    if (typeof value === "string" && value.length >= 16)
+      frequencies.set(value, (frequencies.get(value) || 0) + 1);
+    else if (Array.isArray(value))
+      for (const item of value) count(item, depth + 1);
+    else if (isObject(value))
+      for (const item of Object.values(value)) count(item, depth + 1);
+  }
+  count(state);
+  const strings = [...frequencies]
+    .filter(([, count]) => count > 1)
+    .map(([value]) => value);
+  const references = new Map(strings.map((value, index) => [value, index]));
+  const shapes: string[][] = [];
+  const shapeIds = new Map<string, number>();
+  function pack(value: unknown, depth = 0): Packed {
+    if (depth > 80) throw invalidCompact();
+    if (typeof value === "string") {
+      const index = references.get(value);
+      return index === undefined ? value : { s: index };
+    }
+    if (value === null || typeof value === "boolean") return value;
+    if (typeof value === "number") {
+      if (!Number.isFinite(value)) throw invalidCompact();
+      return value;
+    }
+    if (Array.isArray(value))
+      return value.map((item) =>
+        pack(item === undefined ? null : item, depth + 1),
+      );
+    if (!isObject(value)) throw invalidCompact();
+    const keys = Object.keys(value).filter((key) => value[key] !== undefined);
+    const signature = JSON.stringify(keys);
+    let shape = shapeIds.get(signature);
+    if (shape === undefined) {
+      shape = shapes.length;
+      shapeIds.set(signature, shape);
+      shapes.push(keys);
+    }
+    return { o: [shape, ...keys.map((key) => pack(value[key], depth + 1))] };
+  }
+  return {
+    format: "jeongyeon-compact-state-v1",
+    strings,
+    shapes,
+    state: pack(state),
+  };
+}
+
+/** Check references and expanded UTF-8 JSON size before materializing records.
+ * A tiny dictionary with millions of references must not become a memory bomb. */
+function expandCompact(value: JsonRecord, materialize = true): unknown {
+  if (
+    Object.keys(value).some(
+      (key) => !["format", "strings", "shapes", "state"].includes(key),
+    ) ||
+    !Array.isArray(value.strings) ||
+    !value.strings.every((item) => typeof item === "string") ||
+    !Array.isArray(value.shapes) ||
+    !value.shapes.every(
+      (shape) =>
+        Array.isArray(shape) &&
+        shape.every((key) => typeof key === "string") &&
+        new Set(shape).size === shape.length,
+    )
+  )
+    throw invalidCompact();
+  const strings = value.strings as string[];
+  const shapes = value.shapes as string[][];
+  const encoder = new TextEncoder();
+  const lengths = new Map<string, number>();
+  const stringBytes = (text: string) => {
+    let size = lengths.get(text);
+    if (size === undefined) {
+      size = encoder.encode(JSON.stringify(text)).length;
+      lengths.set(text, size);
+    }
+    return size;
+  };
+  let bytes = 0;
+  let nodes = 0;
+  function add(size: number) {
+    bytes += size;
+    if (bytes > MAX_EXPANDED_BYTES)
+      throw Error(
+        "Bản đồng bộ giải nén vượt giới hạn an toàn. Dữ liệu tại máy vẫn được giữ.",
+      );
+  }
+  function inspect(item: unknown, depth = 0): void {
+    if (++nodes > 2_000_000 || depth > 80) throw invalidCompact();
+    if (
+      item === null ||
+      typeof item === "boolean" ||
+      typeof item === "number"
+    ) {
+      if (typeof item === "number" && !Number.isFinite(item))
+        throw invalidCompact();
+      add(String(item).length);
+      return;
+    }
+    if (typeof item === "string") {
+      add(stringBytes(item));
+      return;
+    }
+    if (Array.isArray(item)) {
+      add(2 + Math.max(0, item.length - 1));
+      for (const child of item) inspect(child, depth + 1);
+      return;
+    }
+    if (!isObject(item) || Object.keys(item).length !== 1)
+      throw invalidCompact();
+    if (Object.hasOwn(item, "s")) {
+      if (
+        !Number.isSafeInteger(item.s) ||
+        Number(item.s) < 0 ||
+        Number(item.s) >= strings.length
+      )
+        throw invalidCompact();
+      add(stringBytes(strings[Number(item.s)]));
+      return;
+    }
+    if (!Object.hasOwn(item, "o") || !Array.isArray(item.o))
+      throw invalidCompact();
+    const [index, ...items] = item.o;
+    if (
+      !Number.isSafeInteger(index) ||
+      Number(index) < 0 ||
+      Number(index) >= shapes.length
+    )
+      throw invalidCompact();
+    const keys = shapes[Number(index)];
+    if (items.length !== keys.length) throw invalidCompact();
+    add(2 + Math.max(0, keys.length - 1));
+    for (let i = 0; i < keys.length; i++) {
+      add(stringBytes(keys[i]) + 1);
+      inspect(items[i], depth + 1);
+    }
+  }
+  inspect(value.state);
+  if (!materialize) return;
+  function unpack(item: Packed): unknown {
+    if (Array.isArray(item)) return item.map(unpack);
+    if (item === null || typeof item !== "object") return item;
+    if ("s" in item) return strings[item.s];
+    const [shape, ...items] = item.o;
+    const output: JsonRecord = {};
+    for (const [index, key] of shapes[shape].entries())
+      Object.defineProperty(output, key, {
+        value: unpack(items[index]),
+        enumerable: true,
+        writable: true,
+        configurable: true,
+      });
+    return output;
+  }
+  return unpack(value.state as Packed);
+}
 type CompressedPayload = {
   transport: "jeongyeon-gzip-v1";
   uncompressedBytes: number;
@@ -594,18 +775,22 @@ export async function encodeCloudPayload(
 ): Promise<State | CompressedPayload> {
   // Reject malformed merges locally before a successful CAS can poison the shared snapshot.
   const payload = validateBackup(cloudPayload(state));
-  const bytes = new TextEncoder().encode(JSON.stringify(payload));
-  if (bytes.length > MAX_RAW_BYTES)
-    throw Error(
-      "Bản đồng bộ vượt 20 MiB. Xuất JSON để giữ bản dự phòng; không có dữ liệu bị xóa.",
-    );
   if (typeof CompressionStream === "undefined") {
+    const bytes = new TextEncoder().encode(JSON.stringify(payload));
     if (bytes.length > 512 * 1024)
       throw Error(
         "Trình duyệt chưa hỗ trợ nén bản đồng bộ lớn. Dùng trình duyệt mới hơn; việc học tại máy vẫn hoạt động.",
       );
     return payload;
   }
+  const compact = compactState(payload);
+  // Validate the same expansion budget used by the receiver before upload.
+  expandCompact(compact as unknown as JsonRecord, false);
+  const bytes = new TextEncoder().encode(JSON.stringify(compact));
+  if (bytes.length > MAX_RAW_BYTES)
+    throw Error(
+      "Bản đồng bộ rút gọn vượt 20 MiB. Xuất JSON để giữ bản dự phòng; không có dữ liệu bị xóa.",
+    );
   const compressed = await readBounded(
     new Blob([bytes]).stream().pipeThrough(new CompressionStream("gzip")),
     MAX_WIRE_BYTES,
@@ -613,11 +798,19 @@ export async function encodeCloudPayload(
   let binary = "";
   for (let i = 0; i < compressed.length; i += 8192)
     binary += String.fromCharCode(...compressed.subarray(i, i + 8192));
-  return {
+  const encoded: CompressedPayload = {
     transport: "jeongyeon-gzip-v1",
     uncompressedBytes: bytes.length,
     data: btoa(binary),
   };
+  // PostgreSQL jsonb::text adds insignificant spaces around these fields.
+  // Leave a small margin so a browser-accepted envelope also fits its SQL cap.
+  if (
+    new TextEncoder().encode(JSON.stringify(encoded)).length >
+    MAX_WIRE_BYTES - 256
+  )
+    throw Error("Bản đồng bộ nén vượt 20 MiB. Dữ liệu tại máy vẫn được giữ.");
+  return encoded;
 }
 export async function decodeCloudPayload(value: unknown): Promise<State> {
   if (isObject(value) && value.transport === "jeongyeon-gzip-v1") {
@@ -642,11 +835,18 @@ export async function decodeCloudPayload(value: unknown): Promise<State> {
     );
     if (raw.length !== value.uncompressedBytes)
       throw Error("Bản nén đồng bộ không khớp kích thước khai báo.");
+    const decoded: unknown = JSON.parse(
+      new TextDecoder("utf-8", { fatal: true }).decode(raw),
+    );
     return validateBackup(
-      JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(raw)),
+      isObject(decoded) && decoded.format === "jeongyeon-compact-state-v1"
+        ? expandCompact(decoded)
+        : decoded,
     );
   }
-  if (JSON.stringify(value).length > MAX_RAW_BYTES)
+  const serialized = JSON.stringify(value);
+  if (typeof serialized !== "string") throw Error("Bản đồng bộ không hợp lệ.");
+  if (new TextEncoder().encode(serialized).length > MAX_RAW_BYTES)
     throw Error("Bản đồng bộ quá lớn.");
   return validateBackup(value);
 }

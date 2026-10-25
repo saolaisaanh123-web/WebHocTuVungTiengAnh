@@ -1,5 +1,10 @@
 import { canPractice, contentKey, type State } from "./core";
 import type { ConversationAnswer, ConversationAttempt } from "./practice-data";
+import {
+  isWeakEvidence,
+  selectLearningEvidence,
+  validEvidenceTime,
+} from "./evidence";
 
 export type DialogueTarget = {
   id: string;
@@ -1188,6 +1193,235 @@ export const dialogues: Dialogue[] = [
     reply:
       "Bạn là Mina. Hãy viết một câu hỏi nhà tuyển dụng về cơ hội học tập trong nhóm.",
   }),
+  dialogue({
+    id: "preparing-for-a-visit",
+    title: "Chia việc trước khi người thân đến chơi",
+    level: "B1",
+    targets: [
+      {
+        ...t(
+          "clean",
+          "verb",
+          "làm sạch; lau dọn",
+          "lau dọn nhà bếp trước khi khách đến",
+        ),
+        id: "clean-verb-01",
+      },
+      {
+        ...t(
+          "shop",
+          "verb",
+          "mua sắm; đi mua hàng",
+          "đi mua thực phẩm để chuẩn bị bữa trưa",
+        ),
+        id: "shop-verb-01",
+      },
+      {
+        ...t(
+          "drink",
+          "verb",
+          "uống",
+          "uống cà phê; ở đây người khách không uống cà phê",
+        ),
+        id: "drink-verb-01",
+      },
+      {
+        ...t("open", "verb", "mở", "mở cửa sổ bếp để không khí vào"),
+        id: "open-verb-01",
+      },
+    ],
+    lines: [
+      line(
+        "Maya",
+        "My older sister's coming over this afternoon. What do we need to do first?",
+        "Chiều nay chị gái mình đến chơi. Mình cần làm gì trước nhỉ?",
+      ),
+      line(
+        "Ben",
+        "I'll clean the kitchen while you shop for groceries.",
+        "Mình sẽ lau dọn bếp trong lúc bạn đi mua thực phẩm.",
+      ),
+      line(
+        "Maya",
+        "Sure. We already have coffee. Should I buy some juice too?",
+        "Được. Mình có cà phê rồi. Mình có nên mua thêm nước ép không?",
+      ),
+      line(
+        "Ben",
+        "Yes, please. She doesn't drink coffee.",
+        "Có, mua giúp nhé. Chị ấy không uống cà phê.",
+      ),
+      line("Maya", "Anything else?", "Còn gì nữa không?"),
+      line(
+        "Ben",
+        "Could you open the kitchen window before you leave? It's hot in here.",
+        "Bạn mở cửa sổ bếp trước khi đi được không? Trong này nóng quá.",
+      ),
+      line(
+        "Maya",
+        "Of course. I'll get the groceries, and we can make lunch when I get back.",
+        "Được chứ. Mình sẽ mua thực phẩm, rồi khi mình về thì cả hai cùng nấu bữa trưa.",
+      ),
+      line(
+        "Ben",
+        "Great. I'll have the kitchen ready by then.",
+        "Tốt quá. Đến lúc đó mình sẽ dọn bếp xong.",
+      ),
+    ],
+    questions: [
+      {
+        ...choice(
+          "understand",
+          "comprehension",
+          "Maya và Ben chia việc thế nào?",
+          [],
+          [
+            "Ben dọn bếp, Maya đi mua thực phẩm",
+            "Cả hai cùng đi mua thực phẩm ngay",
+            "Maya dọn bếp, Ben đi mua nước ép",
+          ],
+          0,
+          "Ben nói I'll clean the kitchen while you shop for groceries: Ben dọn bếp, còn Maya mua thực phẩm.",
+        ),
+        targetIds: ["clean-verb-01", "shop-verb-01"],
+      },
+      {
+        ...gap(
+          "drink",
+          "She doesn't ____ coffee.",
+          "Drink là động từ uống. Sau doesn't dùng nguyên mẫu drink; Ben giải thích vì sao nên mua thêm nước ép.",
+        ),
+        targetIds: ["drink-verb-01"],
+      },
+      {
+        ...choice(
+          "sense",
+          "meaning",
+          "Open the kitchen window trong lời Ben yêu cầu làm gì?",
+          [],
+          [
+            "Mở cửa sổ bếp để không khí vào",
+            "Tìm một cửa hàng đang mở cửa",
+            "Bắt đầu kinh doanh một quán cà phê",
+          ],
+          0,
+          "Open ở đây là động từ mở cửa sổ; không phải tính từ chỉ trạng thái mở hay nghĩa bắt đầu kinh doanh.",
+        ),
+        targetIds: ["open-verb-01"],
+      },
+    ],
+    reply: "Bạn là Maya. Hãy hỏi Ben muốn mua loại trái cây nào cho bữa trưa.",
+  }),
+  dialogue({
+    id: "booking-a-later-train",
+    title: "Đặt chuyến tàu có đủ thời gian nối chuyến",
+    level: "B1",
+    targets: [
+      {
+        ...t(
+          "book",
+          "verb",
+          "đặt trước (vé hoặc dịch vụ)",
+          "đặt trước vé tàu cho chuyến đi thứ Bảy",
+        ),
+        id: "book-verb-01",
+      },
+      {
+        ...t(
+          "search",
+          "verb",
+          "tìm kiếm; lục tìm",
+          "tìm chuyến khởi hành muộn hơn trên website của hãng tàu",
+        ),
+        id: "search-verb-01",
+      },
+      {
+        ...t(
+          "miss",
+          "verb",
+          "lỡ xe hoặc chuyến bay vì đến muộn",
+          "lỡ tàu vì xe buýt đến ga quá muộn",
+        ),
+        id: "miss-verb-transport-01",
+      },
+    ],
+    lines: [
+      line(
+        "Alex",
+        "Can we book tickets for the nine o'clock train on Saturday?",
+        "Mình đặt vé chuyến tàu chín giờ sáng thứ Bảy được không?",
+      ),
+      line(
+        "Sam",
+        "Let's search the train company's website for a later departure first.",
+        "Trước hết mình tìm chuyến khởi hành muộn hơn trên website của hãng tàu nhé.",
+      ),
+      line(
+        "Alex",
+        "Why a later one? Tickets for the earlier train are cheaper.",
+        "Sao lại chọn chuyến muộn hơn? Vé chuyến sớm rẻ hơn mà.",
+      ),
+      line(
+        "Sam",
+        "Our bus gets to the station at eight fifty. If it's late, we could miss the nine o'clock train.",
+        "Xe buýt của mình đến ga lúc tám giờ năm mươi. Nếu xe đến trễ thì mình có thể lỡ chuyến tàu chín giờ.",
+      ),
+      line(
+        "Alex",
+        "Good point. There's a train at ten fifteen, and the tickets cost only a little more.",
+        "Bạn nói đúng. Có chuyến lúc mười giờ mười lăm, mà vé chỉ đắt hơn một chút.",
+      ),
+      line(
+        "Sam",
+        "Let's book those, then. That gives us time if the bus is delayed.",
+        "Vậy đặt vé chuyến đó nhé. Như thế mình có thêm thời gian nếu xe buýt đến trễ.",
+      ),
+    ],
+    questions: [
+      {
+        ...choice(
+          "understand",
+          "comprehension",
+          "Vì sao Sam muốn tìm chuyến tàu muộn hơn?",
+          [],
+          [
+            "Chuyến muộn hơn chắc chắn có vé rẻ nhất",
+            "Xe buýt đến ga sát giờ tàu chạy, nên trễ xe có thể làm họ lỡ tàu",
+            "Hãng tàu không bán vé chuyến chín giờ",
+          ],
+          1,
+          "Xe buýt dự kiến đến lúc 8:50, chỉ mười phút trước chuyến tàu 9:00; Sam lo xe buýt đến trễ.",
+        ),
+        targetIds: ["search-verb-01", "miss-verb-transport-01"],
+      },
+      {
+        ...gap(
+          "miss",
+          "If it's late, we could ____ the nine o'clock train.",
+          "Miss the train là lỡ chuyến vì đến không kịp; khác với miss somebody nghĩa nhớ một người.",
+        ),
+        targetIds: ["miss-verb-transport-01"],
+      },
+      {
+        ...choice(
+          "sense",
+          "meaning",
+          "Book tickets trong câu đầu có nghĩa gì?",
+          [],
+          [
+            "Đọc một quyển sách trong lúc chờ tàu",
+            "Đổi tên các vé đã mua",
+            "Đặt trước vé cho chuyến đi sắp tới",
+          ],
+          2,
+          "Book là động từ đặt trước vé hoặc dịch vụ. Đoạn này không nói đến danh từ book là sách và cũng không nêu quy tắc phải trả tiền ngay.",
+        ),
+        targetIds: ["book-verb-01"],
+      },
+    ],
+    reply:
+      "Bạn là Alex. Hãy đề nghị giờ rời nhà để có đủ thời gian bắt xe buýt đến ga.",
+  }),
 ];
 
 const normalize = (value: string) =>
@@ -1216,40 +1450,67 @@ export type DialogueRecommendation = {
   weak: number;
   reason: string;
   personalized: boolean;
+  /** Number of the explicitly requested current senses present in this text. */
+  matched: number;
 };
+
+/** Recommend only an authored text that can actually practise at least three
+ * of these senses. Never promise a generic dialogue can contain arbitrary IDs. */
+export function conversationPracticeIds(
+  state: State,
+  candidateIds: readonly string[],
+): string[] {
+  const requested = new Set(candidateIds);
+  const matches = availableDialogues(state)
+    .map((dialogue) => ({
+      id: dialogue.id,
+      ids: dialogue.targets
+        .filter((target) => requested.has(target.id))
+        .map((target) => target.id),
+    }))
+    .filter((match) => match.ids.length >= 3)
+    .sort((a, b) => b.ids.length - a.ids.length || a.id.localeCompare(b.id));
+  return matches[0]?.ids || [];
+}
+
 export function recommendDialogues(
   state: State,
-  options: { level?: string; length?: string; weakOnly?: boolean } = {},
+  options: {
+    level?: string;
+    length?: string;
+    weakOnly?: boolean;
+    targetIds?: readonly string[];
+    now?: number;
+  } = {},
 ): DialogueRecommendation[] {
-  const studied = new Set(state.history.map((r) => r.wordId));
+  const now = options.now ?? Date.now();
+  const evidence = selectLearningEvidence(state, now);
+  const studied = new Set(evidence.current.map((result) => result.wordId));
+  const requested = new Set(options.targetIds || []);
   // Merely showing this dialogue also records exposure. Counting those newly
   // visible words here would falsely turn a first-use example into a personal
   // recommendation during the same render. Require enrolment or actual saved
   // practice instead; exposure remains useful for independent-recall timing.
   for (const [id, entry] of Object.entries(state.entries))
     if (entry.enrolled) studied.add(id);
-  for (const a of state.conversations || [])
-    for (const id of a.targetIds) studied.add(id);
+  const currentConversations = (state.conversations || []).filter((attempt) =>
+    validEvidenceTime(attempt.time, now),
+  );
+  for (const attempt of currentConversations)
+    for (const id of attempt.targetIds) {
+      const entry = state.entries[id];
+      if (
+        entry &&
+        !entry.archived &&
+        attempt.targetContentVersions[id] === contentKey(entry.word)
+      )
+        studied.add(id);
+    }
   const weak = new Set<string>();
-  const recent = new Map<string, typeof state.history>();
-  for (const r of [...state.history].sort(
-    (a, b) => a.time - b.time || a.id.localeCompare(b.id),
-  )) {
-    if (
-      r.method === "ungraded" ||
-      r.contentVersion !==
-        (state.entries[r.wordId] &&
-          contentKey(state.entries[r.wordId].word, r.skill))
-    )
-      continue;
-    recent.set(r.wordId, [...(recent.get(r.wordId) || []).slice(-3), r]);
-  }
-  for (const [id, results] of recent)
-    if (results.slice(-2).some((r) => !r.correct)) weak.add(id);
+  for (const results of evidence.attemptsBySkill.values())
+    if (isWeakEvidence(results)) weak.add(results[0].wordId);
   const lastAnswers = new Map<string, boolean>();
-  for (const a of [...(state.conversations || [])].sort(
-    (a, b) => a.time - b.time,
-  )) {
+  for (const a of [...currentConversations].sort((a, b) => a.time - b.time)) {
     for (const id of a.targetIds) {
       const tested = a.answers.filter(
         (answer) =>
@@ -1268,7 +1529,7 @@ export function recommendDialogues(
   }
   for (const [id, correct] of lastAnswers) if (!correct) weak.add(id);
   const lastPractised = new Map<string, number>();
-  for (const a of state.conversations || [])
+  for (const a of currentConversations)
     lastPractised.set(
       a.dialogueId,
       Math.max(lastPractised.get(a.dialogueId) || 0, a.time),
@@ -1285,22 +1546,30 @@ export function recommendDialogues(
     .map((d) => {
       const count = d.targets.filter((t) => studied.has(t.id)).length;
       const weakCount = d.targets.filter((t) => weak.has(t.id)).length;
+      const matched = d.targets.filter((target) =>
+        requested.has(target.id),
+      ).length;
       return {
         dialogue: d,
         studied: count,
         weak: weakCount,
         personalized: count >= 3,
+        matched,
         reason:
           count >= 3
-            ? `${count}/${d.targets.length} từ đã học hoặc tiếp xúc${weakCount ? `; ${weakCount} từ cần củng cố` : ""}.`
+            ? `${count}/${d.targets.length} từ đã chọn học hoặc luyện theo nghĩa hiện tại${weakCount ? `; ${weakCount} từ cần củng cố` : ""}.`
             : count
-              ? `Có ${count}/${d.targets.length} từ đã tiếp xúc; chưa đủ 3 từ để cá nhân hóa trọn đoạn.`
+              ? `Có ${count}/${d.targets.length} từ đã chọn học hoặc luyện theo nghĩa hiện tại; chưa đủ 3 từ để cá nhân hóa trọn đoạn.`
               : "Bài mẫu biên soạn sẵn từ kho đã rà; chưa có lịch sử phù hợp để cá nhân hóa.",
       };
     })
-    .filter((r) => !options.weakOnly || r.weak > 0)
+    .filter(
+      (r) =>
+        (!options.weakOnly || r.weak > 0) && (!requested.size || r.matched > 0),
+    )
     .sort(
       (a, b) =>
+        b.matched - a.matched ||
         Number(b.personalized) - Number(a.personalized) ||
         b.weak - a.weak ||
         b.studied - a.studied ||
@@ -1324,7 +1593,10 @@ export function evaluateDialogueAnswer(
     answer: answer.trim(),
     correct,
     targetIds: question.targetIds,
-    explanation: question.explanation,
+    explanation:
+      question.kind === "cloze"
+        ? `Bài khôi phục từ trong lời gốc, không chấm mọi cách điền có thể đúng ngữ pháp. ${question.explanation}`
+        : question.explanation,
     // Hiding the transcript is still immediate practice, never proof of
     // delayed recall or an automatic SRS/mastery update.
     hint: supported,

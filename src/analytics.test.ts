@@ -264,6 +264,55 @@ describe("Evidence-based learning insights", () => {
     });
     expect(r.recommendations[0].reason).toContain("8/8");
   });
+
+  it("does not diagnose overpractice from an obsolete meaning or tests of another skill", () => {
+    const oldSense = Array.from({ length: 8 }, (_, n) =>
+      result({
+        time: NOW - (10 - n) * DAY,
+        contentVersion: "previous-meaning",
+      }),
+    );
+    const currentFailure = result({ time: NOW, correct: false });
+    const report = analyzeLearning(
+      withHistory([...oldSense, currentFailure]),
+      NOW,
+    );
+    expect(report.words[0]).toMatchObject({ status: "weak", attempts: 1 });
+    expect(report.totals.history).toBe(9);
+    expect(report.overpracticedWeak).toEqual([]);
+
+    const otherSkill = oldSense.map((r) => ({
+      ...r,
+      skill: 0,
+      contentVersion: contentKey(word, 0),
+    }));
+    expect(
+      analyzeLearning(withHistory([...otherSkill, currentFailure]), NOW)
+        .overpracticedWeak,
+    ).toEqual([]);
+  });
+
+  it("keeps a recently forgotten word weak after a new-session immediate correct answer", () => {
+    const retained = [50, 40, 30].map((days) =>
+      result({ time: NOW - days * DAY }),
+    );
+    const failure = result({ time: NOW - 120_000, correct: false });
+    const repair = result({
+      time: NOW - 60_000,
+      independent: false,
+      exposureGap: 60_000,
+    });
+    const state = withHistory([...retained, failure, repair]);
+    const before = structuredClone(state);
+    const report = analyzeLearning(state, NOW);
+    expect(report.words[0]).toMatchObject({
+      status: "weak",
+      weakSkills: [1],
+      retainedSkills: [],
+    });
+    expect(report.words[0].reasons.join(" ")).toContain("phục hồi độc lập");
+    expect(state).toEqual(before);
+  });
   it("requires three independent successful days after earlier mistakes before claiming improvement", () => {
     const history = [
       result({ time: NOW - 20 * DAY, correct: false }),
