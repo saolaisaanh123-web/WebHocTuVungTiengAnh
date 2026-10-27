@@ -1,0 +1,570 @@
+[
+  {
+    "wordId": "ox-9c19636ddea25f-01",
+    "headword": "come",
+    "partOfSpeech": "verb",
+    "meaningVi": "đến; di chuyển về phía",
+    "patterns": [
+      {
+        "form": "come to + địa điểm",
+        "explanation": "Nói đến một địa điểm, chẳng hạn come to the office."
+      },
+      {
+        "form": "come here / come home",
+        "explanation": "Here và home trong các cụm chỉ hướng này không cần to đứng trước."
+      },
+      {
+        "form": "come to + động từ nguyên mẫu",
+        "explanation": "Nêu việc định làm khi đến, như come to help."
+      }
+    ],
+    "principalParts": {
+      "past": "came",
+      "pastParticiple": "come",
+      "ing": "coming",
+      "thirdPerson": "comes"
+    },
+    "note": "Come chỉ chuyển động hướng tới người hoặc nơi đang được lấy làm điểm đến trong cuộc trò chuyện. Không thay come và go cho nhau máy móc; lựa chọn còn phụ thuộc góc nhìn. Quá khứ là came, còn phân từ là come; coming bỏ e cuối.",
+    "mistake": {
+      "incorrect": "Can you come to here for a minute?",
+      "correct": "Can you come here for a minute?",
+      "explanation": "Trong cụm chỉ hướng come here, here đã đóng vai trò chỉ nơi đến nên không thêm to. Với danh từ địa điểm như the office, vẫn có come to the office."
+    },
+    "example": {
+      "id": "usage-come-2026-10-27",
+      "en": "Can you come to my desk for a minute? I need your help.",
+      "vi": "Bạn đến bàn của tôi một lát được không? Tôi cần bạn giúp.",
+      "alternatives": [
+        "walk",
+        "go"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/come_1",
+        "status": 200,
+        "title": "come verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:17.512967+00:00",
+        "sha256": "d88d79714180abe51e05a0112126a28fa689e629a045fb180f3cb564011972bb"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-e6640de835ad09-01",
+    "headword": "find",
+    "partOfSpeech": "verb",
+    "meaningVi": "tìm thấy",
+    "patterns": [
+      {
+        "form": "find + người/vật cần tìm",
+        "explanation": "Find nhận tân ngữ trực tiếp khi nói tìm thấy người hoặc vật."
+      },
+      {
+        "form": "find something for somebody / find somebody something",
+        "explanation": "Nêu người được giúp tìm thấy một vật; cả hai trật tự đều có thể dùng."
+      }
+    ],
+    "principalParts": {
+      "past": "found",
+      "pastParticiple": "found",
+      "ing": "finding",
+      "thirdPerson": "finds"
+    },
+    "note": "Ở nghĩa đang học, find nói đến việc tìm thấy, còn look for tập trung vào hành động tìm kiếm và chưa bảo đảm có kết quả. Có thể nói try to find khi vẫn đang cố tìm. Found ở đây là quá khứ/phân từ của find, khác động từ found nghĩa thành lập.",
+    "mistake": {
+      "incorrect": "I am trying to find for my keys.",
+      "correct": "I am trying to find my keys.",
+      "explanation": "Nếu ý là cố tìm chìa khóa, dùng find my keys hoặc look for my keys. Không ghép for của look for vào find trước chính vật cần tìm."
+    },
+    "example": {
+      "id": "usage-find-2026-10-27",
+      "en": "Can you help me find the receipt I dropped near the door?",
+      "vi": "Bạn giúp tôi tìm tờ hóa đơn tôi đánh rơi gần cửa được không?",
+      "alternatives": [
+        "locate"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/find_1",
+        "status": 200,
+        "title": "find verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:17.223737+00:00",
+        "sha256": "6c71296931f750cdbf46a93f24d4e3480c5fe2a8f84dfb07dd29626d79f07220"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/find_1",
+        "status": 200,
+        "title": "find verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:17.557289+00:00",
+        "sha256": "9700137d84deb85eaad42a5d0b64680707b34194ded8b90eac55bf8b50608fa6"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-0895a532e404a5-01",
+    "headword": "give",
+    "partOfSpeech": "verb",
+    "meaningVi": "đưa; cho",
+    "patterns": [
+      {
+        "form": "give somebody something",
+        "explanation": "Đặt người nhận trước vật được đưa hoặc cho: give her the key."
+      },
+      {
+        "form": "give something to somebody",
+        "explanation": "Đặt vật được đưa trước, rồi dùng to để nêu người nhận."
+      }
+    ],
+    "principalParts": {
+      "past": "gave",
+      "pastParticiple": "given",
+      "ing": "giving",
+      "thirdPerson": "gives"
+    },
+    "note": "Thẻ này luyện nghĩa đưa/cho một vật hoặc thứ được chuyển đến người nhận. Gave là quá khứ, given là phân từ; giving bỏ e cuối. Không tự đưa given vào đáp án nguyên mẫu khi cấu trúc câu cần give.",
+    "mistake": {
+      "incorrect": "Please give me to the receipt.",
+      "correct": "Please give me the receipt.",
+      "explanation": "Khi người nhận me đứng ngay sau give, đặt vật the receipt tiếp theo mà không thêm to. Cách khác là Please give the receipt to me."
+    },
+    "example": {
+      "id": "usage-give-2026-10-27",
+      "en": "Can you give the spare key to our neighbor when she arrives?",
+      "vi": "Bạn đưa chìa khóa dự phòng cho người hàng xóm của chúng ta khi cô ấy đến được không?",
+      "alternatives": [
+        "hand",
+        "pass"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/give_1",
+        "status": 200,
+        "title": "give verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:18.046037+00:00",
+        "sha256": "a3429f931d48096d7853b30f8a6c02cdd8dee341c0b8808c23e8272a0054a47a"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-cd1bb3012bcfaa-01",
+    "headword": "know",
+    "partOfSpeech": "verb",
+    "meaningVi": "biết",
+    "patterns": [
+      {
+        "form": "know + thông tin",
+        "explanation": "Nêu thông tin đã biết, như know the answer hoặc know the address."
+      },
+      {
+        "form": "know (that) + mệnh đề",
+        "explanation": "Nói biết một sự việc; that thường có thể được lược trong cách dùng này."
+      },
+      {
+        "form": "know where / what / how + mệnh đề",
+        "explanation": "Nói biết địa điểm, sự việc hoặc cách thức; phần sau theo cấu trúc câu gián tiếp."
+      }
+    ],
+    "principalParts": {
+      "past": "knew",
+      "pastParticiple": "known",
+      "ing": "knowing",
+      "thirdPerson": "knows"
+    },
+    "note": "Ở nghĩa biết thông tin, know thường không dùng ở thì tiếp diễn: I know the answer. Bảng vẫn liệt kê knowing để nhận dạng hình thức; không vì có dạng -ing mà suy ra I am knowing đúng ở nghĩa này. Get to know diễn tả quá trình dần biết/quen và là cấu trúc khác.",
+    "mistake": {
+      "incorrect": "I do not know where is the nearest pharmacy.",
+      "correct": "I do not know where the nearest pharmacy is.",
+      "explanation": "Trong câu gián tiếp sau know where, đặt chủ ngữ the nearest pharmacy trước is. Where is the nearest pharmacy? là trật tự của câu hỏi trực tiếp riêng."
+    },
+    "example": {
+      "id": "usage-know-2026-10-27",
+      "en": "I do not know where the nearest pharmacy is.",
+      "vi": "Tôi không biết hiệu thuốc gần nhất ở đâu.",
+      "alternatives": [
+        "remember"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/know_1",
+        "status": 200,
+        "title": "know verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:18.339302+00:00",
+        "sha256": "2ff843c7f77e41fd3b3a3f3810371b4641eaec21af0581552abce7c5a7104313"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/know_1",
+        "status": 200,
+        "title": "know verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:18.913501+00:00",
+        "sha256": "7668a8a846a202a9237fd2bed1c83b41454fda9dce806f7f3caccf46353a78c1"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-aa9e9b5c907d50-01",
+    "headword": "see",
+    "partOfSpeech": "verb",
+    "meaningVi": "nhìn thấy",
+    "patterns": [
+      {
+        "form": "see + người/vật",
+        "explanation": "Nói nhận ra bằng mắt mà không cần giới từ trước người hoặc vật nhìn thấy."
+      },
+      {
+        "form": "can / could + see",
+        "explanation": "Nói có thể nhìn thấy từ một vị trí hoặc trong một điều kiện nhất định."
+      }
+    ],
+    "principalParts": {
+      "past": "saw",
+      "pastParticiple": "seen",
+      "ing": "seeing",
+      "thirdPerson": "sees"
+    },
+    "note": "Ở nghĩa nhìn thấy đơn thuần đang học, thường dùng see hoặc can see thay vì thì tiếp diễn. Seeing còn xuất hiện ở các nghĩa khác như gặp hoặc hẹn hò, nên không kết luận mọi câu có am seeing đều sai. Saw là quá khứ; seen là phân từ.",
+    "mistake": {
+      "incorrect": "Have you saw the warning sign?",
+      "correct": "Have you seen the warning sign?",
+      "explanation": "Trong câu hiện tại hoàn thành have + phân từ, dùng seen. Với quá khứ đơn có thể nói Did you see the warning sign? hoặc I saw the sign."
+    },
+    "example": {
+      "id": "usage-see-2026-10-27",
+      "en": "Can you see the mountains from your bedroom window?",
+      "vi": "Bạn có nhìn thấy những ngọn núi từ cửa sổ phòng ngủ của mình không?",
+      "alternatives": [
+        "spot"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/see_1",
+        "status": 200,
+        "title": "see verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:18.627333+00:00",
+        "sha256": "7baa39a04c04c01dc496d6dab5310e8cd301b1bcb35b675ee812a3451849d6a4"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-4311902217ad5a-01",
+    "headword": "bring",
+    "partOfSpeech": "verb",
+    "meaningVi": "mang đến; đưa đến",
+    "patterns": [
+      {
+        "form": "bring somebody/something (with you)",
+        "explanation": "Mang một vật hoặc đưa một người cùng đến nơi được nói tới."
+      },
+      {
+        "form": "bring somebody/something to + địa điểm",
+        "explanation": "Dùng to để nêu nơi người hoặc vật được đưa đến."
+      },
+      {
+        "form": "bring somebody something / bring something for somebody",
+        "explanation": "Nêu người được mang cho một thứ bằng hai trật tự này."
+      }
+    ],
+    "principalParts": {
+      "past": "brought",
+      "pastParticiple": "brought",
+      "ing": "bringing",
+      "thirdPerson": "brings"
+    },
+    "note": "Đây là nghĩa mang/đưa đến một nơi, không phải các nghĩa gây ra kết quả như bring change. Quá khứ và phân từ đều là brought; bringing giữ nguyên g của bring. Không dùng bringed cho quá khứ.",
+    "mistake": {
+      "incorrect": "She has bringed her laptop to the office.",
+      "correct": "She has brought her laptop to the office.",
+      "explanation": "Bring là động từ bất quy tắc; sau has trong hiện tại hoàn thành dùng phân từ brought, không thêm -ed vào bring."
+    },
+    "example": {
+      "id": "usage-bring-2026-10-27",
+      "en": "Please bring your laptop with you when you come to my office tomorrow.",
+      "vi": "Ngày mai khi đến văn phòng tôi, bạn vui lòng mang theo máy tính xách tay.",
+      "alternatives": [
+        "take",
+        "carry"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/bring",
+        "status": 200,
+        "title": "bring verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:18.990480+00:00",
+        "sha256": "19582295847d0a80d7b586d849523367eb85451d1369173a316fa65c37b06452"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/bring",
+        "status": 200,
+        "title": "bring verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:19.139314+00:00",
+        "sha256": "1e106f00d074b4a638ee3da24e18ec09c85d2a9c108fdedc7773ae54b0792f7f"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-af193190b8d3cd-01",
+    "headword": "leave",
+    "partOfSpeech": "verb",
+    "meaningVi": "rời đi; rời khỏi",
+    "patterns": [
+      {
+        "form": "leave + nơi rời khỏi",
+        "explanation": "Đặt nơi xuất phát ngay sau leave, như leave the office."
+      },
+      {
+        "form": "leave for + nơi đến",
+        "explanation": "Dùng for để nói đích đến sau khi khởi hành; không nhầm với nơi đang rời đi."
+      }
+    ],
+    "principalParts": {
+      "past": "left",
+      "pastParticiple": "left",
+      "ing": "leaving",
+      "thirdPerson": "leaves"
+    },
+    "note": "Thẻ này luyện rời đi/rời khỏi. Leave the station là rời nhà ga; leave for the station là khởi hành để đến nhà ga. Leave something somewhere nghĩa để quên/để lại vật là nghĩa khác. Quá khứ và phân từ đều là left.",
+    "mistake": {
+      "incorrect": "We have leaved the building.",
+      "correct": "We have left the building.",
+      "explanation": "Ở nghĩa rời khỏi đang học, phân từ của leave là left. Sau have dùng have left, không dùng leaved."
+    },
+    "example": {
+      "id": "usage-leave-2026-10-27",
+      "en": "We should leave the restaurant before the last bus departs.",
+      "vi": "Chúng ta nên rời nhà hàng trước khi chuyến xe buýt cuối cùng khởi hành.",
+      "alternatives": [
+        "exit"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/leave_1",
+        "status": 200,
+        "title": "leave verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:19.266633+00:00",
+        "sha256": "f61d9059c4d6d4725fcb9171c66ac45a75425b3f11d998d75f54efea1123bae4"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/leave_1",
+        "status": 200,
+        "title": "leave verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:19.364873+00:00",
+        "sha256": "6beb2d040743d923e5a4e60da0ad7c653000d1f3d1f03070239becc1a22dc28d"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-a57cf9eaf908c5-01",
+    "headword": "lose",
+    "partOfSpeech": "verb",
+    "meaningVi": "làm mất",
+    "patterns": [
+      {
+        "form": "lose + vật",
+        "explanation": "Nói làm mất một vật khiến không tìm thấy nó."
+      },
+      {
+        "form": "have / has + lost",
+        "explanation": "Dùng phân từ lost trong hiện tại hoàn thành khi nói đã làm mất."
+      }
+    ],
+    "principalParts": {
+      "past": "lost",
+      "pastParticiple": "lost",
+      "ing": "losing",
+      "thirdPerson": "loses"
+    },
+    "note": "Lose có một chữ o; loose thường là tính từ chỉ lỏng/không cố định, và cũng có động từ riêng nghĩa thả hoặc phóng ra. Nếu ý là làm mất thì không viết loose. Losing bỏ e cuối; loses thêm -s theo cách viết của lose. Nghĩa thua trận là nghĩa khác của lose, không phải thẻ này.",
+    "mistake": {
+      "incorrect": "I do not want to loose my wallet.",
+      "correct": "I do not want to lose my wallet.",
+      "explanation": "Nếu ý là không muốn làm mất ví, phải dùng lose. Loose không mang nghĩa làm mất này; lưu ý loose còn có các cách dùng đúng khác."
+    },
+    "example": {
+      "id": "usage-lose-2026-10-27",
+      "en": "Please keep the tickets in your bag so you do not lose them.",
+      "vi": "Bạn hãy giữ vé trong túi để không làm mất chúng.",
+      "alternatives": [
+        "misplace"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/lose",
+        "status": 200,
+        "title": "lose verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:19.512547+00:00",
+        "sha256": "8025d9d43e9285133e9048cf934ab213e08e48aeab0b49aa2a1197719e9f485e"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/lose",
+        "status": 200,
+        "title": "lose verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:19.588916+00:00",
+        "sha256": "1b564d9c0e6801e5ab3e7c65bbb2e7d3f5ddf1bc7fc9a11f1a3b77210c33a531"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-116c49130f14f5-01",
+    "headword": "feel",
+    "partOfSpeech": "verb",
+    "meaningVi": "cảm thấy",
+    "patterns": [
+      {
+        "form": "feel + tính từ",
+        "explanation": "Mô tả trạng thái thể chất hoặc cảm xúc của người trải nghiệm, như feel tired hoặc feel confident."
+      },
+      {
+        "form": "feel + danh từ chỉ cảm giác",
+        "explanation": "Nêu cảm giác trải qua, như feel relief hoặc feel pain."
+      }
+    ],
+    "principalParts": {
+      "past": "felt",
+      "pastParticiple": "felt",
+      "ing": "feeling",
+      "thirdPerson": "feels"
+    },
+    "note": "Ở nghĩa trải nghiệm cảm giác/cảm xúc, cả I feel better và I am feeling better đều có thể dùng tùy cách nhìn về thời điểm. Không áp lệnh cấm tiếp diễn của một số nghĩa cảm nhận bằng giác quan cho toàn bộ feel. Quá khứ và phân từ là felt.",
+    "mistake": {
+      "incorrect": "I feel tiredly after a long day.",
+      "correct": "I feel tired after a long day.",
+      "explanation": "Nếu muốn mô tả trạng thái mệt của mình, dùng tính từ tired sau feel. Tiredly là trạng từ mô tả cách thực hiện hành động, không phải tính từ nêu trạng thái ở câu này."
+    },
+    "example": {
+      "id": "usage-feel-2026-10-27",
+      "en": "I feel nervous before important meetings, even when I prepare well.",
+      "vi": "Tôi cảm thấy lo lắng trước những cuộc họp quan trọng, ngay cả khi đã chuẩn bị kỹ.",
+      "alternatives": [
+        "get",
+        "become"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/feel_1",
+        "status": 200,
+        "title": "feel verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:19.733363+00:00",
+        "sha256": "0ddb0f280543eaa81ec899d4784329f8ea7230ea4ac6e78c568d6a35d07d6241"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/feel_1",
+        "status": 200,
+        "title": "feel verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:19.896924+00:00",
+        "sha256": "f3cabad227f6915c522834c1752420c029d1a98c0a1382af1860897643ad5e17"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-dc2fc19d8fce37-01",
+    "headword": "think",
+    "partOfSpeech": "verb",
+    "meaningVi": "suy nghĩ, vận dụng trí óc để cân nhắc",
+    "patterns": [
+      {
+        "form": "think about + vấn đề",
+        "explanation": "Suy nghĩ hoặc cân nhắc một vấn đề; có thể thêm carefully hoặc deeply để nói mức độ."
+      },
+      {
+        "form": "think what / how to + động từ",
+        "explanation": "Suy nghĩ nên làm gì hoặc làm như thế nào, như think what to do."
+      }
+    ],
+    "principalParts": {
+      "past": "thought",
+      "pastParticiple": "thought",
+      "ing": "thinking",
+      "thirdPerson": "thinks"
+    },
+    "note": "Ở nghĩa chủ động suy nghĩ/cân nhắc đang học, có thể dùng tiếp diễn khi nói đang suy nghĩ: I am thinking about the options. Không áp máy móc quy tắc không dùng tiếp diễn của think nghĩa cho rằng. Think (that) + mệnh đề và các cấu trúc khác cần được phân biệt theo ý muốn nói.",
+    "mistake": {
+      "incorrect": "Let me think to the question before I answer.",
+      "correct": "Let me think about the question before I answer.",
+      "explanation": "Nếu ý là suy nghĩ kỹ về câu hỏi này, dùng think about the question. Không suy ra think luôn cần about: có thể dùng think một mình hoặc các cấu trúc khác theo nghĩa tương ứng."
+    },
+    "example": {
+      "id": "usage-think-2026-10-27",
+      "en": "Let us think about the two routes before we book our tickets.",
+      "vi": "Chúng ta hãy cân nhắc hai tuyến đường trước khi đặt vé.",
+      "alternatives": [
+        "talk"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/think_1",
+        "status": 200,
+        "title": "think verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:19.987938+00:00",
+        "sha256": "c6153e753b1aaea1b8f8e44cb3073f77ee5a6107a6f0b5545ff0bdea9b9cb6c2"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/think_1",
+        "status": 200,
+        "title": "think verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:20.121611+00:00",
+        "sha256": "6df5472d5c0a5b2196b3583bdc0a4527878b597a2dbff73dac05a843bf736c8c"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-6ca7ea2feefc88-01",
+    "headword": "keep",
+    "partOfSpeech": "verb",
+    "meaningVi": "giữ; tiếp tục sở hữu",
+    "patterns": [
+      {
+        "form": "keep + vật",
+        "explanation": "Tiếp tục giữ/sở hữu vật thay vì trả lại hoặc bỏ đi."
+      },
+      {
+        "form": "can + keep + vật",
+        "explanation": "Cho phép ai giữ một vật, không cần trả lại trong ngữ cảnh này."
+      }
+    ],
+    "principalParts": {
+      "past": "kept",
+      "pastParticiple": "kept",
+      "ing": "keeping",
+      "thirdPerson": "keeps"
+    },
+    "note": "Đây là nghĩa tiếp tục sở hữu, như keep this copy. Keep doing something nghĩa tiếp tục một hành động là cách dùng khác; đừng tự gộp hai nghĩa thành một kết quả thành thạo. Quá khứ và phân từ là kept, không phải keeped.",
+    "mistake": {
+      "incorrect": "I have keeped this postcard for years.",
+      "correct": "I have kept this postcard for years.",
+      "explanation": "Trong hiện tại hoàn thành have + phân từ, dùng kept. Keep không tạo dạng quá khứ/phân từ bằng cách thêm -ed."
+    },
+    "example": {
+      "id": "usage-keep-2026-10-27",
+      "en": "You can keep this copy; I have another one.",
+      "vi": "Bạn có thể giữ bản này; tôi còn một bản khác.",
+      "alternatives": [
+        "have",
+        "retain"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/keep_1",
+        "status": 200,
+        "title": "keep verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:20.418869+00:00",
+        "sha256": "0d23c554e589bda2f347e549b79f1f2a579a462e0f1cbc6955e7435c0608fc15"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/keep_1",
+        "status": 200,
+        "title": "keep verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:20.589569+00:00",
+        "sha256": "4057f7a95469bf55dd799ccab6b5468221a779ed423d4a48c1745555b72a8602"
+      }
+    ]
+  }
+]

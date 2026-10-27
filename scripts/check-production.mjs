@@ -77,7 +77,15 @@ async function checkUsage(page) {
     Number(await page.locator(".word-grid").getAttribute("data-total-items")),
     usageEntries.length,
   );
-  for (const headword of ["suggest", "spend", "paper", "familiar"]) {
+  for (const headword of [
+    "suggest",
+    "spend",
+    "paper",
+    "familiar",
+    "drink",
+    "search",
+    "think",
+  ]) {
     const usage = usageEntries.find((entry) => entry.headword === headword);
     assert.ok(usage, `Missing authored usage for ${headword}`);
     await page.getByPlaceholder(/Tìm từ/).fill(headword);
@@ -85,6 +93,9 @@ async function checkUsage(page) {
       .locator(".word-card")
       .filter({
         has: page.getByRole("heading", { name: headword, exact: true }),
+      })
+      .filter({
+        has: page.locator(".part-of-speech", { hasText: usage.partOfSpeech }),
       })
       .click();
     const panel = page.getByRole("region", { name: "Cách dùng đã đối chiếu" });
@@ -109,12 +120,29 @@ async function checkUsage(page) {
         await panel.locator(".usage-countability").innerText(),
         usage.countability,
       );
+    if (usage.principalParts)
+      for (const form of Object.values(usage.principalParts))
+        assert.ok(
+          (await panel.locator(".usage-forms").innerText()).includes(form),
+        );
     assert.equal(
       await panel.locator(".usage-sources a").first().getAttribute("href"),
       usage.sources[0].url,
     );
     await page.getByRole("button", { name: "Đóng", exact: true }).click();
   }
+  await page.getByPlaceholder(/Tìm từ/).fill("drank");
+  const pastLookup = page
+    .locator(".word-card")
+    .filter({ has: page.getByRole("heading", { name: "drink", exact: true }) })
+    .filter({
+      has: page.locator(".part-of-speech", { hasText: "Động từ · verb" }),
+    });
+  assert.equal(
+    await pastLookup.count(),
+    1,
+    "Reviewed forms must remain searchable online and offline",
+  );
   await page.getByPlaceholder(/Tìm từ/).fill("");
   await page
     .getByRole("combobox", { name: "Trạng thái", exact: true })

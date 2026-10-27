@@ -58,11 +58,11 @@ function result(overrides: Partial<Result> = {}): Result {
 }
 
 describe("source-reviewed usage and contextual recall", () => {
-  it("ships 155 distinct, complete, sense-matched supplements with real source receipts", () => {
-    expect(usageEntries).toHaveLength(155);
-    expect(new Set(usageEntries.map((entry) => entry.wordId)).size).toBe(155);
+  it("ships 187 distinct, complete, sense-matched supplements with real source receipts", () => {
+    expect(usageEntries).toHaveLength(187);
+    expect(new Set(usageEntries.map((entry) => entry.wordId)).size).toBe(187);
     expect(new Set(usageEntries.map((entry) => entry.example.id)).size).toBe(
-      155,
+      187,
     );
     for (const entry of usageEntries) {
       const word = corpus.find((w) => w.id === entry.wordId)!;

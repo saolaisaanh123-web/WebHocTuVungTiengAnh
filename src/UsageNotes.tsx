@@ -1,17 +1,36 @@
 import { ExternalLink, Volume2 } from "lucide-react";
 import type { Word } from "./core";
 import { getUsage } from "./usage";
+import { useVisibleExposure } from "./useVisibleExposure";
 import "./usage.css";
 
 type Props = {
   word: Word;
   speak: (text: string) => void;
   compact?: boolean;
+  onExposeWrittenForms?: (wordId: string, forms: string[]) => void;
 };
 
 /** Shown in the dictionary or after answering, never as an unmarked hint. */
-export default function UsageNotes({ word, speak, compact = false }: Props) {
+export default function UsageNotes({
+  word,
+  speak,
+  compact = false,
+  onExposeWrittenForms,
+}: Props) {
   const usage = getUsage(word);
+  const formExposureRef = useVisibleExposure(
+    onExposeWrittenForms && usage?.principalParts
+      ? (forms) => onExposeWrittenForms(word.id, forms)
+      : undefined,
+    JSON.stringify([
+      word.id,
+      word.word,
+      word.part_of_speech,
+      word.meaning_vi,
+      usage?.principalParts,
+    ]),
+  );
   if (!usage) return null;
   const content = (
     <>
@@ -27,28 +46,43 @@ export default function UsageNotes({ word, speak, compact = false }: Props) {
         <p className="usage-countability">{usage.countability}</p>
       )}
       {usage.principalParts && (
-        <div className="usage-forms" aria-label="Các dạng động từ đã đối chiếu">
+        <div
+          ref={formExposureRef}
+          className="usage-forms"
+          aria-label="Các dạng động từ đã đối chiếu"
+        >
           <p>
             <strong>Các dạng động từ</strong>
           </p>
           <dl>
             <div>
               <dt>Quá khứ</dt>
-              <dd lang="en">{usage.principalParts.past}</dd>
+              <dd lang="en" data-exposure-id={usage.principalParts.past}>
+                {usage.principalParts.past}
+              </dd>
             </div>
             {usage.principalParts.pastParticiple && (
               <div>
                 <dt>Phân từ quá khứ</dt>
-                <dd lang="en">{usage.principalParts.pastParticiple}</dd>
+                <dd
+                  lang="en"
+                  data-exposure-id={usage.principalParts.pastParticiple}
+                >
+                  {usage.principalParts.pastParticiple}
+                </dd>
               </div>
             )}
             <div>
               <dt>Dạng -ing</dt>
-              <dd lang="en">{usage.principalParts.ing}</dd>
+              <dd lang="en" data-exposure-id={usage.principalParts.ing}>
+                {usage.principalParts.ing}
+              </dd>
             </div>
             <div>
               <dt>Ngôi thứ ba số ít</dt>
-              <dd lang="en">{usage.principalParts.thirdPerson}</dd>
+              <dd lang="en" data-exposure-id={usage.principalParts.thirdPerson}>
+                {usage.principalParts.thirdPerson}
+              </dd>
             </div>
           </dl>
         </div>

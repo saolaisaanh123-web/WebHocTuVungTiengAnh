@@ -1,0 +1,499 @@
+[
+  {
+    "wordId": "park-verb-01",
+    "headword": "park",
+    "partOfSpeech": "verb",
+    "meaningVi": "đỗ xe; đậu xe",
+    "patterns": [
+      {
+        "form": "park (a car / vehicle)",
+        "explanation": "Đỗ xe; có thể nêu phương tiện sau park hoặc không nêu khi người nghe đã hiểu."
+      },
+      {
+        "form": "park + cụm chỉ nơi chốn",
+        "explanation": "Nói vị trí đỗ xe, chẳng hạn park behind the building hoặc park in a parking lot."
+      }
+    ],
+    "principalParts": {
+      "past": "parked",
+      "pastParticiple": "parked",
+      "ing": "parking",
+      "thirdPerson": "parks"
+    },
+    "note": "Ở nghĩa này, park chỉ việc để xe tại một vị trí trong một khoảng thời gian. Parking không gấp đôi k; đừng nhầm với danh từ park nghĩa công viên. Việc có đỗ xe hợp lệ hay không còn phụ thuộc biển báo và hoàn cảnh, không chỉ giới từ.",
+    "mistake": {
+      "incorrect": "We can parked behind the store.",
+      "correct": "We can park behind the store.",
+      "explanation": "Sau can, dùng dạng nguyên mẫu park; parked là quá khứ hoặc phân từ, không đặt ngay sau can trong cấu trúc chủ động này."
+    },
+    "example": {
+      "id": "usage-park-verb-01-2026-10-27",
+      "en": "We should park farther from the entrance so the delivery truck can get through.",
+      "vi": "Chúng ta nên đỗ xe xa lối vào hơn để xe tải giao hàng có thể đi qua."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/park_2",
+        "title": "park verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:36.986657+00:00",
+        "sha256": "ea613e7325d3176f0463eed94ccd46c452a640e89f425639d1a1d895b9b05c13"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/park_2",
+        "title": "park verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:06.398777+00:00",
+        "sha256": "0d2e0c1f42d90fa2804cbcbc014f3c77a0fdb1002688fa39140630d9a7b51bd8"
+      }
+    ]
+  },
+  {
+    "wordId": "phone-verb-01",
+    "headword": "phone",
+    "partOfSpeech": "verb",
+    "meaningVi": "gọi điện thoại cho ai",
+    "patterns": [
+      {
+        "form": "phone somebody/something",
+        "explanation": "Gọi điện cho một người hoặc nơi làm việc; người/nơi nhận cuộc gọi đứng trực tiếp sau phone."
+      },
+      {
+        "form": "phone about something",
+        "explanation": "Nói chủ đề hoặc lý do gọi, khi không nêu người nhận ngay sau phone."
+      }
+    ],
+    "principalParts": {
+      "past": "phoned",
+      "pastParticiple": "phoned",
+      "ing": "phoning",
+      "thirdPerson": "phones"
+    },
+    "note": "Phone có thể dùng có hoặc không có tân ngữ. Trong giao tiếp Mỹ, call cũng là một lựa chọn tự nhiên; không có nghĩa phone là sai. To + động từ có thể nêu mục đích như phone to ask, khác với thêm to trước tên người nhận.",
+    "mistake": {
+      "incorrect": "Please phone to the clinic to change the time.",
+      "correct": "Please phone the clinic to change the time.",
+      "explanation": "Nếu ý là gọi cho phòng khám, clinic là đối tượng được gọi nên đứng trực tiếp sau phone. Cụm to change the time vẫn đúng vì nêu mục đích của cuộc gọi."
+    },
+    "example": {
+      "id": "usage-phone-verb-01-2026-10-27",
+      "en": "Could you phone the restaurant and ask whether they have a table for six?",
+      "vi": "Bạn có thể gọi cho nhà hàng và hỏi xem họ còn bàn cho sáu người không?",
+      "alternatives": ["call", "telephone"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/phone_2",
+        "title": "phone verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:36.464658+00:00",
+        "sha256": "816a56e5ea000008cc5def81dac6ca1554c3c3bb0abba93e283da32c44c73d46"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/phone_2",
+        "title": "phone verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:06.388900+00:00",
+        "sha256": "61946fcf20780b8cb87c715c976d30d28a8b9b519732675dc489e1bb3ba67986"
+      }
+    ]
+  },
+  {
+    "wordId": "post-verb-01",
+    "headword": "post",
+    "partOfSpeech": "verb",
+    "meaningVi": "đăng (thông tin, ảnh) lên mạng",
+    "patterns": [
+      {
+        "form": "post something on a website / page",
+        "explanation": "Đăng một nội dung lên trang web hoặc trang trực tuyến."
+      },
+      {
+        "form": "post on a message board",
+        "explanation": "Nói việc đăng bài lên diễn đàn mà không cần nêu cụ thể nội dung được đăng."
+      }
+    ],
+    "principalParts": {
+      "past": "posted",
+      "pastParticiple": "posted",
+      "ing": "posting",
+      "thirdPerson": "posts"
+    },
+    "note": "Thẻ này chỉ luyện nghĩa đăng thông tin hoặc ảnh lên mạng, không phải gửi bưu phẩm hay phân công công tác. Post có thể có hoặc không có tân ngữ trong nghĩa đăng bài; posting giữ nguyên t, không gấp đôi phụ âm.",
+    "mistake": {
+      "incorrect": "She has post the photos on the class website.",
+      "correct": "She has posted the photos on the class website.",
+      "explanation": "Sau has trong hiện tại hoàn thành dùng phân từ posted. Dạng nguyên mẫu post phù hợp sau can hoặc will, không đặt trực tiếp sau has ở đây."
+    },
+    "example": {
+      "id": "usage-post-verb-01-2026-10-27",
+      "en": "Please post the revised schedule on the class website tonight.",
+      "vi": "Tối nay hãy đăng lịch đã chỉnh sửa lên trang web của lớp.",
+      "alternatives": ["publish", "share"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/post_3",
+        "title": "post verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:36.354758+00:00",
+        "sha256": "4066061913a14f9eb5b467792675f6074e057aecdbfc934160cce975a2422582"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/post_3",
+        "title": "post verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:06.553157+00:00",
+        "sha256": "d3dcd883ca5596f8e76df1c656f25ee5806a65ea76a9da133319c0e36c3ff44e"
+      }
+    ]
+  },
+  {
+    "wordId": "rain-verb-01",
+    "headword": "rain",
+    "partOfSpeech": "verb",
+    "meaningVi": "mưa; có mưa",
+    "patterns": [
+      {
+        "form": "it rains / it is raining",
+        "explanation": "Nói thời tiết có mưa; dùng chủ ngữ it trong cách nói thông thường này."
+      },
+      {
+        "form": "it may / might rain",
+        "explanation": "Nói khả năng có mưa, dùng rain nguyên mẫu sau may hoặc might."
+      }
+    ],
+    "principalParts": {
+      "past": "rained",
+      "pastParticiple": "rained",
+      "ing": "raining",
+      "thirdPerson": "rains"
+    },
+    "note": "Rain là động từ trong It rains nhưng là danh từ trong heavy rain. Raining là dạng -ing, rained là quá khứ và phân từ. Ở đây chỉ luyện mưa thời tiết, không phải nghĩa bóng vật gì rơi xuống rất nhiều.",
+    "mistake": {
+      "incorrect": "It may rains during the game.",
+      "correct": "It may rain during the game.",
+      "explanation": "Sau may, động từ chính ở nguyên mẫu rain, không thêm -s dù chủ ngữ là it."
+    },
+    "example": {
+      "id": "usage-rain-verb-01-2026-10-27",
+      "en": "It might rain during the game, so bring a waterproof jacket.",
+      "vi": "Trời có thể mưa trong lúc trận đấu diễn ra, vì vậy hãy mang áo khoác chống nước."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/rain_2",
+        "title": "rain verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:36.676045+00:00",
+        "sha256": "dffcfd48da7f62d941d68466f15c66b693e8db159e40c5c2a5828f7ce17ac8df"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/rain_2",
+        "title": "rain verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:06.869296+00:00",
+        "sha256": "28fdd763cd204f97017ff57eeda08779bb8d7b1da87d44b62bd2e0fa4143fb76"
+      }
+    ]
+  },
+  {
+    "wordId": "shop-verb-01",
+    "headword": "shop",
+    "partOfSpeech": "verb",
+    "meaningVi": "mua sắm; đi mua hàng",
+    "patterns": [
+      {
+        "form": "shop for something",
+        "explanation": "Nói tìm mua một loại hàng, như thực phẩm hoặc quần áo."
+      },
+      {
+        "form": "shop at a store / market",
+        "explanation": "Nêu nơi mua sắm."
+      },
+      {
+        "form": "go shopping",
+        "explanation": "Nói đi mua sắm như một hoạt động; shopping ở dạng -ing."
+      }
+    ],
+    "principalParts": {
+      "past": "shopped",
+      "pastParticiple": "shopped",
+      "ing": "shopping",
+      "thirdPerson": "shops"
+    },
+    "note": "Shop ở đây là hành động đi mua sắm; khác danh từ shop là cửa hàng. Quá khứ shopped và dạng shopping đều gấp đôi p. Khi nói mình mua được một món cụ thể, buy something thường diễn đạt trực tiếp kết quả mua hơn shop for something.",
+    "mistake": {
+      "incorrect": "We are shop for groceries this afternoon.",
+      "correct": "We are shopping for groceries this afternoon.",
+      "explanation": "Sau are để diễn tả hoạt động đang diễn ra hoặc kế hoạch đã sắp xếp, dùng dạng -ing shopping. We shop for groceries cũng đúng khi nói thói quen, nhưng không có are."
+    },
+    "example": {
+      "id": "usage-shop-verb-01-2026-10-27",
+      "en": "We usually shop at the farmers market before planning our meals for the week.",
+      "vi": "Chúng tôi thường mua sắm ở chợ nông sản trước khi lên thực đơn cho cả tuần."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/shop_2",
+        "title": "shop verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:36.757581+00:00",
+        "sha256": "e06dd61c63ebde3d2048fa4c71dcb8bf4bd2e018bff59c002d6786172d239248"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/shop_2",
+        "title": "shop verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:06.895770+00:00",
+        "sha256": "15d2070a4126622c48b4d1721923b183826c44d24842e2b9ace102d9e6d58efc"
+      }
+    ]
+  },
+  {
+    "wordId": "sound-verb-01",
+    "headword": "sound",
+    "partOfSpeech": "verb",
+    "meaningVi": "nghe có vẻ; có vẻ qua lời nói hoặc thông tin",
+    "patterns": [
+      {
+        "form": "sound + tính từ",
+        "explanation": "Diễn tả ấn tượng qua điều nghe hoặc đọc được, như sound useful hoặc sound tired."
+      },
+      {
+        "form": "sound like + danh từ / cụm danh từ",
+        "explanation": "So sánh ấn tượng với một người hoặc sự vật."
+      },
+      {
+        "form": "sound as if / as though + mệnh đề",
+        "explanation": "Nêu tình huống có vẻ đúng qua những gì nghe được."
+      }
+    ],
+    "principalParts": {
+      "past": "sounded",
+      "pastParticiple": "sounded",
+      "ing": "sounding",
+      "thirdPerson": "sounds"
+    },
+    "note": "Ở nghĩa nghe có vẻ, sound là động từ nối nên tính từ có thể đứng sau nó. Thường không dùng thì tiếp diễn cho nghĩa này, nhưng đừng áp thành lệnh cấm mọi dạng sounding: sound còn có nghĩa khác, và nguồn vẫn có dạng -ing. Trong văn nói, like đôi khi cũng mở đầu mệnh đề như as if.",
+    "mistake": {
+      "incorrect": "Your explanation sounds clearly.",
+      "correct": "Your explanation sounds clear.",
+      "explanation": "Nếu ý là lời giải thích nghe có vẻ rõ ràng, dùng tính từ clear sau động từ nối sounds. Clearly thường là trạng từ, không thay tính từ chỉ đặc điểm của lời giải thích trong cấu trúc này."
+    },
+    "example": {
+      "id": "usage-sound-verb-01-2026-10-27",
+      "en": "That plan may sound unusual, but it could save us some time.",
+      "vi": "Kế hoạch đó nghe có vẻ khác thường, nhưng nó có thể giúp chúng ta tiết kiệm thời gian.",
+      "alternatives": ["seem", "look"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/sound_2",
+        "title": "sound verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:36.974869+00:00",
+        "sha256": "17b9f11b64da9a94d1f29830c60358541cb20bdbea06e650bd9479e0c53e3395"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/sound_2",
+        "title": "sound verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:06.857525+00:00",
+        "sha256": "f02bf7416df8d0b6701a97603d79be661d8357f211d93fd7422e2afbb68ddd04"
+      }
+    ]
+  },
+  {
+    "wordId": "telephone-verb-01",
+    "headword": "telephone",
+    "partOfSpeech": "verb",
+    "meaningVi": "gọi điện thoại; nói chuyện qua điện thoại",
+    "patterns": [
+      {
+        "form": "telephone somebody/something",
+        "explanation": "Gọi điện cho người hoặc tổ chức được nêu sau telephone."
+      },
+      {
+        "form": "telephone for details",
+        "explanation": "Gọi điện để hỏi thông tin chi tiết."
+      },
+      {
+        "form": "telephone to say / ask something",
+        "explanation": "Nêu mục đích hoặc nội dung cuộc gọi bằng to + động từ."
+      }
+    ],
+    "principalParts": {
+      "past": "telephoned",
+      "pastParticiple": "telephoned",
+      "ing": "telephoning",
+      "thirdPerson": "telephones"
+    },
+    "note": "Oxford American đánh dấu telephone là trang trọng. Call hoặc phone thường phù hợp trong giao tiếp thường ngày; telephone vẫn đúng. Telephone có thể không có tân ngữ khi đã rõ đang nói về việc gọi điện; telephoning bỏ e cuối.",
+    "mistake": {
+      "incorrect": "Did you telephoned the office yesterday?",
+      "correct": "Did you telephone the office yesterday?",
+      "explanation": "Sau trợ động từ did dùng nguyên mẫu telephone. Telephoned dùng khi động từ chính tự mang thì quá khứ, như I telephoned the office yesterday."
+    },
+    "example": {
+      "id": "usage-telephone-verb-01-2026-10-27",
+      "en": "Please telephone the clinic before you leave home to check its hours.",
+      "vi": "Hãy gọi cho phòng khám trước khi rời nhà để kiểm tra giờ mở cửa.",
+      "alternatives": ["call", "phone"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/telephone_2",
+        "title": "telephone verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:37.031139+00:00",
+        "sha256": "379c8d6a68dfad1db3f33f4cdf6663dba0cd13e2f5b380ac03ff9f8a40c3fb96"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/telephone_2",
+        "title": "telephone verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:07.149154+00:00",
+        "sha256": "2a1d5ee97ef545cbaf7fab35a9b8481274fba89621395e6a6cda4d7f139fa64e"
+      }
+    ]
+  },
+  {
+    "wordId": "welcome-verb-01",
+    "headword": "welcome",
+    "partOfSpeech": "verb",
+    "meaningVi": "chào đón; đón tiếp",
+    "patterns": [
+      {
+        "form": "welcome somebody",
+        "explanation": "Đón tiếp, chào người vừa đến."
+      },
+      {
+        "form": "welcome somebody to a place",
+        "explanation": "Nêu nơi mà người đó được chào đón."
+      }
+    ],
+    "principalParts": {
+      "past": "welcomed",
+      "pastParticiple": "welcomed",
+      "ing": "welcoming",
+      "thirdPerson": "welcomes"
+    },
+    "note": "Động từ welcome diễn tả hành động chào đón, khác với tính từ trong You are welcome. Nguồn cho phép welcome không có tân ngữ trong một số cách dùng; các mẫu ở đây tập trung nêu rõ người được đón. Welcoming bỏ e cuối.",
+    "mistake": {
+      "incorrect": "We welcomes visitors at the entrance.",
+      "correct": "We welcome visitors at the entrance.",
+      "explanation": "Với chủ ngữ we ở hiện tại đơn, dùng welcome. Welcomes dùng khi chủ ngữ là ngôi thứ ba số ít, như the host."
+    },
+    "example": {
+      "id": "usage-welcome-verb-01-2026-10-27",
+      "en": "The hosts will welcome everyone at the main entrance before the performance.",
+      "vi": "Những người chủ trì sẽ chào đón mọi người ở lối vào chính trước buổi biểu diễn.",
+      "alternatives": ["greet"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/welcome_1",
+        "title": "welcome verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:37.258696+00:00",
+        "sha256": "f544c3ec6b3930c1f60a5aa307aa137388433cf567cf909eb6d4bfce9cfb210a"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/welcome_2",
+        "title": "welcome verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:48.784357+00:00",
+        "sha256": "33e5fca44e19ee4b807e8fb18eb5a4190422f93a6078eadf21b4a8730f3490f7"
+      }
+    ]
+  },
+  {
+    "wordId": "book-verb-01",
+    "headword": "book",
+    "partOfSpeech": "verb",
+    "meaningVi": "đặt trước (vé hoặc dịch vụ)",
+    "patterns": [
+      {
+        "form": "book a flight / ticket",
+        "explanation": "Đặt vé trước cho một chuyến đi."
+      },
+      {
+        "form": "book somebody a ticket / book a ticket for somebody",
+        "explanation": "Nêu người được đặt vé cho; dạng thứ hai dùng for trước người đó."
+      },
+      {
+        "form": "book somebody on a flight",
+        "explanation": "Nói chuyến bay mà một người đã được đặt chỗ."
+      }
+    ],
+    "principalParts": {
+      "past": "booked",
+      "pastParticiple": "booked",
+      "ing": "booking",
+      "thirdPerson": "books"
+    },
+    "note": "Đây là nghĩa sắp xếp để có vé hoặc dịch vụ trong tương lai; không phải danh từ book nghĩa sách. Thẻ này tập trung vào đặt vé chuyến đi. Make a reservation cũng là cách nói rõ việc đặt chỗ; không suy từ ví dụ rằng mọi cách dùng book đều bắt buộc trả tiền trước.",
+    "mistake": {
+      "incorrect": "We should booking the tickets before Friday.",
+      "correct": "We should book the tickets before Friday.",
+      "explanation": "Sau should dùng động từ nguyên mẫu book. Booking có thể theo sau một động từ khác yêu cầu -ing hoặc xuất hiện trong thì tiếp diễn, nhưng không đặt ngay sau should ở câu này."
+    },
+    "example": {
+      "id": "usage-book-verb-01-2026-10-27",
+      "en": "Could you book two tickets for the early flight while I check our passports?",
+      "vi": "Bạn đặt hai vé cho chuyến bay sớm trong lúc tôi kiểm tra hộ chiếu của chúng ta được không?",
+      "alternatives": ["reserve", "buy"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/book_2",
+        "title": "book verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:37.311502+00:00",
+        "sha256": "362542a45e2bb2099bbc4ae15c18a39c6790cc87d31e4c3bdb8976c4c16cac90"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/book_2",
+        "title": "book verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:07.224965+00:00",
+        "sha256": "c12aac7a7e708ee9f8f1f9f6ce9d6f55cde1eb433690224d7e281a59216ccd26"
+      }
+    ]
+  },
+  {
+    "wordId": "search-verb-01",
+    "headword": "search",
+    "partOfSpeech": "verb",
+    "meaningVi": "tìm kiếm; lục tìm",
+    "patterns": [
+      {
+        "form": "search for somebody/something",
+        "explanation": "Tìm một người hoặc vật; for đứng trước đối tượng đang cần tìm."
+      },
+      {
+        "form": "search a place for somebody/something",
+        "explanation": "Lục tìm trong một nơi để tìm người hoặc vật."
+      },
+      {
+        "form": "search through / among something",
+        "explanation": "Nói việc tìm kỹ trong hoặc giữa một nhóm đồ vật, giấy tờ."
+      }
+    ],
+    "principalParts": {
+      "past": "searched",
+      "pastParticiple": "searched",
+      "ing": "searching",
+      "thirdPerson": "searches"
+    },
+    "note": "Phân biệt search for my keys (tìm chìa khóa) với search my bag for my keys (lục túi để tìm chìa khóa). Search somebody là khám xét người đó, không tự có nghĩa tìm người đang mất tích. Ngôi thứ ba số ít là searches; searching không gấp đôi h.",
+    "mistake": {
+      "incorrect": "I need to search my keys before we leave.",
+      "correct": "I need to search for my keys before we leave.",
+      "explanation": "Nếu ý là tìm chìa khóa đang thất lạc, dùng search for my keys. Search + tân ngữ trực tiếp có thể đúng khi nêu người hoặc nơi được khám xét, nhưng đó là vai trò khác với vật cần tìm trong tình huống này."
+    },
+    "example": {
+      "id": "usage-search-verb-01-2026-10-27",
+      "en": "We should search the garage for the missing toolbox before buying a new one.",
+      "vi": "Chúng ta nên tìm trong ga-ra chiếc hộp dụng cụ bị mất trước khi mua cái mới.",
+      "alternatives": ["check"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/search_2",
+        "title": "search verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:37.320881+00:00",
+        "sha256": "bf28445e9df565c2c4d030dd01f9d759056e0b6a4b67c309f7d0d5d417245518"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/search_2",
+        "title": "search verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:07.449811+00:00",
+        "sha256": "91aa542206d584bf63080dc8e369b3d47e4aab0f0d14d45b6a3d1c467850f305"
+      }
+    ]
+  }
+]

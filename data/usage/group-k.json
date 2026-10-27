@@ -1,0 +1,549 @@
+[
+  {
+    "wordId": "clean-verb-01",
+    "headword": "clean",
+    "partOfSpeech": "verb",
+    "meaningVi": "làm sạch; lau dọn",
+    "patterns": [
+      {
+        "form": "clean something",
+        "explanation": "Làm sạch một vật hoặc nơi chốn; đặt thứ được làm sạch trực tiếp sau động từ."
+      },
+      {
+        "form": "clean something with something",
+        "explanation": "Dùng with để nêu dụng cụ hoặc chất dùng làm sạch, chẳng hạn a soft cloth."
+      }
+    ],
+    "principalParts": {
+      "past": "cleaned",
+      "pastParticiple": "cleaned",
+      "ing": "cleaning",
+      "thirdPerson": "cleans"
+    },
+    "note": "Đây là động từ làm sạch bằng rửa hoặc lau, khác tính từ clean trong The floor is clean. Có thể không nêu tân ngữ khi nói hoạt động dọn dẹp nói chung. Cleaning không gấp đôi n.",
+    "mistake": {
+      "incorrect": "I am clean the windows now.",
+      "correct": "I am cleaning the windows now.",
+      "explanation": "Để nói đang thực hiện hành động với am, dùng dạng -ing cleaning. Clean vẫn có thể là tính từ trong câu khác, như The windows are clean."
+    },
+    "example": {
+      "id": "usage-clean-verb-01-2026-10-27",
+      "en": "We need to clean the muddy boots before putting them away.",
+      "vi": "Chúng ta cần làm sạch đôi ủng dính bùn trước khi cất đi.",
+      "alternatives": [
+        "wash",
+        "scrub"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/clean_2",
+        "title": "clean verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:25.281327+00:00",
+        "sha256": "5d51d19e8a8fa48167c655ad5c7b2903fdfbacdb09c383a7fa165cd136589af8"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/clean_2",
+        "title": "clean verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:50.077826+00:00",
+        "sha256": "a8b18b4b8cdb2a3c9ee7bfe71d8e70020549f2ff0057faf6a14f68a44ffbeb11"
+      }
+    ]
+  },
+  {
+    "wordId": "complete-verb-01",
+    "headword": "complete",
+    "partOfSpeech": "verb",
+    "meaningVi": "hoàn thành; làm xong",
+    "patterns": [
+      {
+        "form": "complete a task / a project / a course",
+        "explanation": "Nói hoàn thành một nhiệm vụ, dự án hoặc khóa học; tân ngữ đứng trực tiếp sau complete."
+      },
+      {
+        "form": "have / has completed something",
+        "explanation": "Dùng completed sau have hoặc has khi nói việc đã hoàn thành có liên hệ với hiện tại."
+      }
+    ],
+    "principalParts": {
+      "past": "completed",
+      "pastParticiple": "completed",
+      "ing": "completing",
+      "thirdPerson": "completes"
+    },
+    "note": "Ở nghĩa hoàn thành đang học, complete là động từ có tân ngữ. Trong The task is complete, complete lại là tính từ; trong The task has been completed, completed là phân từ. Completing bỏ e cuối.",
+    "mistake": {
+      "incorrect": "She has complete the training.",
+      "correct": "She has completed the training.",
+      "explanation": "Sau has ở hiện tại hoàn thành, cần phân từ completed. Dạng nguyên mẫu complete dùng ở cấu trúc khác, chẳng hạn She will complete the training."
+    },
+    "example": {
+      "id": "usage-complete-verb-01-2026-10-27",
+      "en": "Please complete the safety checklist before you turn on the machine.",
+      "vi": "Vui lòng hoàn thành danh sách kiểm tra an toàn trước khi bật máy.",
+      "alternatives": [
+        "finish"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/complete_2",
+        "title": "complete verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:25.359051+00:00",
+        "sha256": "007f5a8ba477b7480a2c3ad85bcc28b0de80971b22f34f7f199af2ce53c68b59"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/complete_2",
+        "title": "complete verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:50.021360+00:00",
+        "sha256": "f6c0181cb4577a9be68f972b0f12245178ec1a790fbe4c06f753bf1b3267a738"
+      }
+    ]
+  },
+  {
+    "wordId": "cost-verb-01",
+    "headword": "cost",
+    "partOfSpeech": "verb",
+    "meaningVi": "có giá; tốn (một số tiền)",
+    "patterns": [
+      {
+        "form": "something costs + số tiền",
+        "explanation": "Vật hoặc dịch vụ là chủ ngữ, theo sau cost là số tiền phải trả."
+      },
+      {
+        "form": "something costs somebody + số tiền",
+        "explanation": "Có thể thêm người phải trả trước số tiền."
+      },
+      {
+        "form": "It costs + số tiền + to do something",
+        "explanation": "Nêu chi phí thực hiện một việc, chẳng hạn thay màn hình hoặc đi lại."
+      }
+    ],
+    "principalParts": {
+      "past": "cost",
+      "pastParticiple": "cost",
+      "ing": "costing",
+      "thirdPerson": "costs"
+    },
+    "note": "Với nghĩa có giá/tốn tiền, quá khứ và phân từ đều là cost. Costed thuộc nghĩa tính hoặc ước tính chi phí, không phải dạng quá khứ mặc định cho câu nói một món hàng có giá bao nhiêu. Phân biệt The repair cost me $50 với I paid $50 for the repair: chủ ngữ và cách đặt người trả khác nhau.",
+    "mistake": {
+      "incorrect": "The ticket costed twenty dollars yesterday.",
+      "correct": "The ticket cost twenty dollars yesterday.",
+      "explanation": "Câu này nói giá vé, nên quá khứ là cost. Không kết luận mọi câu có costed đều sai: costed có thể đúng khi nói đã ước tính chi phí một dự án."
+    },
+    "example": {
+      "id": "usage-cost-verb-01-2026-10-27",
+      "en": "How much will it cost to replace this broken screen?",
+      "vi": "Thay màn hình bị hỏng này sẽ tốn bao nhiêu tiền?"
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/cost_2",
+        "title": "cost verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:25.393103+00:00",
+        "sha256": "6f524f90f97bace1fc1d8a1d95162fc5f0819c49f81f52b22599fea55a15ef01"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/cost_2",
+        "title": "cost verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:50.034136+00:00",
+        "sha256": "19f97d81af9606a3e3e3fc1e350e146a174a8b562ab4ca25c386a68316c9f560"
+      }
+    ]
+  },
+  {
+    "wordId": "dress-verb-01",
+    "headword": "dress",
+    "partOfSpeech": "verb",
+    "meaningVi": "mặc quần áo; mặc quần áo cho ai",
+    "patterns": [
+      {
+        "form": "dress / get dressed",
+        "explanation": "Mặc quần áo vào; có thể dùng dress không có tân ngữ hoặc cụm get dressed."
+      },
+      {
+        "form": "dress somebody in something",
+        "explanation": "Mặc quần áo cho ai; in nêu bộ quần áo người đó mặc."
+      },
+      {
+        "form": "dress in something",
+        "explanation": "Nêu quần áo được mặc khi tự mặc đồ."
+      }
+    ],
+    "principalParts": {
+      "past": "dressed",
+      "pastParticiple": "dressed",
+      "ing": "dressing",
+      "thirdPerson": "dresses"
+    },
+    "note": "Dress somebody là mặc quần áo cho người đó; get dressed nói việc mặc quần áo vào, không tự khẳng định người đó không được ai giúp. Wear thường nói trạng thái đang mặc, còn put on nhấn hành động mặc một món đồ. Dressed có thể là phân từ; cách dùng be dressed in được phân biệt với danh từ a dress nghĩa một chiếc váy.",
+    "mistake": {
+      "incorrect": "I get dress before breakfast.",
+      "correct": "I get dressed before breakfast.",
+      "explanation": "Cụm diễn tả mặc quần áo vào là get dressed. Dress nguyên mẫu dùng được sau can hoặc trong câu I dress quickly, nhưng không thay cho dressed trong cụm này."
+    },
+    "example": {
+      "id": "usage-dress-verb-01-2026-10-27",
+      "en": "I need to dress my son before we leave for daycare.",
+      "vi": "Tôi cần mặc quần áo cho con trai trước khi chúng tôi đi nhà trẻ."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/dress_2",
+        "title": "dress verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:25.774928+00:00",
+        "sha256": "fa0733e1e5c038a20af0d73819f6a0cab1e9d2e24b8b3c085105c182c8fd7800"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/dress_2",
+        "title": "dress verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:50.342454+00:00",
+        "sha256": "f6ec59a819584be584dad3f0ce1d2ae62a079c9ce4891c33ced7aa50fae01a96"
+      }
+    ]
+  },
+  {
+    "wordId": "drink-verb-01",
+    "headword": "drink",
+    "partOfSpeech": "verb",
+    "meaningVi": "uống",
+    "patterns": [
+      {
+        "form": "drink something",
+        "explanation": "Đặt thức uống trực tiếp sau drink; không cần giới từ trước water, tea hoặc coffee."
+      },
+      {
+        "form": "drink from something",
+        "explanation": "From nêu nơi hoặc vật mà người đó uống từ đó, chẳng hạn a bottle."
+      }
+    ],
+    "principalParts": {
+      "past": "drank",
+      "pastParticiple": "drunk",
+      "ing": "drinking",
+      "thirdPerson": "drinks"
+    },
+    "note": "Nghĩa đang học là uống chất lỏng nói chung. Khi không nêu thức uống, drink cũng có thể được hiểu là uống rượu bia tùy ngữ cảnh; không mặc định mọi lần gặp drink đều nói về đồ uống có cồn. Drank là quá khứ đơn, drunk là phân từ.",
+    "mistake": {
+      "incorrect": "I have drank enough water today.",
+      "correct": "I have drunk enough water today.",
+      "explanation": "Sau have ở hiện tại hoàn thành, dùng drunk. Drank dùng trong quá khứ đơn, chẳng hạn I drank some water after the walk."
+    },
+    "example": {
+      "id": "usage-drink-verb-01-2026-10-27",
+      "en": "I like to drink water after a long walk.",
+      "vi": "Tôi thích uống nước sau một chuyến đi bộ dài.",
+      "alternatives": [
+        "have",
+        "sip"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/drink_2",
+        "title": "drink verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:25.667276+00:00",
+        "sha256": "9c0b569d7937554da8dd2e77f003c799d9e873b400d0ca9fddb0d699cb3c7594"
+      }
+    ]
+  },
+  {
+    "wordId": "email-verb-01",
+    "headword": "email",
+    "partOfSpeech": "verb",
+    "meaningVi": "gửi thư điện tử; gửi email cho ai",
+    "patterns": [
+      {
+        "form": "email somebody",
+        "explanation": "Gửi thư điện tử cho ai; người nhận có thể đứng trực tiếp sau email."
+      },
+      {
+        "form": "email somebody something",
+        "explanation": "Đặt người nhận trước nội dung hoặc tài liệu được gửi."
+      },
+      {
+        "form": "email something to somebody",
+        "explanation": "Nếu đặt nội dung trước người nhận, thêm to trước người nhận."
+      }
+    ],
+    "principalParts": {
+      "past": "emailed",
+      "pastParticiple": "emailed",
+      "ing": "emailing",
+      "thirdPerson": "emails"
+    },
+    "note": "Mục học dùng email; bài Oxford American được đối chiếu viết e-mail, còn bài Oxford Learner hiển thị email. Hai cách viết đều hợp lệ ở mục này. Emailing giữ nguyên l, không gấp đôi. Đây là động từ gửi thư điện tử, khác danh từ an email.",
+    "mistake": {
+      "incorrect": "I will email the file him this evening.",
+      "correct": "I will email the file to him this evening.",
+      "explanation": "Khi file đứng trước người nhận, dùng to him. Cũng có thể đổi trật tự thành I will email him the file this evening."
+    },
+    "example": {
+      "id": "usage-email-verb-01-2026-10-27",
+      "en": "Please email the updated form to the clinic before Friday.",
+      "vi": "Vui lòng gửi biểu mẫu đã cập nhật qua email cho phòng khám trước thứ Sáu.",
+      "alternatives": [
+        "send"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/e-mail_1",
+        "title": "e-mail verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:26.525477+00:00",
+        "sha256": "937bbc49d04c2ec714d77848fe3958354d581982d43fb42064fa83ec7540a4a3"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/email_2",
+        "title": "email verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:55:37.547981+00:00",
+        "sha256": "57a2549c01c724c6158b5b9df6273b72d534db2ca8dc4eabbec27da2a24ccac3"
+      }
+    ]
+  },
+  {
+    "wordId": "interest-verb-01",
+    "headword": "interest",
+    "partOfSpeech": "verb",
+    "meaningVi": "khiến ai quan tâm; làm ai hứng thú",
+    "patterns": [
+      {
+        "form": "something interests somebody",
+        "explanation": "Chủ ngữ là điều gây hứng thú, tân ngữ là người bị thu hút; một người cũng có thể là chủ ngữ nếu họ gây hứng thú cho người khác."
+      },
+      {
+        "form": "It interests somebody to do something",
+        "explanation": "Nêu việc mà người nghe thấy đáng quan tâm, chẳng hạn được biết một thông tin."
+      }
+    ],
+    "principalParts": {
+      "past": "interested",
+      "pastParticiple": "interested",
+      "ing": "interesting",
+      "thirdPerson": "interests"
+    },
+    "note": "Interest là động từ trong The topic interests me. So sánh với I am interested in the topic: interested ở đây mô tả cảm giác của người học, đi với in. Không trộn hai cấu trúc thành interest to me. Từ interest còn có các nghĩa danh từ riêng.",
+    "mistake": {
+      "incorrect": "These photos interest to me.",
+      "correct": "These photos interest me.",
+      "explanation": "Ở nghĩa làm ai quan tâm, interest nhận người làm tân ngữ trực tiếp, không dùng to trước me. Câu The photos are interesting to me có cấu trúc tính từ khác và không thuộc lỗi này."
+    },
+    "example": {
+      "id": "usage-interest-verb-01-2026-10-27",
+      "en": "Stories about distant planets interest my son more than stories about cars.",
+      "vi": "Những câu chuyện về các hành tinh xa xôi khiến con trai tôi hứng thú hơn những câu chuyện về ô tô.",
+      "alternatives": [
+        "fascinate",
+        "intrigue"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/interest_2",
+        "title": "interest verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:25.976840+00:00",
+        "sha256": "1892a593179b06f1f8bdf8753ab02b2a8b6e51a423cc81e0bc18b71ec66499d1"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/interest_2",
+        "title": "interest verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:50.650963+00:00",
+        "sha256": "97c69f85f4153d00f655980621bb59509224b6f91c7bc042d37a6c27c69f573f"
+      }
+    ]
+  },
+  {
+    "wordId": "love-verb-01",
+    "headword": "love",
+    "partOfSpeech": "verb",
+    "meaningVi": "yêu; yêu thương",
+    "patterns": [
+      {
+        "form": "love somebody",
+        "explanation": "Diễn tả tình cảm yêu thương với ai; người đó đứng trực tiếp sau động từ."
+      },
+      {
+        "form": "love each other",
+        "explanation": "Nói hai người hoặc nhiều người yêu thương nhau."
+      }
+    ],
+    "principalParts": {
+      "past": "loved",
+      "pastParticiple": "loved",
+      "ing": "loving",
+      "thirdPerson": "loves"
+    },
+    "note": "Thẻ này luyện nghĩa yêu thương, khác nghĩa rất thích một hoạt động trong love doing something. Với tình cảm bền vững, dạng đơn như I love my family là cách dùng thông thường. Không biến lưu ý này thành kết luận mọi cách dùng loving đều sai: cách dùng nhấn trải nghiệm tạm thời hoặc tu từ là ngữ cảnh khác.",
+    "mistake": {
+      "incorrect": "I love to my parents.",
+      "correct": "I love my parents.",
+      "explanation": "Ở nghĩa yêu thương ai, đặt người đó trực tiếp sau love, không thêm to. Love to do something là mẫu có động từ theo sau ở nghĩa thích làm việc gì, không phải love to + người."
+    },
+    "example": {
+      "id": "usage-love-verb-01-2026-10-27",
+      "en": "My aunt and uncle love each other despite their different interests.",
+      "vi": "Cô và chú tôi yêu thương nhau dù có những sở thích khác nhau.",
+      "alternatives": [
+        "adore"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/love_2",
+        "title": "love verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:26.104277+00:00",
+        "sha256": "7aa6c4da7a2f7c57aaa682da40e112996a3e2fdbc9c4c68060c1ec2462072dcb"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/love_2",
+        "title": "love verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:50.690629+00:00",
+        "sha256": "db97b5610c8d661310c87baaf0d05498d7bedf7f9cceeaa6fe5aeb0c3a783f19"
+      }
+    ]
+  },
+  {
+    "wordId": "match-verb-01",
+    "headword": "match",
+    "partOfSpeech": "verb",
+    "meaningVi": "khớp; trùng khớp; giống nhau",
+    "patterns": [
+      {
+        "form": "A matches B",
+        "explanation": "Một thứ trùng khớp hoặc giống thứ còn lại; B có thể là tân ngữ trực tiếp."
+      },
+      {
+        "form": "A and B match",
+        "explanation": "Dùng hai thứ làm chủ ngữ khi nói chúng trùng khớp với nhau."
+      }
+    ],
+    "principalParts": {
+      "past": "matched",
+      "pastParticiple": "matched",
+      "ing": "matching",
+      "thirdPerson": "matches"
+    },
+    "note": "Ở đây match nói hai thông tin hoặc sự vật giống/trùng khớp, không phải danh từ trận đấu. Mẫu match A with/to B khi yêu cầu ghép hai thứ là một cách dùng có tân ngữ khác; không suy từ đó rằng mọi câu với match đều cần with hoặc to.",
+    "mistake": {
+      "incorrect": "The name on this ticket match the name on my ID.",
+      "correct": "The name on this ticket matches the name on my ID.",
+      "explanation": "Chủ ngữ The name là số ít nên ở hiện tại đơn dùng matches. Hai tên được đối chiếu phải trùng khớp; my ID là giấy tờ tùy thân của người nói."
+    },
+    "example": {
+      "id": "usage-match-verb-01-2026-10-27",
+      "en": "The names on the guest list must match the names on the tickets.",
+      "vi": "Tên trên danh sách khách phải khớp với tên trên vé."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/match_2",
+        "title": "match verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:26.345734+00:00",
+        "sha256": "e98dda87d19ea197128ec481e586b115d67dc5e5b271425650986ec93a035979"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/match_2",
+        "title": "match verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:50.994363+00:00",
+        "sha256": "8ce992fc64640235bdd521be7a62bc2d36d45b08718451d24c898db9092736e7"
+      }
+    ]
+  },
+  {
+    "wordId": "name-verb-01",
+    "headword": "name",
+    "partOfSpeech": "verb",
+    "meaningVi": "đặt tên",
+    "patterns": [
+      {
+        "form": "name somebody/something + tên",
+        "explanation": "Đặt tên cho một người hoặc vật; tên đứng sau tân ngữ, không cần as ở mẫu này."
+      },
+      {
+        "form": "name somebody after/for somebody",
+        "explanation": "Đặt tên theo một người khác; cả after và for đều xuất hiện ở nguồn đối chiếu."
+      }
+    ],
+    "principalParts": {
+      "past": "named",
+      "pastParticiple": "named",
+      "ing": "naming",
+      "thirdPerson": "names"
+    },
+    "note": "Thẻ này luyện nghĩa đặt tên, khác name nghĩa nêu tên/nhận diện hoặc bổ nhiệm. Trong They named her captain, phần sau tân ngữ là chức vụ và thuộc nghĩa khác; không dùng ví dụ đó để suy ra mẫu đặt tên. Naming bỏ e cuối.",
+    "mistake": {
+      "incorrect": "They want to named their baby Maya.",
+      "correct": "They want to name their baby Maya.",
+      "explanation": "Sau want to dùng nguyên mẫu name. Named là quá khứ hoặc phân từ, chẳng hạn They named their baby Maya."
+    },
+    "example": {
+      "id": "usage-name-verb-01-2026-10-27",
+      "en": "They plan to name their daughter Maya after her grandmother.",
+      "vi": "Họ dự định đặt tên con gái là Maya theo tên bà của bé.",
+      "alternatives": [
+        "call"
+      ]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/name_2",
+        "title": "name verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:26.724487+00:00",
+        "sha256": "66775c309d8f9f78579a50f066f93dc31aea669a88751877dae684a9542035e1"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/name_2",
+        "title": "name verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:51.076563+00:00",
+        "sha256": "88010a1fdd10041a4505c66027456686d5cccd6d7b5f96784b0a851d5d7a6bfd"
+      }
+    ]
+  },
+  {
+    "wordId": "open-verb-01",
+    "headword": "open",
+    "partOfSpeech": "verb",
+    "meaningVi": "mở",
+    "patterns": [
+      {
+        "form": "open a door / a window",
+        "explanation": "Mở cửa hoặc cửa sổ; vật được mở đứng trực tiếp sau động từ."
+      },
+      {
+        "form": "the door opens",
+        "explanation": "Có thể dùng open không có tân ngữ khi chính cửa hoặc cửa sổ mở ra."
+      }
+    ],
+    "principalParts": {
+      "past": "opened",
+      "pastParticiple": "opened",
+      "ing": "opening",
+      "thirdPerson": "opens"
+    },
+    "note": "The door is open mô tả trạng thái bằng tính từ. Please open the door là lời yêu cầu thực hiện hành động. Trong The door has been opened, opened là phân từ. Opening không gấp đôi n; các nghĩa mở tài khoản/mở chương trình là những nghĩa khác.",
+    "mistake": {
+      "incorrect": "Could you opened the side door?",
+      "correct": "Could you open the side door?",
+      "explanation": "Sau could dùng nguyên mẫu open, không dùng quá khứ opened. Opened vẫn đúng trong câu The side door opened a moment ago."
+    },
+    "example": {
+      "id": "usage-open-verb-01-2026-10-27",
+      "en": "Could you open the side door so we can carry this table inside?",
+      "vi": "Bạn mở cửa bên giúp để chúng tôi mang chiếc bàn này vào trong được không?"
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/open_2",
+        "title": "open verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:26.789809+00:00",
+        "sha256": "3d4ea9c5dbd5313f72fc6d95a3ebacb1c70ca56f475fa22a43f5dfc444bd6785"
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/open_2",
+        "title": "open verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced Learner's Dictionary at OxfordLearnersDictionaries.com",
+        "checkedAt": "2026-10-27T08:54:51.105469+00:00",
+        "sha256": "fa9d7088d4503aba2060d068c6927d5a8bccb93dafdeff92d6d59464d69a1e7d"
+      }
+    ]
+  }
+]

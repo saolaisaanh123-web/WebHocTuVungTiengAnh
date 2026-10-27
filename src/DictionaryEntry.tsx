@@ -24,6 +24,7 @@ type DictionaryEntryProps = {
   speak: (text: string, url?: string) => void;
   edit: () => void;
   change: (entry: State["entries"][string]) => void;
+  onExposeWrittenForms?: (wordId: string, forms: string[]) => void;
 };
 
 function referenceLinks(source: string) {
@@ -73,6 +74,7 @@ export default function DictionaryEntry({
   speak,
   edit,
   change,
+  onExposeWrittenForms,
 }: DictionaryEntryProps) {
   const w = entry.word;
   const evidence = useMemo(() => selectLearningEvidence(state), [state]);
@@ -387,7 +389,11 @@ export default function DictionaryEntry({
         </div>
       </section>
 
-      <UsageNotes word={w} speak={speak} />
+      <UsageNotes
+        word={w}
+        speak={speak}
+        onExposeWrittenForms={onExposeWrittenForms}
+      />
 
       {hasNewsContext && (
         <section className="dict-news" aria-label="Ngữ cảnh có nguồn">

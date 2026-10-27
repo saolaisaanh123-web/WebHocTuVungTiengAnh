@@ -423,6 +423,30 @@ export function expose(state: State, id: string, time = Date.now()): State {
     time,
   });
 }
+/** Only call after these particular forms have actually been visible. This
+ * observes the source entry and written forms, never credits another meaning. */
+export function exposeWrittenForms(
+  state: State,
+  id: string,
+  forms: readonly string[],
+  time = Date.now(),
+): State {
+  if (!Object.hasOwn(state.entries, id)) return state;
+  const unique = new Map<string, string>();
+  for (const form of forms) {
+    const clean = form.normalize("NFKC").trim().replace(/\s+/g, " ");
+    if (clean) unique.set(clean.toLowerCase(), clean);
+  }
+  if (!unique.size) return state;
+  return appendExposureEvent(state, {
+    id: crypto.randomUUID(),
+    wordId: id,
+    time,
+    writtenForms: [...unique]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([, form]) => form),
+  });
+}
 export function independence(
   state: State,
   id: string,

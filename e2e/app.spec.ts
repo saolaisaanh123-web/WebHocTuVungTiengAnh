@@ -354,7 +354,14 @@ test("existing learner previews Oxford corpus update without losing progress or 
     .fill("bản sửa riêng của tôi");
   await expect(page.locator(".word-card")).toHaveCount(1);
   await page.getByRole("textbox", { name: "Tìm từ và nghĩa" }).fill("avoid");
-  await page.locator(".word-card").click();
+  // Lookup also matches reviewed collocations such as "avoid bias" now;
+  // open the intended headword while preserving the source-update assertions.
+  await page
+    .locator(".word-card")
+    .filter({
+      has: page.getByRole("heading", { name: "avoid", exact: true }),
+    })
+    .click();
   await expect(page.locator(".dict-headword")).toHaveText("avoid");
   await expect(page.locator(".dict-level")).toHaveText("A2");
   await expect(page.locator(".dict-header")).toHaveCSS("display", "block");

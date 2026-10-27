@@ -23,6 +23,11 @@ const targets = ["ask", "knowledge", "capable"].map((headword) =>
 const nextTargets = ["spend", "paper", "familiar"].map((headword) =>
   corpus.find((word) => word.word === headword)!,
 );
+const latestTargets = ["drink", "search", "think"].map((headword) =>
+  corpus.find(
+    (word) => word.word === headword && word.part_of_speech === "verb",
+  )!,
+);
 const apple: Word = {
   id: "usage-filter-apple",
   word: "apple",
@@ -320,161 +325,167 @@ test("the source-usage filter carries into real context practice and preserves t
   expect(restored.history).toEqual(initial.history);
 });
 
-for (const width of [320, 390]) {
-  test(`new spend, paper and familiar supplements stay readable and their second contexts survive real practice, reload and JSON export at ${width}px`, async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width, height: 844 });
-    for (const word of nextTargets)
-      expect(supplements.find((item) => item.wordId === word.id)).toBeDefined();
-    const words = [...nextTargets, apple];
-    const version = await open(page, words);
-    const initial = enrolledState(words, version);
-    const time = Date.now() - 8 * DAY;
-    initial.history = nextTargets.map((word, index) => ({
-      id: `next-usage-base-${index}`,
-      wordId: word.id,
-      time,
-      skill: 4,
-      answer: word.word,
-      correct: true,
-      hint: false,
-      method: "rule",
-      elapsed: 1400,
-      session: "next-usage-base-session",
-      review: `next-usage-base-review-${index}`,
-      gap: 7 * DAY,
-      first: true,
-      independent: true,
-      evidenceVersion: 2,
-      contentVersion: contentKey(word, 4),
-      exposureGap: 7 * DAY,
-      scheduled: true,
-    }));
-    initial.exposures = Object.fromEntries(
-      nextTargets.map((word) => [word.id, time]),
-    );
-    initial.exposureEvents = initial.history.map((result) => ({
-      id: `result:${result.id}`,
-      wordId: result.wordId,
-      time,
-      resultId: result.id,
-    }));
-    for (const word of nextTargets)
-      initial.schedules[`${word.id}:4`] = {
-        last: time,
-        due: Date.now() - 1000,
-        step: 2,
+for (const contextTargets of [nextTargets, latestTargets]) {
+  for (const width of [320, 390]) {
+    test(`reviewed ${contextTargets.map((word) => word.word).join(", ")} supplements stay readable and their second contexts survive real practice, reload and JSON export at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 844 });
+      for (const word of contextTargets)
+        expect(
+          supplements.find((item) => item.wordId === word.id),
+        ).toBeDefined();
+      const words = [...contextTargets, apple];
+      const version = await open(page, words);
+      const initial = enrolledState(words, version);
+      const time = Date.now() - 8 * DAY;
+      initial.history = contextTargets.map((word, index) => ({
+        id: `next-usage-base-${index}`,
+        wordId: word.id,
+        time,
+        skill: 4,
+        answer: word.word,
+        correct: true,
+        hint: false,
+        method: "rule",
+        elapsed: 1400,
+        session: "next-usage-base-session",
+        review: `next-usage-base-review-${index}`,
+        gap: 7 * DAY,
+        first: true,
+        independent: true,
+        evidenceVersion: 2,
         contentVersion: contentKey(word, 4),
-      };
-    await seed(page, initial);
-    await selectUsage(page);
-    await expect(page.locator(".word-grid")).toHaveAttribute(
-      "data-total-items",
-      "3",
-    );
-    await expect(page.locator(".word-card")).toHaveCount(3);
-    for (const word of nextTargets) {
-      const usage = supplements.find((item) => item.wordId === word.id)!;
-      await page
-        .locator(".word-card")
-        .filter({
-          has: page.getByRole("heading", { name: word.word, exact: true }),
-        })
-        .click();
-      const panel = page.getByRole("region", {
-        name: "Cách dùng đã đối chiếu",
-      });
-      await expect(panel).toContainText(usage.patterns[0].form);
-      await expect(panel.locator(".usage-second-example")).toContainText(
-        usage.example.en,
+        exposureGap: 7 * DAY,
+        scheduled: true,
+      }));
+      initial.exposures = Object.fromEntries(
+        contextTargets.map((word) => [word.id, time]),
       );
-      await expect(panel.locator(".usage-second-example")).toContainText(
-        usage.example.vi,
+      initial.exposureEvents = initial.history.map((result) => ({
+        id: `result:${result.id}`,
+        wordId: result.wordId,
+        time,
+        resultId: result.id,
+      }));
+      for (const word of contextTargets)
+        initial.schedules[`${word.id}:4`] = {
+          last: time,
+          due: Date.now() - 1000,
+          step: 2,
+          contentVersion: contentKey(word, 4),
+        };
+      await seed(page, initial);
+      await selectUsage(page);
+      await expect(page.locator(".word-grid")).toHaveAttribute(
+        "data-total-items",
+        "3",
       );
-      if (word.word === "paper") {
-        expect(usage.countability).toBeTruthy();
-        await expect(panel.locator(".usage-countability")).toHaveText(
-          usage.countability!,
+      await expect(page.locator(".word-card")).toHaveCount(3);
+      for (const word of contextTargets) {
+        const usage = supplements.find((item) => item.wordId === word.id)!;
+        await page
+          .locator(".word-card")
+          .filter({
+            has: page.getByRole("heading", { name: word.word, exact: true }),
+          })
+          .click();
+        const panel = page.getByRole("region", {
+          name: "Cách dùng đã đối chiếu",
+        });
+        await expect(panel).toContainText(usage.patterns[0].form);
+        await expect(panel.locator(".usage-second-example")).toContainText(
+          usage.example.en,
         );
+        await expect(panel.locator(".usage-second-example")).toContainText(
+          usage.example.vi,
+        );
+        if (word.word === "paper") {
+          expect(usage.countability).toBeTruthy();
+          await expect(panel.locator(".usage-countability")).toHaveText(
+            usage.countability!,
+          );
+        }
+        await panel
+          .getByText("Lỗi dễ gặp trong cách dùng này", { exact: true })
+          .click();
+        await expect(panel.locator(".usage-mistake")).toContainText(
+          usage.mistake.explanation,
+        );
+        await expect(panel.locator(".usage-sources a").first()).toHaveAttribute(
+          "href",
+          usage.sources[0].url,
+        );
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth),
+        ).toBe(width);
+        await page.getByRole("button", { name: "Đóng", exact: true }).click();
       }
-      await panel
-        .getByText("Lỗi dễ gặp trong cách dùng này", { exact: true })
+      expect((await snapshot(page)).history).toEqual(initial.history);
+      expect((await snapshot(page)).schedules).toEqual(initial.schedules);
+
+      await page
+        .getByRole("button", { name: "Luyện tập", exact: true })
         .click();
-      await expect(panel.locator(".usage-mistake")).toContainText(
-        usage.mistake.explanation,
+      await page.locator(".practice-card").nth(4).click();
+      await page.getByRole("button", { name: /Bắt đầu luyện · 3 mục/ }).click();
+      await expect(page.locator(".study")).toBeVisible();
+      const started = await snapshot(page);
+      const queue = started.session!.queue;
+      expect(queue).toHaveLength(3);
+      expect(new Set(queue.map((task) => task.id))).toEqual(
+        new Set(contextTargets.map((word) => word.id)),
       );
-      await expect(panel.locator(".usage-sources a").first()).toHaveAttribute(
-        "href",
-        usage.sources[0].url,
-      );
-      expect(
-        await page.evaluate(() => document.documentElement.scrollWidth),
-      ).toBe(width);
-      await page.getByRole("button", { name: "Đóng", exact: true }).click();
-    }
-    expect((await snapshot(page)).history).toEqual(initial.history);
-    expect((await snapshot(page)).schedules).toEqual(initial.schedules);
+      for (const task of queue) {
+        const word = contextTargets.find((item) => item.id === task.id)!;
+        const usage = supplements.find((item) => item.wordId === task.id)!;
+        expect(task.skill).toBe(4);
+        expect(task.context).toMatchObject({
+          id: usage.example.id,
+          en: usage.example.en,
+          vi: usage.example.vi,
+          targetVersion: contentKey(word, 4),
+        });
+      }
+      const word = contextTargets.find((item) => item.id === queue[0].id)!;
+      const context = queue[0].context!;
+      const question = cloze({ ...word, example_en: context.en });
+      await expect(page.locator(".study .context")).toHaveText(question);
+      await expect(page.locator(".study")).not.toContainText(context.vi);
+      const draft = `unfinished answer ${width}`;
+      await page
+        .getByRole("textbox", { name: "Câu trả lời", exact: true })
+        .fill(draft);
+      await page.reload();
+      await page
+        .getByRole("button", { name: "Tiếp tục phiên học", exact: true })
+        .click();
+      await expect(page.locator(".study .context")).toHaveText(question);
+      await expect(
+        page.getByRole("textbox", { name: "Câu trả lời", exact: true }),
+      ).toHaveValue(draft);
+      expect((await snapshot(page)).session?.queue).toEqual(queue);
 
-    await page.getByRole("button", { name: "Luyện tập", exact: true }).click();
-    await page.locator(".practice-card").nth(4).click();
-    await page.getByRole("button", { name: /Bắt đầu luyện · 3 mục/ }).click();
-    await expect(page.locator(".study")).toBeVisible();
-    const started = await snapshot(page);
-    const queue = started.session!.queue;
-    expect(queue).toHaveLength(3);
-    expect(new Set(queue.map((task) => task.id))).toEqual(
-      new Set(nextTargets.map((word) => word.id)),
-    );
-    for (const task of queue) {
-      const word = nextTargets.find((item) => item.id === task.id)!;
-      const usage = supplements.find((item) => item.wordId === task.id)!;
-      expect(task.skill).toBe(4);
-      expect(task.context).toMatchObject({
-        id: usage.example.id,
-        en: usage.example.en,
-        vi: usage.example.vi,
-        targetVersion: contentKey(word, 4),
-      });
-    }
-    const word = nextTargets.find((item) => item.id === queue[0].id)!;
-    const context = queue[0].context!;
-    const question = cloze({ ...word, example_en: context.en });
-    await expect(page.locator(".study .context")).toHaveText(question);
-    await expect(page.locator(".study")).not.toContainText(context.vi);
-    const draft = `unfinished answer ${width}`;
-    await page
-      .getByRole("textbox", { name: "Câu trả lời", exact: true })
-      .fill(draft);
-    await page.reload();
-    await page
-      .getByRole("button", { name: "Tiếp tục phiên học", exact: true })
-      .click();
-    await expect(page.locator(".study .context")).toHaveText(question);
-    await expect(
-      page.getByRole("textbox", { name: "Câu trả lời", exact: true }),
-    ).toHaveValue(draft);
-    expect((await snapshot(page)).session?.queue).toEqual(queue);
-
-    await page.getByRole("button", { name: /Lưu & tạm dừng/ }).click();
-    await page.getByRole("button", { name: "Cài đặt", exact: true }).click();
-    const [download] = await Promise.all([
-      page.waitForEvent("download"),
-      page
-        .getByRole("button", { name: "Sao lưu toàn bộ JSON", exact: true })
-        .click(),
-    ]);
-    const backup = JSON.parse(readFileSync((await download.path())!, "utf8"));
-    const validated = await page.evaluate(async (value) => {
-      const path = "/src/core.ts";
-      const core = await import(/* @vite-ignore */ path);
-      return core.validateBackup(value);
-    }, backup);
-    expect(validated.session?.queue).toEqual(queue);
-    expect(validated.session?.draft?.answer).toBe(draft);
-    expect(validated.history).toEqual(initial.history);
-    expect(validated.schedules).toEqual(initial.schedules);
-  });
+      await page.getByRole("button", { name: /Lưu & tạm dừng/ }).click();
+      await page.getByRole("button", { name: "Cài đặt", exact: true }).click();
+      const [download] = await Promise.all([
+        page.waitForEvent("download"),
+        page
+          .getByRole("button", { name: "Sao lưu toàn bộ JSON", exact: true })
+          .click(),
+      ]);
+      const backup = JSON.parse(readFileSync((await download.path())!, "utf8"));
+      const validated = await page.evaluate(async (value) => {
+        const path = "/src/core.ts";
+        const core = await import(/* @vite-ignore */ path);
+        return core.validateBackup(value);
+      }, backup);
+      expect(validated.session?.queue).toEqual(queue);
+      expect(validated.session?.draft?.answer).toBe(draft);
+      expect(validated.history).toEqual(initial.history);
+      expect(validated.schedules).toEqual(initial.schedules);
+    });
+  }
 }
 
 for (const viewport of [

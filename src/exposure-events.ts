@@ -8,10 +8,33 @@ export type ExposureEvent = {
   time: number;
   /** A recorded answer also exposes its word; exclude that event from itself. */
   resultId?: string;
+  /** Forms actually read in a reference table, not inferred from today's data.
+   * They only lower confidence in written retrieval of another entry. */
+  writtenForms?: string[];
 };
 
 const isTime = (value: unknown): value is number =>
   typeof value === "number" && Number.isFinite(value) && value >= 0;
+
+const writtenFormKey = (value: string) =>
+  value.normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase();
+
+function validWrittenForms(value: unknown): value is string[] {
+  return (
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.length <= 16 &&
+    value.every(
+      (form) =>
+        typeof form === "string" &&
+        form.length <= 128 &&
+        form === form.trim() &&
+        /\p{L}/u.test(form) &&
+        !/[\u0000-\u001f\u007f]/u.test(form),
+    ) &&
+    new Set(value.map(writtenFormKey)).size === value.length
+  );
+}
 
 export function validateExposureEvents(state: {
   entries: Record<string, unknown>;
@@ -33,7 +56,10 @@ export function validateExposureEvents(state: {
       !Object.hasOwn(state.entries, event.wordId) ||
       !isTime(event.time) ||
       (event.resultId !== undefined &&
-        (typeof event.resultId !== "string" || !event.resultId))
+        (typeof event.resultId !== "string" || !event.resultId)) ||
+      (event.writtenForms !== undefined &&
+        (!validWrittenForms(event.writtenForms) ||
+          event.resultId !== undefined))
     )
       throw Error("Sự kiện tiếp xúc không hợp lệ.");
     ids.add(event.id);
@@ -44,7 +70,8 @@ const sameEvent = (left: ExposureEvent, right: ExposureEvent) =>
   left.id === right.id &&
   left.wordId === right.wordId &&
   left.time === right.time &&
-  left.resultId === right.resultId;
+  left.resultId === right.resultId &&
+  JSON.stringify(left.writtenForms) === JSON.stringify(right.writtenForms);
 
 /** A colliding immutable ID cannot silently turn one observation into another. */
 export function mergeExposureEvents(
@@ -57,7 +84,13 @@ export function mergeExposureEvents(
       const existing = records.get(event.id);
       if (existing && !sameEvent(existing, event))
         throw Error("ID sự kiện tiếp xúc trùng nhưng nội dung khác nhau.");
-      if (!existing) records.set(event.id, { ...event });
+      if (!existing)
+        records.set(event.id, {
+          ...event,
+          ...(event.writtenForms
+            ? { writtenForms: [...event.writtenForms] }
+            : {}),
+        });
     }
   }
   return [...records.values()].sort(
@@ -138,6 +171,7 @@ type ObservationIndex = {
   events: State["exposureEvents"];
   eventsLength: number;
   byWord: Map<string, Observation[]>;
+  byWrittenForm: Map<string, Observation[]>;
   writtenForms: Map<string, Set<string>>;
   formsByWord: Map<string, string[]>;
 };
@@ -154,17 +188,27 @@ function observationIndex(state: State) {
   )
     return cached;
   const index = new Map<string, Observation[]>();
+  const byWrittenForm = new Map<string, Observation[]>();
   const add = (wordId: string, point: Observation) => {
     if (!isTime(point.time)) return;
     const values = index.get(wordId) || [];
     values.push(point);
     index.set(wordId, values);
   };
-  for (const event of state.exposureEvents || [])
+  for (const event of state.exposureEvents || []) {
     add(event.wordId, { time: event.time, resultId: event.resultId });
+    for (const form of event.writtenForms || []) {
+      const key = writtenFormKey(form);
+      const points = byWrittenForm.get(key) || [];
+      points.push({ time: event.time, resultId: event.resultId });
+      byWrittenForm.set(key, points);
+    }
+  }
   for (const result of state.history)
     add(result.wordId, { time: result.time, resultId: result.id });
   for (const values of index.values()) values.sort((a, b) => a.time - b.time);
+  for (const values of byWrittenForm.values())
+    values.sort((a, b) => a.time - b.time);
   const writtenForms = new Map<string, Set<string>>();
   const formsByWord = new Map<string, string[]>();
   for (const [id, entry] of Object.entries(state.entries)) {
@@ -198,6 +242,7 @@ function observationIndex(state: State) {
     events: state.exposureEvents,
     eventsLength: state.exposureEvents?.length || 0,
     byWord: index,
+    byWrittenForm,
     writtenForms,
     formsByWord,
   };
@@ -220,13 +265,15 @@ export function lastObservedExposure(
 ): number | undefined {
   const index = observationIndex(state);
   const ids = new Set([wordId]);
+  const formObservations: Observation[][] = [];
   if ([1, 3, 4].includes(options.skill ?? 0)) {
-    for (const form of index.formsByWord.get(wordId) || [])
+    for (const form of index.formsByWord.get(wordId) || []) {
       for (const id of index.writtenForms.get(form) || []) ids.add(id);
+      formObservations.push(index.byWrittenForm.get(form) || []);
+    }
   }
   let previous: number | undefined;
-  for (const id of ids) {
-    const observations = index.byWord.get(id) || [];
+  const inspect = (observations: Observation[], ownAnswer = false) => {
     let left = 0,
       right = observations.length;
     while (left < right) {
@@ -236,6 +283,7 @@ export function lastObservedExposure(
     }
     for (let i = left - 1; i >= 0; i--) {
       if (
+        ownAnswer &&
         options.excludeResultId !== undefined &&
         observations[i].resultId === options.excludeResultId
       )
@@ -243,6 +291,10 @@ export function lastObservedExposure(
       previous = Math.max(previous ?? 0, observations[i].time);
       break;
     }
+  };
+  for (const observations of formObservations) inspect(observations);
+  for (const id of ids) {
+    inspect(index.byWord.get(id) || [], id === wordId);
     // After an answer, the equal legacy map timestamp usually belongs to that
     // answer. Explicit distinct same-time events remain visible above. Before
     // recording an answer no own event exists, so an equal timestamp is recent.

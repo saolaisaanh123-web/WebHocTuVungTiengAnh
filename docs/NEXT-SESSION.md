@@ -1,6 +1,17 @@
 # Jeongyeon — ghi nhớ cho phiên sửa tiếp theo
 
-Cập nhật mới nhất **25/10/2026**: đã sửa đợt audit trên mốc 1657d31, không xây lại website. Báo cáo hiện hành: [learning-integrity-2026-10-25.md](learning-integrity-2026-10-25.md). Các phần 24/10 và trước đó phía dưới là lịch sử, không phải danh sách lỗi còn mở hiện tại.
+Cập nhật mới nhất **27/10/2026**: tiếp tục chiều sâu cách dùng, tra cứu và bằng chứng mặt chữ. Báo cáo hiện hành: [usage-expansion-2026-10-27.md](usage-expansion-2026-10-27.md). Các mốc dưới đây là lịch sử.
+
+- Thêm 32 động từ ở group-k/l/m: đủ 21 động từ bổ sung ngày 24/10 và 11 bất quy tắc phổ biến. Usage tăng 155→187, bảng dạng 7→39; đọc/rà độc lập 60 URL Oxford (32 American, 28 British phụ về dạng), live 60/60; metadata toàn bộ 187 mục / 237 URL đạt.
+- Không đổi byte TXT/version/155 supplements cũ. Vẫn 5.586 mục, 372 IPA; hash canonical giữ bfedc90307e912b5dd19f2620f92a45e0704b67054ef7a1070273fe2464209bb. Không mở rộng accepted_answers bằng các biến tố.
+- Kho từ tìm được dạng như went/go, drank/drink, cấu trúc và tiếng Việt không dấu. Cache theo nội dung hiện tại; không lấy câu sai/ví dụ/URL làm bí danh, không đổi thứ tự học/queue. Mục cá nhân khác nghĩa/POS không nhận supplement gốc.
+- ExposureEvent thêm writtenForms tùy chọn, chỉ ghi ô bảng thực sự hiện 60%/700ms. Snapshot mặt chữ giữ qua JSON/merge/compact; skills1/3/4 dùng để giảm tín nhiệm chữ vừa nhìn, không gộp meaning/SRS hoặc tự cho exposed ở ID khác. Không ghi khi bảng ngoài viewport/đóng/tab ẩn. Hybrid forms+resultId bị từ chối, quan sát riêng cùng timestamp vẫn được xét.
+- Nội dung và observer đã rà độc lập; không gán lại forms cho lịch sử cũ thiếu dữ kiện. Còn 5.399 mục chưa có usage riêng; nghe vẫn TTS, chưa Safari/iPhone thật hoặc Supabase thật.
+- Kiểm thử cuối: **430 unit, 46 data, 138 Chromium**, TypeScript và production root/subpath/offline/UTM đạt. Một selector E2E cũ chọn avoid được cập nhật để không nhầm với collocation avoid bias; kiểm bảo toàn dữ liệu giữ nguyên. Nguồn mới live 60/60; metadata 187 mục / 237 URL đạt.
+
+## Mốc bàn giao 25/10/2026 (lịch sử)
+
+Cập nhật **25/10/2026**: đã sửa đợt audit trên mốc 1657d31, không xây lại website. Báo cáo hiện hành: [learning-integrity-2026-10-25.md](learning-integrity-2026-10-25.md). Các phần 24/10 và trước đó phía dưới là lịch sử, không phải danh sách lỗi còn mở hiện tại.
 
 - Chấm trung tính cho các cặp/câu đã rà, thêm đường bỏ qua chấm đề chưa rõ; không phạt SRS hay cấp điểm nhớ từ đích. Không tuyên bố chấm mọi đồng nghĩa/ngữ pháp.
 - Ẩn đáp án preview; ghi sự kiện tiếp xúc bất biến cả khi đọc nhiều từ; priming cùng mặt chữ khác ID/POS làm giảm bằng chứng truy hồi chữ. Không gộp nghĩa/SRS. Sau lần quên/gợi ý phải có phục hồi độc lập sau ít nhất 24 giờ; sửa ngay không hồi sinh retained.

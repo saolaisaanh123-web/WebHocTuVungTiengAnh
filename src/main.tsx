@@ -43,6 +43,7 @@ import {
   isSlang,
   sortForLearning,
   expose,
+  exposeWrittenForms,
   independence,
   interleaveQueue,
   pendingScheduledTasks,
@@ -58,7 +59,13 @@ import ErrorBoundary from "./ErrorBoundary";
 import WordDetail from "./DictionaryEntry";
 import UsageNotes from "./UsageNotes";
 import { formatPartOfSpeech, partOfSpeechCaption } from "./part-of-speech";
-import { attachStudyContexts, exerciseWord, getUsage } from "./usage";
+import {
+  attachStudyContexts,
+  exerciseWord,
+  getUsage,
+  normalizeVocabularyLookup,
+  vocabularyLookupText,
+} from "./usage";
 import { selectLearningEvidence } from "./evidence";
 import { mergeBackupSchedules } from "./schedule-state";
 import {
@@ -88,11 +95,7 @@ import { assessLearningAnswer } from "./assessment";
 import { sessionProgress, sessionSummaryLines } from "./session-guidance";
 import GrammarReference from "./GrammarReference";
 import { grammarArticles, grammarGroups } from "./grammar-data";
-import {
-  headwordSearchText,
-  preferredHeadword,
-  selectEnglishVoice,
-} from "./american-english";
+import { preferredHeadword, selectEnglishVoice } from "./american-english";
 import { clearSyncBinding } from "./sync";
 import { pronunciationPrompt } from "./pronunciation";
 import {
@@ -375,6 +378,11 @@ function App() {
     // must not hide an earlier view that primed an answer on another device.
     const next = existing.reduce((state, id) => expose(state, id, time), base);
     commit(next, undefined, base).catch(notifyError);
+  };
+  const exposeForms = (wordId: string, forms: string[]) => {
+    const base = current.current;
+    const next = exposeWrittenForms(base, wordId, forms);
+    if (next !== base) commit(next, undefined, base).catch(notifyError);
   };
   const openDetail = (id: string) => {
     setDetail(id);
@@ -677,9 +685,20 @@ function App() {
     Math.max(0, state.daily - newToday),
     due.length > 20 ? 2 : state.daily,
   );
+  const lookupIndex = useMemo(
+    () =>
+      new Map(
+        active.map((entry) => [
+          entry.word.id,
+          vocabularyLookupText(entry.word),
+        ]),
+      ),
+    [active],
+  );
+  const lookupQuery = normalizeVocabularyLookup(search);
   const filtered = active.filter(
     (e) =>
-      headwordSearchText(e.word).includes(search.toLocaleLowerCase()) &&
+      (lookupIndex.get(e.word.id) || "").includes(lookupQuery) &&
       (!topic || (e.word.topics || "").split(",").includes(topic)) &&
       (!collection ||
         (e.word.collections || "").split(",").includes(collection)) &&
@@ -2050,7 +2069,8 @@ function App() {
                   <Search size={18} />
                   <input
                     aria-label="Tìm từ và nghĩa"
-                    placeholder="Tìm từ hoặc nghĩa tiếng Việt…"
+                    aria-describedby="vocabulary-search-help"
+                    placeholder="Tìm từ, dạng động từ hoặc cách dùng…"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -2101,6 +2121,10 @@ function App() {
                   <option value="usage">Có cách dùng đã đối chiếu</option>
                 </select>
               </div>
+              <p className="fineprint" id="vocabulary-search-help">
+                Tra cả dạng động từ và cách dùng đã đối chiếu; hỗ trợ tiếng Việt
+                không dấu. Dạng tìm thấy không tự trở thành đáp án cho mọi câu.
+              </p>
               <p className="fineprint">
                 Phạm vi hiện tại: {filterSummary}{" "}
                 <button onClick={resetFilters}>Xóa mọi bộ lọc</button>
@@ -2681,7 +2705,12 @@ function App() {
                         <p lang="en">{exercise.example_en}</p>
                       )}
                       <small lang="vi">{exercise.example_vi}</small>
-                      <UsageNotes word={w} speak={speak} compact />
+                      <UsageNotes
+                        word={w}
+                        speak={speak}
+                        onExposeWrittenForms={exposeForms}
+                        compact
+                      />
                       {!feedback &&
                         ([0, 2].includes(task.skill) ? (
                           <div className="study-actions">
@@ -3107,6 +3136,7 @@ function App() {
             entry={state.entries[detail]}
             state={state}
             speak={speak}
+            onExposeWrittenForms={exposeForms}
             edit={() => {
               setEditor(serialize([state.entries[detail].word]));
               setDetail(undefined);

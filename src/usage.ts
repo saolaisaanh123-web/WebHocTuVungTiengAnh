@@ -50,6 +50,63 @@ export function getUsage(word: Word): UsageEntry | undefined {
     : undefined;
 }
 
+/** Lookup normalization is deliberately separate from answer grading. Folding
+ * Vietnamese accents helps find a note; it never expands accepted answers. */
+export const normalizeVocabularyLookup = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[đĐ]/g, "d")
+    .toLocaleLowerCase("vi-VN")
+    .replace(/[’‘]/g, "'")
+    .trim()
+    .replace(/\s+/g, " ");
+
+const lookupCache = new WeakMap<
+  Word,
+  { fields: string[]; usage: UsageEntry | undefined; text: string }
+>();
+
+/** Index only the current word and its sense-matched reviewed reference.
+ * Examples, incorrect sentences, alternative answers and source URLs are not
+ * lookup aliases: mentioning another word in them must not attach its forms
+ * to this sense. The cache also checks fields so in-place imported edits cannot
+ * keep an old sense's reference text. This function never mutates learner data. */
+export function vocabularyLookupText(word: Word): string {
+  const usage = getUsage(word);
+  const fields = [
+    word.word,
+    word.preferred_us_spelling || "",
+    word.spelling_variants || "",
+    word.meaning_vi,
+    word.collocation || "",
+    word.part_of_speech || "",
+  ];
+  const cached = lookupCache.get(word);
+  if (
+    cached &&
+    cached.usage === usage &&
+    fields.every((value, index) => value === cached.fields[index])
+  )
+    return cached.text;
+  const text = [
+    // Preserve the previous contiguous headword/alias/meaning search too.
+    fields.slice(0, 4).filter(Boolean).join(" "),
+    ...fields.slice(4),
+    ...(usage?.principalParts ? Object.values(usage.principalParts) : []),
+    ...(usage?.patterns.flatMap((pattern) => [
+      pattern.form,
+      pattern.explanation,
+    ]) || []),
+    usage?.countability || "",
+  ]
+    .filter(Boolean)
+    .map(normalizeVocabularyLookup)
+    .join("\n");
+  lookupCache.set(word, { fields, usage, text });
+  return text;
+}
+
 /** Never silently fall back to a different question if the saved sense changed. */
 export function exerciseWord(
   word: Word,

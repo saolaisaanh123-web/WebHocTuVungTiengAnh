@@ -3,10 +3,12 @@ import {
   contentKey,
   empty,
   expose,
+  exposeWrittenForms,
   merge,
   record,
   type Result,
   type State,
+  validateBackup,
 } from "./core";
 import {
   appendExposureEvent,
@@ -16,7 +18,12 @@ import {
   validateExposureEvents,
   type ExposureEvent,
 } from "./exposure-events";
-import { mergeCloudState } from "./sync";
+import {
+  cloudPayload,
+  decodeCloudPayload,
+  encodeCloudPayload,
+  mergeCloudState,
+} from "./sync";
 
 const DAY = 86_400_000;
 const NOW = Date.UTC(2026, 9, 22, 12);
@@ -101,6 +108,264 @@ function verbResult(state: State, skill = 1): Result {
     exposureGap: 8 * DAY,
   });
 }
+
+function inflectedForms(): State {
+  const current = merge(
+    empty(),
+    [
+      {
+        id: "interest-v",
+        word: "interest",
+        part_of_speech: "verb",
+        meaning_vi: "khiến ai quan tâm",
+        example_en: "These books interest me.",
+        example_vi: "Những cuốn sách này làm tôi quan tâm.",
+      },
+      {
+        id: "interested-adj",
+        word: "interested",
+        part_of_speech: "adjective",
+        meaning_vi: "quan tâm; hứng thú",
+        example_en: "I am interested in science.",
+        example_vi: "Tôi quan tâm tới khoa học.",
+      },
+    ],
+    "default",
+  );
+  current.exposures = {
+    "interest-v": NOW - 8 * DAY,
+    "interested-adj": NOW - 8 * DAY,
+  };
+  return current;
+}
+function adjectiveResult(current: State, skill = 1): Result {
+  return result({
+    id: `adj-answer-${skill}`,
+    wordId: "interested-adj",
+    time: NOW,
+    skill,
+    answer: "interested",
+    audioPlayed: [2, 3].includes(skill) || undefined,
+    exposureGap: 8 * DAY,
+    contentVersion: contentKey(current.entries["interested-adj"].word, skill),
+  });
+}
+
+describe("actually observed inflected forms", () => {
+  it("lowers only written-retrieval confidence after a displayed form without crediting or exposing the other meaning", () => {
+    for (const skill of [1, 3, 4]) {
+      const base = inflectedForms();
+      const viewed = exposeWrittenForms(
+        base,
+        "interest-v",
+        ["interested"],
+        NOW - 1000,
+      );
+      expect(viewed.exposures?.["interested-adj"]).toBe(NOW - 8 * DAY);
+      expect(viewed.entries).toEqual(base.entries);
+      expect(viewed.history).toEqual([]);
+      expect(viewed.schedules).toEqual({});
+      const answered = record(viewed, adjectiveResult(viewed, skill), false);
+      expect(answered.history[0]).toMatchObject({
+        correct: true,
+        independent: false,
+        exposureGap: 1000,
+      });
+      expect(deriveResultExposure(answered, answered.history[0])).toEqual({
+        independent: false,
+        exposureGap: 1000,
+      });
+      expect(answered.schedules).toEqual({});
+      expect(base.exposureEvents).toBeUndefined();
+    }
+  });
+
+  it("does not infer semantic recognition or unseen forms from a verb table", () => {
+    for (const skill of [0, 2]) {
+      const viewed = exposeWrittenForms(
+        inflectedForms(),
+        "interest-v",
+        ["interested"],
+        NOW - 1000,
+      );
+      expect(
+        record(viewed, adjectiveResult(viewed, skill), false).history[0],
+      ).toMatchObject({ independent: true, exposureGap: 8 * DAY });
+    }
+    for (const [form, time] of [
+      ["interesting", NOW - 1000],
+      ["interested", NOW + 1],
+    ] as const) {
+      const viewed = exposeWrittenForms(
+        inflectedForms(),
+        "interest-v",
+        [form],
+        time,
+      );
+      expect(
+        record(viewed, adjectiveResult(viewed), false).history[0],
+      ).toMatchObject({ independent: true, exposureGap: 8 * DAY });
+    }
+  });
+
+  it("keeps observed form text through later edits and two-device observations straddling the answer", () => {
+    const base = inflectedForms();
+    const laptop = record(base, adjectiveResult(base), false);
+    const saved = structuredClone(laptop.history[0]);
+    let phone = exposeWrittenForms(
+      base,
+      "interest-v",
+      ["interested"],
+      NOW - 1000,
+    );
+    phone = exposeWrittenForms(phone, "interest-v", ["interested"], NOW + 1000);
+    // The table may later change, but its stored observations remain factual.
+    phone = {
+      ...phone,
+      entries: {
+        ...phone.entries,
+        "interest-v": {
+          ...phone.entries["interest-v"],
+          word: {
+            ...phone.entries["interest-v"].word,
+            word: "changed",
+            meaning_vi: "nghĩa mới",
+          },
+        },
+      },
+    };
+    const merged = mergeCloudState(base, laptop, phone).state;
+    expect(
+      merged.exposureEvents
+        ?.filter((event) => event.writtenForms)
+        .map((event) => event.time),
+    ).toEqual([NOW - 1000, NOW + 1000]);
+    expect(deriveResultExposure(merged, merged.history[0])).toEqual({
+      independent: false,
+      exposureGap: 1000,
+    });
+    expect(merged.history[0]).toEqual(saved);
+    expect(laptop.history[0]).toEqual(saved);
+    expect(merged.schedules).toEqual({});
+  });
+
+  it("preserves optional form events in JSON backups and compact cloud roundtrips without a storage migration", async () => {
+    const viewed = exposeWrittenForms(
+      inflectedForms(),
+      "interest-v",
+      ["interested", " interesting ", "interested"],
+      NOW - 1000,
+    );
+    const backup = validateBackup(JSON.parse(JSON.stringify(viewed)));
+    expect(backup.exposureEvents).toEqual(viewed.exposureEvents);
+    expect(backup.exposureEvents?.[0].writtenForms).toEqual([
+      "interested",
+      "interesting",
+    ]);
+    const cloud = await decodeCloudPayload(await encodeCloudPayload(viewed));
+    expect(cloud).toEqual(cloudPayload(viewed));
+    expect(cloud.exposureEvents?.[0].writtenForms).toEqual([
+      "interested",
+      "interesting",
+    ]);
+    expect(
+      validateBackup(JSON.parse(JSON.stringify(inflectedForms())))
+        .exposureEvents,
+    ).toBeUndefined();
+  });
+
+  it("does not self-exclude a separate same-time form sighting with a misleading result reference", () => {
+    const current = inflectedForms();
+    const answered = record(current, adjectiveResult(current), false);
+    const raw = {
+      ...answered,
+      exposureEvents: [
+        ...(answered.exposureEvents || []),
+        {
+          id: "distinct-form-at-answer",
+          wordId: "interest-v",
+          time: NOW,
+          writtenForms: ["interested"],
+          resultId: answered.history[0].id,
+        },
+      ],
+    };
+    // Unsupported hybrids are rejected at the boundary; even a caller with an
+    // unchecked State must not turn a different observation into its own answer.
+    expect(() => validateBackup(raw)).toThrow();
+    expect(deriveResultExposure(raw, raw.history[0])).toEqual({
+      independent: false,
+      exposureGap: 0,
+    });
+    const valid = {
+      ...answered,
+      exposureEvents: [
+        ...(answered.exposureEvents || []),
+        {
+          id: "real-form-at-answer",
+          wordId: "interest-v",
+          time: NOW,
+          writtenForms: ["interested"],
+        },
+      ],
+    };
+    expect(deriveResultExposure(valid, valid.history[0])).toEqual({
+      independent: false,
+      exposureGap: 0,
+    });
+  });
+
+  it("rejects malformed or conflicting immutable form observations and copies form arrays", () => {
+    const current = inflectedForms();
+    const forms = ["interested"];
+    const event = {
+      id: "form-view",
+      wordId: "interest-v",
+      time: NOW,
+      writtenForms: forms,
+    };
+    const copied = appendExposureEvent(current, event);
+    forms[0] = "changed";
+    expect(copied.exposureEvents?.[0].writtenForms).toEqual(["interested"]);
+    expect(() =>
+      mergeExposureEvents(copied.exposureEvents, [
+        { ...event, writtenForms: ["interesting"] },
+      ]),
+    ).toThrow(/trùng/);
+    expect(() =>
+      validateBackup({
+        ...current,
+        exposureEvents: [
+          { ...event, writtenForms: ["interested"], resultId: "adj-answer-1" },
+        ],
+      }),
+    ).toThrow();
+    expect(() =>
+      mergeExposureEvents(copied.exposureEvents, [
+        { id: event.id, wordId: event.wordId, time: event.time },
+      ]),
+    ).toThrow(/trùng/);
+    for (const writtenForms of [
+      [],
+      [""],
+      [" interested"],
+      ["interested\n"],
+      ["a".repeat(129)],
+      ["interested", "INTERESTED"],
+      Array.from({ length: 17 }, (_, i) => `form${i}`),
+      [123],
+    ]) {
+      expect(
+        () =>
+          validateBackup({
+            ...current,
+            exposureEvents: [{ ...event, writtenForms }],
+          }),
+        JSON.stringify(writtenForms),
+      ).toThrow();
+    }
+  });
+});
 
 describe("immutable cross-device exposure evidence", () => {
   it("does not count just-seen spelling in another POS as independent written recall, without merging schedules or meaning IDs", () => {
