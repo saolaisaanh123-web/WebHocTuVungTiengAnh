@@ -59,6 +59,10 @@ describe("fair target-word assessment on the real corpus", () => {
     ["begin", "start"],
     ["glad", "happy"],
     ["happy", "glad"],
+    ["close", "shut"],
+    ["shut", "close"],
+    ["sick", "ill"],
+    ["ill", "sick"],
   ])(
     "keeps %s neutral for the reviewed ambiguous meaning cue of %s",
     (answer, target) => {
@@ -141,6 +145,10 @@ describe("fair target-word assessment on the real corpus", () => {
     ["difficult", "hard"],
     ["glad", "happy"],
     ["happy", "glad"],
+    ["close", "shut"],
+    ["shut", "close"],
+    ["sick", "ill"],
+    ["ill", "sick"],
   ])(
     "keeps the reviewed contextual alternative %s neutral for %s",
     (answer, target) => {
@@ -148,6 +156,55 @@ describe("fair target-word assessment on the real corpus", () => {
       expect(assess(answer, target, 4)).toMatchObject({ outcome: "ungraded" });
     },
   );
+
+  it("does not neutralize illness alternatives for slang or closing alternatives for another sense", () => {
+    const close = entry("close");
+    const sick = entry("sick");
+    for (const skill of [1, 4]) {
+      expect(
+        assessLearningAnswer(
+          "shut",
+          { ...close, meaning_vi: "kết thúc cuộc họp" },
+          skill,
+          words,
+        ),
+      ).toEqual({ outcome: "incorrect" });
+      expect(
+        assessLearningAnswer(
+          "ill",
+          { ...sick, meaning_vi: "cực đỉnh; rất ấn tượng" },
+          skill,
+          words,
+        ),
+      ).toEqual({ outcome: "incorrect" });
+      expect(
+        assessLearningAnswer(
+          "shut",
+          { ...close, part_of_speech: "adjective" },
+          skill,
+          words,
+        ),
+      ).toEqual({ outcome: "incorrect" });
+    }
+    expect(
+      assessLearningAnswer(
+        "shut",
+        { ...close, example_en: "We will close the deal tomorrow." },
+        4,
+        words,
+      ),
+    ).toEqual({ outcome: "incorrect" });
+    expect(
+      assessLearningAnswer(
+        "ill",
+        { ...sick, example_en: "That guitar solo was sick." },
+        4,
+        words,
+      ),
+    ).toEqual({ outcome: "incorrect" });
+    expect(assess("shut", "close", 3)).toEqual({ outcome: "incorrect" });
+    expect(assess("ill", "sick", 3)).toEqual({ outcome: "incorrect" });
+  });
 
   it("does not generalize a contextual alternative to another sentence or word sense", () => {
     const film = entry("film");
@@ -168,6 +225,10 @@ describe("fair target-word assessment on the real corpus", () => {
     ["begin", "start", 1],
     ["difficult", "hard", 4],
     ["happy", "glad", 4],
+    ["close", "shut", 1],
+    ["sick", "ill", 1],
+    ["close", "shut", 4],
+    ["sick", "ill", 4],
   ] as const)(
     "does not reset a due schedule or award recall evidence for %s → %s",
     (target, answer, skill) => {

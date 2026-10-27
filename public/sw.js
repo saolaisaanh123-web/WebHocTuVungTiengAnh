@@ -1,7 +1,9 @@
 /* Jeongyeon offline shell. Learner records stay in IndexedDB, never here. */
 const scope = new URL(self.registration.scope);
 const prefix = `jeongyeon-offline:${encodeURIComponent(scope.pathname)}:`;
-const cacheName = `${prefix}v2`;
+const cacheName = `${prefix}v3`;
+const previousCacheName = `${prefix}v2`;
+const corpusManifestHeader = "x-jeongyeon-vocabulary-manifest";
 const shellURL = scope.href;
 const corpusURL = new URL("data/vocabulary.txt", scope).href;
 const manifestURL = new URL("data/vocabulary-version.json", scope).href;
@@ -141,8 +143,48 @@ async function cacheCorpus(corpusResponse, manifestResponse) {
   const manifest = await readManifest(manifestResponse);
   await verifyCorpus(corpusResponse, manifest);
   const cache = await caches.open(cacheName);
-  await cache.put(corpusURL, corpusResponse);
-  await cache.put(manifestURL, manifestResponse);
+  // One Cache.put publishes the body and its verified version atomically. A
+  // rejected replacement leaves the previous complete response available.
+  // Keep a new cache namespace so installing this worker cannot modify the
+  // separate body/manifest pair still used by an older active worker.
+  const headers = new Headers({
+    "content-type": "text/plain; charset=utf-8",
+    [corpusManifestHeader]: JSON.stringify({
+      version: manifest.version,
+      entryCount: manifest.entryCount,
+      bytes: manifest.bytes,
+    }),
+  });
+  await cache.put(corpusURL, new Response(corpusResponse.body, { headers }));
+}
+async function cachedVocabulary() {
+  const corpus = await (await caches.open(cacheName)).match(corpusURL);
+  const metadata = corpus?.headers.get(corpusManifestHeader);
+  if (metadata) {
+    const manifest = new Response(metadata, {
+      headers: { "content-type": "application/json" },
+    });
+    // The body was verified before the atomic cache write. Reject malformed
+    // metadata rather than returning an unrelated, separately cached manifest.
+    await readManifest(manifest);
+    return { corpus, manifest, legacy: false };
+  }
+  // A previously installed v2 worker stored two entries. Read them only after
+  // verifying they still form one complete version; never trust a partial pair.
+  // This also preserves offline access if quota prevents the v3 migration.
+  if (!(await caches.keys()).includes(previousCacheName)) return null;
+  const previous = await caches.open(previousCacheName);
+  const [oldCorpus, oldManifest] = await Promise.all([
+    previous.match(corpusURL),
+    previous.match(manifestURL),
+  ]);
+  if (!oldCorpus || !oldManifest) return null;
+  try {
+    await verifyCorpus(oldCorpus, await readManifest(oldManifest));
+    return { corpus: oldCorpus, manifest: oldManifest, legacy: true };
+  } catch {
+    return null;
+  }
 }
 async function prepare() {
   const [shell, corpus, manifest] = await Promise.all([
@@ -156,13 +198,15 @@ async function prepare() {
 async function isReady() {
   try {
     const cache = await caches.open(cacheName);
-    const [shell, corpus, manifestResponse] = await Promise.all([
+    const [shell, vocabulary] = await Promise.all([
       cache.match(shellURL),
-      cache.match(corpusURL),
-      cache.match(manifestURL),
+      cachedVocabulary(),
     ]);
-    if (!shell || !corpus || !manifestResponse) return false;
-    await verifyCorpus(corpus, await readManifest(manifestResponse));
+    if (!shell || !vocabulary) return false;
+    await verifyCorpus(
+      vocabulary.corpus,
+      await readManifest(vocabulary.manifest),
+    );
     const pending = shellAssets(await shell.text());
     const seen = new Set();
     while (pending.length) {
@@ -200,11 +244,38 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       const current = await caches.open(cacheName);
+      let retainPrevious = false;
+      const vocabulary = await cachedVocabulary();
+      if (vocabulary?.legacy)
+        try {
+          await cacheCorpus(vocabulary.corpus, vocabulary.manifest);
+        } catch {
+          retainPrevious = true;
+        }
+      // Keep the old worker's pair while any app window could still be using
+      // it, including an uncontrolled tab racing activation.
+      try {
+        retainPrevious ||= (
+          await self.clients.matchAll({
+            includeUncontrolled: true,
+            type: "window",
+          })
+        ).some((client) => {
+          const url = new URL(client.url);
+          return (
+            url.origin === scope.origin &&
+            url.pathname.startsWith(scope.pathname)
+          );
+        });
+      } catch {
+        retainPrevious = true;
+      }
       for (const key of await caches.keys()) {
         if (!key.startsWith(prefix) || key === cacheName) continue;
         // Normally activation waits for old controlled tabs to close. Retain
         // their public hashed assets as well for uncontrolled-window races.
-        // Never migrate an old HTML/corpus pair or arbitrary/private requests.
+        // The corpus migration above is separately verified. This loop only
+        // copies public hashed assets, never old HTML or private requests.
         const old = await caches.open(key);
         for (const request of await old.keys()) {
           const url = assetURL(request.url);
@@ -212,7 +283,8 @@ self.addEventListener("activate", (event) => {
           const response = await old.match(request);
           if (response && usable(response)) await current.put(url, response);
         }
-        await caches.delete(key);
+        if (key !== previousCacheName || !retainPrevious)
+          await caches.delete(key);
       }
       await self.clients.claim();
       await notify();
@@ -225,6 +297,18 @@ self.addEventListener("message", (event) => {
 });
 
 async function cachedOrError(url) {
+  if (url === corpusURL || url === manifestURL) {
+    try {
+      const vocabulary = await cachedVocabulary();
+      return vocabulary
+        ? url === corpusURL
+          ? vocabulary.corpus
+          : vocabulary.manifest
+        : Response.error();
+    } catch {
+      return Response.error();
+    }
+  }
   const cached = await (await caches.open(cacheName)).match(url);
   return cached || Response.error();
 }
@@ -251,8 +335,12 @@ async function vocabularyFirst(request, event) {
       event.waitUntil(
         publicFetch(manifestURL)
           .then((manifest) => cacheCorpus(response.clone(), manifest))
-          .then(() => notify())
-          .catch(() => {}),
+          // A failed update keeps the previous complete offline version;
+          // report its availability rather than leaving the UI uninformed.
+          .then(
+            () => notify(),
+            () => notify(),
+          ),
       );
     // The manifest is saved together with a verified corpus, never on its own.
     return response;

@@ -231,8 +231,130 @@ describe("Authored contextual conversation practice", () => {
     state.conversations.push(corrected);
     expect(
       recommendDialogues(state).find((r) => r.dialogue.id === sample.id)?.weak,
-    ).toBe(0);
+    ).toBe(2);
     expect(state.history).toEqual([]);
     expect(state.schedules).toEqual({});
+  });
+  it("keeps difficulty through supported repairs and requires a fresh delayed unassisted check", () => {
+    const state = source();
+    const day = 86_400_000;
+    const start = Date.UTC(2026, 0, 1);
+    const values = Object.fromEntries(
+      sample.questions.map((q) => [q.id, q.accepted[0]]),
+    );
+    const cloze = sample.questions.find((q) => q.kind === "cloze")!;
+    const failed = makeConversationAttempt(
+      state,
+      sample,
+      { ...values, [cloze.id]: "not the answer" },
+      { lines: [], complete: false, hidden: true },
+    );
+    failed.time = start;
+    state.conversations = [failed];
+    const weak = (now: number) =>
+      recommendDialogues(state, { weakOnly: true, now }).find(
+        (r) => r.dialogue.id === sample.id,
+      )?.weak || 0;
+    const add = (time: number, supported: boolean, retryOf?: string) => {
+      const attempt = makeConversationAttempt(
+        state,
+        sample,
+        values,
+        { lines: [], complete: false, hidden: true, usedHint: supported },
+        retryOf,
+      );
+      attempt.time = time;
+      state.conversations!.push(attempt);
+      return attempt;
+    };
+    expect(weak(start)).toBe(1);
+    const repair = add(start + 60_000, true, failed.id);
+    expect(weak(repair.time)).toBe(1);
+    const nextDayRepair = add(repair.time + day, false, repair.id);
+    expect(weak(nextDayRepair.time)).toBe(1);
+    const early = add(nextDayRepair.time + day - 1, false);
+    expect(weak(early.time)).toBe(1);
+    const recovered = add(early.time + day, false);
+    expect(weak(recovered.time)).toBe(0);
+    const newLapse = { ...failed, id: "new-lapse", time: recovered.time + 1 };
+    state.conversations.push(newLapse);
+    expect(weak(newLapse.time)).toBe(1);
+    expect(state.history).toEqual([]);
+    expect(state.schedules).toEqual({});
+  });
+
+  it("does not let old versions or an unrelated answer clear current-sense difficulty", () => {
+    const state = source();
+    const day = 86_400_000;
+    const start = Date.UTC(2026, 0, 1);
+    const values = Object.fromEntries(
+      sample.questions.map((q) => [q.id, q.accepted[0]]),
+    );
+    const cloze = sample.questions.find((q) => q.kind === "cloze")!;
+    const id = cloze.targetIds[0];
+    const make = (time: number, wrong = false) => {
+      const attempt = makeConversationAttempt(
+        state,
+        sample,
+        { ...values, ...(wrong ? { [cloze.id]: "wrong" } : {}) },
+        { lines: [], complete: false, hidden: true },
+      );
+      attempt.time = time;
+      return attempt;
+    };
+    const failed = make(start, true);
+    const oldContent = make(start + day);
+    oldContent.targetContentVersions[id] = "previous meaning";
+    const oldDialogue = make(start + 2 * day);
+    oldDialogue.dialogueVersion = "previous authored text";
+    const unrelated = make(start + 3 * day);
+    unrelated.answers = unrelated.answers.filter(
+      (answer) => !answer.targetIds.includes(id),
+    );
+    const future = make(start + 10 * day);
+    state.conversations = [future, unrelated, oldDialogue, oldContent, failed];
+    const before = JSON.stringify(state);
+    expect(
+      recommendDialogues(state, { weakOnly: true, now: start + 4 * day }).find(
+        (r) => r.dialogue.id === sample.id,
+      )?.weak,
+    ).toBe(1);
+    expect(JSON.stringify(state)).toBe(before);
+    // A new independent check of the current authored questions can clear the
+    // dialogue-only difficulty, without mutating historical records or SRS.
+    state.conversations.push(make(start + 4 * day));
+    expect(
+      recommendDialogues(state, { weakOnly: true, now: start + 4 * day }).find(
+        (r) => r.dialogue.id === sample.id,
+      ),
+    ).toBeUndefined();
+    expect(state.history).toEqual([]);
+    expect(state.schedules).toEqual({});
+    // Recovery in the authored dialogue cannot remove independent vocabulary
+    // difficulty recorded by the existing learning-evidence selector.
+    state.history = [
+      result(id, {
+        time: start + 4 * day,
+        contentVersion: contentKey(state.entries[id].word),
+      }),
+    ];
+    expect(
+      recommendDialogues(state, { weakOnly: true, now: start + 4 * day }).find(
+        (r) => r.dialogue.id === sample.id,
+      )?.weak,
+    ).toBe(1);
+    state.history = [];
+    state.conversations = [
+      {
+        ...failed,
+        targetContentVersions: {
+          ...failed.targetContentVersions,
+          [id]: "old sense",
+        },
+      },
+    ];
+    expect(
+      recommendDialogues(state, { weakOnly: true, now: start + 4 * day }),
+    ).toEqual([]);
   });
 });

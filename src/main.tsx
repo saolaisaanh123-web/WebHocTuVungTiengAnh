@@ -46,7 +46,6 @@ import {
   exposeWrittenForms,
   independence,
   interleaveQueue,
-  pendingScheduledTasks,
   contentKey,
 } from "./core";
 import {
@@ -72,12 +71,14 @@ import {
   mergeExposureEvents,
   exposureEventsForSnapshot,
 } from "./exposure-events";
-import { orderScheduledTasks } from "./session-planning";
 import {
-  freshForPreference,
-  chosenStudySkills,
-  filterPendingForPreference,
-} from "./learning-preferences";
+  orderScheduledTasks,
+  scheduledReviews,
+  reviewForecast,
+  planScheduledStudy,
+  estimateStudyMinutes,
+} from "./session-planning";
+import { freshForPreference, chosenStudySkills } from "./learning-preferences";
 import CollectionBrowser from "./CollectionBrowser";
 import {
   rankNewWords,
@@ -629,15 +630,8 @@ function App() {
       [state.entries],
     ),
     now = Date.now();
-  const due = Object.entries(state.schedules).filter(
-    ([k, s]) =>
-      s.due <= now &&
-      state.entries[k.slice(0, k.lastIndexOf(":"))] &&
-      !state.entries[k.slice(0, k.lastIndexOf(":"))].archived &&
-      canPractice(
-        state.entries[k.slice(0, k.lastIndexOf(":"))].word,
-        Number(k.slice(k.lastIndexOf(":") + 1)),
-      ),
+  const due = scheduledReviews(state).filter(
+    ([, schedule]) => schedule.due <= now,
   );
   const dueWords = new Set(due.map(([k]) => k.slice(0, k.lastIndexOf(":"))))
     .size;
@@ -680,11 +674,30 @@ function App() {
   const newToday = active.filter(
     (e) => e.enrolled && e.enrolledAt && day(e.enrolledAt) === day(now),
   ).length;
-  const planned = Math.min(
-    fresh.length,
-    Math.max(0, state.daily - newToday),
-    due.length > 20 ? 2 : state.daily,
+  const todayPlan = useMemo(
+    () => planScheduledStudy(state, active, fresh, now),
+    [
+      state.entries,
+      state.history,
+      state.schedules,
+      state.daily,
+      state.studySkills,
+      active,
+      freshRecommendations,
+      Math.floor(now / 60_000),
+    ],
   );
+  const planned = todayPlan.freshWords;
+  const resumable = state.session || state.pausedScheduled;
+  const estimatedTasks = resumable
+    ? resumable.queue.slice(resumable.index)
+    : [
+        ...todayPlan.reviews,
+        ...todayPlan.continuing,
+        ...todayPlan.introductions,
+      ];
+  const estimatedMinutes = estimateStudyMinutes(estimatedTasks);
+  const forecast = reviewForecast(state, now);
   const lookupIndex = useMemo(
     () =>
       new Map(
@@ -771,6 +784,18 @@ function App() {
       collection && `Bộ: ${collection}`,
       level && `CEFR: ${level}`,
       status && `Trạng thái: ${statusLabels[status] || status}`,
+    ]
+      .filter(Boolean)
+      .join(" · ") || "Toàn bộ Kho từ";
+  // Scope metadata can contain the answer itself (e.g. topic "study").
+  // Keep exact filter values in the library, never in the blind-test preview.
+  const practiceFilterSummary =
+    [
+      search && "Đã lọc theo nội dung tìm kiếm",
+      topic && "Đã lọc theo chủ đề",
+      collection && "Đã lọc theo bộ từ",
+      level && `CEFR: ${level}`,
+      status && `Trạng thái: ${statusLabels[status] || "Đã chọn"}`,
     ]
       .filter(Boolean)
       .join(" · ") || "Toàn bộ Kho từ";
@@ -912,18 +937,6 @@ function App() {
         const planningActive = sortForLearning(
           Object.values(base.entries).filter((item) => !item.archived),
         );
-        const planningDue = Object.entries(base.schedules).filter(
-          ([key, schedule]) => {
-            const separator = key.lastIndexOf(":");
-            const item = base.entries[key.slice(0, separator)];
-            return (
-              schedule.due <= planningNow &&
-              item &&
-              !item.archived &&
-              canPractice(item.word, Number(key.slice(separator + 1)))
-            );
-          },
-        );
         const planningFresh = rankNewWords(
           base,
           freshForPreference(planningActive, base.learningFloor).filter(
@@ -934,53 +947,32 @@ function App() {
           base.learningMode || "smart",
           planningNow,
         ).map((recommendation) => recommendation.entry);
-        const enrolledToday = planningActive.filter(
-          (item) =>
-            item.enrolled &&
-            item.enrolledAt &&
-            day(item.enrolledAt) === day(planningNow),
-        ).length;
-        const freshLimit = Math.min(
-          planningFresh.length,
-          Math.max(0, base.daily - enrolledToday),
-          planningDue.length > 20 ? 2 : base.daily,
-        );
-        queue = planningDue
-          .sort((a, b) => a[1].due - b[1].due)
-          .map(([k]) => ({
-            id: k.slice(0, k.lastIndexOf(":")),
-            skill: Number(k.slice(k.lastIndexOf(":") + 1)),
-            review: uid(),
-          }));
-        goal = { due: queue.length, continuing: 0, fresh: 0 };
-        filterPendingForPreference(
+        const plan = planScheduledStudy(
           base,
-          pendingScheduledTasks(base, planningActive),
-        )
-          .filter(
-            (item) =>
-              base.entries[item.id]?.goal !== "recognition" ||
-              [0, 2].includes(item.skill),
-          )
-          .forEach((item) => {
-            if (
-              !queue.some((q) => q.id === item.id && q.skill === item.skill)
-            ) {
-              queue.push({ ...item, review: uid() });
-              goal!.continuing++;
-            }
-          });
-        queue = orderScheduledTasks(base, queue);
-        queue = interleaveQueue(queue);
-        const introductions: Session["queue"] = [];
-        planningFresh.slice(0, freshLimit).forEach((e) =>
-          chosenStudySkills(base, e).forEach((skill) => {
-            if (canPractice(e.word, skill))
-              introductions.push({ id: e.word.id, skill, review: uid() });
-          }),
+          planningActive,
+          planningFresh,
+          planningNow,
         );
-        goal.fresh = introductions.length;
-        queue.push(...interleaveQueue(introductions));
+        goal = {
+          due: plan.reviews.length,
+          continuing: plan.continuing.length,
+          fresh: plan.introductions.length,
+        };
+        queue = interleaveQueue(
+          orderScheduledTasks(
+            base,
+            [...plan.reviews, ...plan.continuing].map((item) => ({
+              ...item,
+              review: uid(),
+            })),
+            planningNow,
+          ),
+        );
+        queue.push(
+          ...interleaveQueue(
+            plan.introductions.map((item) => ({ ...item, review: uid() })),
+          ),
+        );
       } else {
         const eligible = (
           only
@@ -1650,9 +1642,14 @@ function App() {
                     </button>
                   )}
                   <small>
-                    Ưu tiên ôn từ cũ trước · Khoảng{" "}
-                    {Math.max(1, Math.ceil((due.length + planned * 4) * 0.6))}{" "}
-                    phút
+                    Ưu tiên ôn từ cũ trước · Khoảng {estimatedMinutes.min}–
+                    {estimatedMinutes.max} phút
+                    {" · "}
+                    {estimatedTasks.length} lượt
+                    {resumable ? " còn lại" : " dự kiến"}
+                    <br />
+                    Ước tính theo dạng bài, chưa gồm thời gian nghỉ hoặc sửa
+                    sai.
                   </small>
                 </div>
                 <div
@@ -2362,7 +2359,7 @@ function App() {
                 ))}
               </div>
               <p>
-                Phạm vi hiện tại: {filterSummary}{" "}
+                Phạm vi hiện tại: {practiceFilterSummary}{" "}
                 <button onClick={resetFilters}>Xóa mọi bộ lọc</button>{" "}
                 <button onClick={() => setPage("library")}>
                   Chọn bộ lọc trong Kho từ
@@ -3076,24 +3073,19 @@ function App() {
               </section>
               <section className="panel">
                 <h3>Lượng ôn sắp tới</h3>
-                {[0, 1, 2, 3, 4, 5, 6].map((i) => {
-                  const d = new Date();
+                <p className="fineprint">
+                  Hôm nay gồm cả những lượt quá hạn chưa ôn. Mỗi lượt chỉ được
+                  tính một lần.
+                </p>
+                {forecast.map((count, i) => {
+                  const d = new Date(now);
                   d.setDate(d.getDate() + i);
                   return (
                     <div className="skill-row" key={i}>
                       <span>
                         {i === 0 ? "Hôm nay" : d.toLocaleDateString("vi-VN")}
                       </span>
-                      <b>
-                        {
-                          Object.entries(state.schedules).filter(
-                            ([k, s]) =>
-                              !state.entries[k.slice(0, k.lastIndexOf(":"))]
-                                ?.archived && day(s.due) === day(+d),
-                          ).length
-                        }{" "}
-                        lượt kỹ năng
-                      </b>
+                      <b>{count} lượt kỹ năng</b>
                     </div>
                   );
                 })}

@@ -16,6 +16,7 @@ import {
   type LearningEvidence,
 } from "./evidence";
 import { scheduleForEntries } from "./schedule-state";
+import { reviewedSpellingVariants } from "./reviewed-spellings";
 
 export const skills = [
   "Hiểu nghĩa",
@@ -341,6 +342,7 @@ export const answerForms = (w: Word) =>
     w.word,
     ...(w.accepted_answers || "").split("|"),
     ...(w.spelling_variants || "").split("|"),
+    ...reviewedSpellingVariants(w),
     w.preferred_us_spelling || "",
   ]
     .map((a) => a.trim())

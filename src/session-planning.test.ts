@@ -12,7 +12,13 @@ import {
   type Word,
 } from "./core";
 import { selectLearningEvidence } from "./evidence";
-import { orderScheduledTasks } from "./session-planning";
+import {
+  estimateStudyMinutes,
+  orderScheduledTasks,
+  planScheduledStudy,
+  reviewForecast,
+  scheduledReviews,
+} from "./session-planning";
 
 const DAY = 86_400_000;
 const START = Date.UTC(2026, 5, 1, 12);
@@ -55,6 +61,102 @@ const answer = (
   independent: true,
   audioPlayed: [2, 3].includes(skill) ? true : undefined,
   contentVersion: contentKey(word, skill),
+});
+
+describe("Consistent review forecast and session estimate", () => {
+  it("includes overdue and later-today reviews once, excluding unusable and stale schedules", () => {
+    const state = setup();
+    const now = +new Date(2026, 9, 28, 12);
+    const at = (offset: number, hour = 12) =>
+      +new Date(2026, 9, 28 + offset, hour);
+    for (const [skill, due] of [
+      [0, at(-2)],
+      [1, at(0, 23)],
+      [2, at(1)],
+      [3, at(6)],
+      [4, at(7)],
+    ])
+      state.schedules[`${word.id}:${skill}`] = { due, last: at(-10), step: 2 };
+    const archived = { ...word, id: "archived" };
+    state.entries[archived.id] = {
+      word: archived,
+      origin: "custom",
+      archived: true,
+    };
+    state.schedules[`${archived.id}:1`] = {
+      due: at(-1),
+      last: at(-10),
+      step: 2,
+    };
+    state.schedules["missing:1"] = { due: at(-1), last: at(-10), step: 2 };
+    state.schedules[`${word.id}:5`] = {
+      due: at(-1),
+      last: at(-10),
+      step: 2,
+      contentVersion: "old-meaning",
+    };
+    state.schedules[`${word.id}:99`] = { due: at(-1), last: at(-10), step: 2 };
+    const before = structuredClone(state);
+    expect(reviewForecast(state, now)).toEqual([2, 1, 0, 0, 0, 0, 1]);
+    expect(
+      scheduledReviews(state).filter(([, s]) => s.due <= now),
+    ).toHaveLength(1);
+    expect(state).toEqual(before);
+  });
+
+  it("estimates the same due, continuing and chosen fresh tasks that Start uses, without touching saved work", () => {
+    const state = setup();
+    const pear = {
+      ...word,
+      id: "fresh-pear",
+      word: "pear",
+      example_en: "I eat a pear every day.",
+    };
+    state.entries[pear.id] = { word: pear, origin: "custom", archived: false };
+    state.entries[word.id].enrolled = true;
+    state.entries[word.id].enrolledAt = START - DAY;
+    state.studySkills = [4];
+    state.schedules[`${word.id}:0`] = {
+      due: START - 1,
+      last: START - DAY,
+      step: 0,
+    };
+    state.schedules[`${word.id}:1`] = {
+      due: START + DAY,
+      last: START - DAY,
+      step: 0,
+    };
+    state.session = {
+      id: "frozen",
+      queue: tasks(),
+      index: 2,
+      started: START,
+      scheduled: true,
+      count: 6,
+      draft: {
+        key: "frozen:2",
+        answer: "old draft",
+        hint: false,
+        revealed: false,
+      },
+    };
+    const before = structuredClone(state);
+    const plan = planScheduledStudy(
+      state,
+      Object.values(state.entries),
+      [state.entries[pear.id]],
+      START,
+    );
+    expect(plan.reviews).toEqual([{ id: word.id, skill: 0 }]);
+    expect(plan.continuing).toEqual([{ id: word.id, skill: 4 }]);
+    expect(plan.introductions).toEqual([{ id: pear.id, skill: 4 }]);
+    expect(plan.freshWords).toBe(1);
+    const oneSkill = estimateStudyMinutes(plan.introductions);
+    const allSkills = estimateStudyMinutes(tasks(pear.id));
+    expect(allSkills.min).toBeGreaterThan(oneSkill.max);
+    expect(estimateStudyMinutes([])).toEqual({ min: 0, max: 0 });
+    expect(state).toEqual(before);
+  });
 });
 
 describe("New scheduled-session planning", () => {

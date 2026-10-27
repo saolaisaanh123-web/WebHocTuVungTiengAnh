@@ -1,4 +1,5 @@
 import type { Result, State } from "./core";
+import { reviewedSpellingVariants } from "./reviewed-spellings";
 
 /** Immutable observations supplement the legacy latest-time map. They carry
  * no answer text and can be unioned safely after offline work on two devices. */
@@ -221,6 +222,7 @@ function observationIndex(state: State) {
           entry.word.word,
           entry.word.preferred_us_spelling || "",
           ...(entry.word.spelling_variants || "").split("|"),
+          ...reviewedSpellingVariants(entry.word),
         ]
           .map((form) =>
             form.normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase(),

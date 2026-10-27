@@ -1,6 +1,7 @@
 import { canPractice, contentKey, type State } from "./core";
 import type { ConversationAnswer, ConversationAttempt } from "./practice-data";
 import {
+  EVIDENCE_DAY,
   isWeakEvidence,
   selectLearningEvidence,
   validEvidenceTime,
@@ -1509,25 +1510,43 @@ export function recommendDialogues(
   const weak = new Set<string>();
   for (const results of evidence.attemptsBySkill.values())
     if (isWeakEvidence(results)) weak.add(results[0].wordId);
-  const lastAnswers = new Map<string, boolean>();
-  for (const a of [...currentConversations].sort((a, b) => a.time - b.time)) {
+  const dialogueWeak = new Set<string>();
+  const lastAnswerContact = new Map<string, number>();
+  const dialogueVersions = new Map(dialogues.map((d) => [d.id, d.version]));
+  for (const a of [...currentConversations].sort(
+    (a, b) => a.time - b.time || a.id.localeCompare(b.id),
+  )) {
     for (const id of a.targetIds) {
       const tested = a.answers.filter(
         (answer) =>
           answer.targetIds.includes(id) && typeof answer.correct === "boolean",
       );
       if (
-        tested.length &&
-        a.targetContentVersions[id] ===
+        !tested.length ||
+        a.targetContentVersions[id] !==
           (state.entries[id] && contentKey(state.entries[id].word))
       )
-        lastAnswers.set(
-          id,
-          tested.every((answer) => answer.correct === true),
-        );
+        continue;
+      const previous = lastAnswerContact.get(id);
+      if (tested.some((answer) => answer.correct === false))
+        dialogueWeak.add(id);
+      // Copying a correction or retrying immediately is useful practice, but
+      // cannot erase a difficulty. Require a fresh no-hint check after a full
+      // day since this sense's latest dialogue answer contact. This only clears
+      // the dialogue recommendation; it never certifies mastery or changes SRS.
+      else if (
+        dialogueWeak.has(id) &&
+        previous !== undefined &&
+        a.time - previous >= EVIDENCE_DAY &&
+        a.retryOf === undefined &&
+        a.dialogueVersion === dialogueVersions.get(a.dialogueId) &&
+        tested.every((answer) => answer.hint === false)
+      )
+        dialogueWeak.delete(id);
+      lastAnswerContact.set(id, a.time);
     }
   }
-  for (const [id, correct] of lastAnswers) if (!correct) weak.add(id);
+  for (const id of dialogueWeak) weak.add(id);
   const lastPractised = new Map<string, number>();
   for (const a of currentConversations)
     lastPractised.set(

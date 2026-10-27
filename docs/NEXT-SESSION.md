@@ -1,6 +1,20 @@
 # Jeongyeon — ghi nhớ cho phiên sửa tiếp theo
 
-Cập nhật mới nhất **27/10/2026**: tiếp tục chiều sâu cách dùng, tra cứu và bằng chứng mặt chữ. Báo cáo hiện hành: [usage-expansion-2026-10-27.md](usage-expansion-2026-10-27.md). Các mốc dưới đây là lịch sử.
+Cập nhật mới nhất **28/10/2026**: chốt đợt ổn định với phạm vi cố định, theo yêu cầu dừng vòng sửa/mở rộng liên tục của người dùng. Báo cáo hiện hành: [stable-release-2026-10-28.md](stable-release-2026-10-28.md).
+
+- Phạm vi: biến thể chính tả hợp lệ; đáp án mơ hồ đã xác nhận; bộ lọc lộ đáp án; củng cố hội thoại; dự báo/ước lượng phiên; cập nhật cặp TXT/manifest offline an toàn.
+- Đã sửa các lỗi trên và thêm hồi quy. Không thêm từ, cách dùng, hội thoại, trang, API trả phí hoặc dependency; giữ nguyên ID, TXT, lịch sử, SRS, queue/context/nháp đang dở và định dạng sao lưu.
+- Đáp án okay/Okay và e-mail áp dụng bằng lớp chính tả hẹp theo ID/POS/nghĩa đã rà; không đổi contentKey. close/shut và sick/ill trung tính trong đúng nghĩa/câu đã kiểm, không chấp nhận đồng nghĩa đại trà.
+- Hội thoại không gỡ điểm yếu bằng retry/có gợi ý/đúng tức thì; lượt mới không gợi ý sau ≥24h chỉ gỡ đề xuất của hội thoại, không tự chứng nhận nhớ vững.
+- Dự báo Hôm nay gồm quá hạn; Home và Start dùng chung kế hoạch cho ước lượng theo kỹ năng. Bộ lọc chi tiết chỉ hiển thị ở Kho từ, không lộ chữ tiếng Anh trước bài nhớ.
+- Cache v3 lưu TXT và manifest chung một bản ghi; lỗi cập nhật giữ bản hợp lệ cũ; chuyển cache v2 có xác minh và fallback khi thiếu dung lượng. Không chạm IndexedDB người học.
+- Kiểm thử chốt: **468 unit, 46 data, 144 Chromium**, TypeScript/build và production gốc/con/offline/UTM đạt; metadata nguồn 187 mục/237 URL đạt. Nguồn chính tả dùng phiếu đọc trực tiếp ngày 27/10; truy cập lại Oxford ngày 28/10 bị proxy 403, không gọi là lần xác minh mới.
+- **Điểm dừng:** đóng các lỗi đã xác nhận trong phạm vi trên, kiểm thử toàn bộ luồng học và triển khai. Không tự biến các giới hạn phát triển dài hạn thành điều kiện chưa hoàn thành, không tự bắt đầu vòng rà toàn kho/tăng nội dung tiếp theo.
+- Giới hạn ngoài đợt này: coverage cách dùng, giãn SRS/ngân sách phiên mới, chấm viết tổng quát, kiến trúc delta cloud, Safari/iPhone thật và dịch vụ Supabase thật. Chỉ làm tiếp khi có yêu cầu mới.
+
+## Mốc bàn giao 27/10/2026 (lịch sử)
+
+Tiếp tục chiều sâu cách dùng, tra cứu và bằng chứng mặt chữ. Báo cáo: [usage-expansion-2026-10-27.md](usage-expansion-2026-10-27.md). Các mốc dưới đây là lịch sử.
 
 - Thêm 32 động từ ở group-k/l/m: đủ 21 động từ bổ sung ngày 24/10 và 11 bất quy tắc phổ biến. Usage tăng 155→187, bảng dạng 7→39; đọc/rà độc lập 60 URL Oxford (32 American, 28 British phụ về dạng), live 60/60; metadata toàn bộ 187 mục / 237 URL đạt.
 - Không đổi byte TXT/version/155 supplements cũ. Vẫn 5.586 mục, 372 IPA; hash canonical giữ bfedc90307e912b5dd19f2620f92a45e0704b67054ef7a1070273fe2464209bb. Không mở rộng accepted_answers bằng các biến tố.

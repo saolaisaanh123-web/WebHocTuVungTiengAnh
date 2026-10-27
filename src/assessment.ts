@@ -28,6 +28,14 @@ const matchesSense = (word: Word, cue: SenseCue) =>
 // interchangeable words or alternative spellings of the target.
 const reviewedMeaningPairs: readonly (readonly [SenseCue, SenseCue])[] = [
   [
+    { word: "close", partOfSpeech: "verb", meaningVi: "đóng; khép lại" },
+    { word: "shut", partOfSpeech: "verb", meaningVi: "đóng lại" },
+  ],
+  [
+    { word: "sick", partOfSpeech: "adjective", meaningVi: "bị ốm, không khỏe" },
+    { word: "ill", partOfSpeech: "adjective", meaningVi: "ốm; mắc bệnh" },
+  ],
+  [
     { word: "begin", partOfSpeech: "verb", meaningVi: "bắt đầu" },
     { word: "start", partOfSpeech: "verb", meaningVi: "bắt đầu thực hiện" },
   ],
@@ -40,6 +48,34 @@ const reviewedMeaningPairs: readonly (readonly [SenseCue, SenseCue])[] = [
 // These are alternatives in these particular, reviewed sentences. They are not
 // a synonym dictionary and must not be applied to a different use of the word.
 const contextualAlternatives = [
+  {
+    word: "close",
+    partOfSpeech: "verb",
+    meaningVi: "đóng; khép lại",
+    example: "Please close the window before you leave.",
+    answers: ["shut"],
+  },
+  {
+    word: "shut",
+    partOfSpeech: "verb",
+    meaningVi: "đóng lại",
+    example: "Please shut the window before you leave.",
+    answers: ["close"],
+  },
+  {
+    word: "sick",
+    partOfSpeech: "adjective",
+    meaningVi: "bị ốm, không khỏe",
+    example: "She stayed home because she was sick.",
+    answers: ["ill"],
+  },
+  {
+    word: "ill",
+    partOfSpeech: "adjective",
+    meaningVi: "ốm; mắc bệnh",
+    example: "She is too ill to travel.",
+    answers: ["sick"],
+  },
   {
     word: "everyone",
     partOfSpeech: "pronoun",
