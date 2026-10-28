@@ -37,7 +37,7 @@ export const selectionModes: {
     value: "weak",
     label: "Củng cố từ yếu",
     description:
-      "Chọn từ còn yếu qua kiểm tra; bài Hiểu nghĩa còn nhận từ bạn tự báo chưa nhớ, có ghi rõ nguồn tự đánh giá.",
+      "Chọn từ còn yếu qua kiểm tra; Hiểu nghĩa và Nghe nhận biết còn nhận từ bạn tự báo chưa nhớ, có ghi rõ nguồn tự đánh giá.",
   },
   {
     value: "mixed",
@@ -250,32 +250,55 @@ function indexEvidence(
 /** A recognition self-rating can request practice without becoming objective
  * evidence. Only the first current-sense rating/check of a session counts; an
  * immediate retry must not erase the learner's original request for support. */
-function selfReportedWeakness(state: State, now: number): Map<string, Result> {
+function selfReportedWeakness(
+  state: State,
+  now: number,
+  skill?: number,
+): Map<string, Result> {
   const evidence = selectLearningEvidence(state, now);
   const validSuccesses = new Set(
     evidence.attempts
-      .filter((r) => r.skill === 0 && r.correct && !r.hint)
+      .filter((r) => [0, 2].includes(r.skill) && r.correct && !r.hint)
       .map((r) => r.id),
   );
   const ratings = new Map<string, Result>();
   const seenReviews = new Set<string>();
   const seenSessions = new Set<string>();
   for (const r of evidence.current) {
-    if (r.skill !== 0) continue;
-    const review = JSON.stringify([r.wordId, r.review || r.id]);
-    const session = JSON.stringify([r.wordId, r.session]);
+    if (
+      ![0, 2].includes(r.skill) ||
+      (skill !== undefined && r.skill !== skill) ||
+      !canPractice(state.entries[r.wordId].word, r.skill)
+    )
+      continue;
+    const review = JSON.stringify([r.wordId, r.skill, r.review || r.id]);
+    const session = JSON.stringify([r.wordId, r.skill, r.session]);
     if (seenReviews.has(review) || seenSessions.has(session)) continue;
     seenReviews.add(review);
     seenSessions.add(session);
-    if (!r.first) continue;
+    if (!r.first || (r.skill === 2 && r.audioPlayed !== true)) continue;
+    const request = JSON.stringify([r.wordId, r.skill]);
     if (r.method === "self") {
-      if (r.correct) ratings.delete(r.wordId);
-      else ratings.set(r.wordId, r);
+      if (r.correct && !r.hint) ratings.delete(request);
+      else if (!r.correct) ratings.set(request, r);
     } else if (validSuccesses.has(r.id)) {
-      ratings.delete(r.wordId);
+      ratings.delete(request);
     }
   }
-  return ratings;
+  // A success in visual recognition cannot clear a listening request (or the
+  // reverse). An unfiltered list returns each word once, using its latest
+  // still-unresolved request only for the explanatory self-rating label.
+  const byWord = new Map<string, Result>();
+  for (const rating of ratings.values()) {
+    const old = byWord.get(rating.wordId);
+    if (
+      !old ||
+      rating.time > old.time ||
+      (rating.time === old.time && compareIds(rating.id, old.id) < 0)
+    )
+      byWord.set(rating.wordId, rating);
+  }
+  return byWord;
 }
 
 function supportedLevel(
@@ -367,8 +390,8 @@ export function recommendWords(
   ).filter((e) => !e.archived && !e.known && canPractice(e.word, skill ?? 0));
   const evidence = indexEvidence(state, entries, now, skill);
   const selfReported =
-    mode === "weak" && (skill === undefined || skill === 0)
-      ? selfReportedWeakness(state, now)
+    mode === "weak" && (skill === undefined || [0, 2].includes(skill))
+      ? selfReportedWeakness(state, now, skill)
       : new Map<string, Result>();
   const sharedFrequencies = sharedSpellingFrequencies(state);
   // Recency controls optional practice variety, not mastery. Self-ratings and
@@ -485,7 +508,7 @@ export function recommendWords(
         ? "Chưa có số liệu tần suất."
         : `Tần suất Zipf ${frequency.toFixed(2)}${entry.word.level ? `; CEFR ${entry.word.level}` : ""}.${ownFrequency === undefined ? " Dùng số liệu wordfreq 3.1.1 của cùng mặt chữ; không phải tần suất riêng của nghĩa hoặc từ loại này." : ""}`;
     const memoryExplanation = selfRating
-      ? `${proof?.weak ? `${memoryReason(proof, !!state.exposures?.[id])} ` : ""}Bạn tự báo chưa nhớ; chưa phải kết quả kiểm tra khách quan.`
+      ? `${proof?.weak ? `${memoryReason(proof, !!state.exposures?.[id])} ` : ""}Bạn tự báo chưa nhớ; chưa phải kết quả kiểm tra khách quan. Theo bài ${selfRating.skill === 2 ? "Nghe nhận biết" : "Hiểu nghĩa"}.`
       : memoryReason(proof, !!state.exposures?.[id]);
     ranked.push({
       entry,

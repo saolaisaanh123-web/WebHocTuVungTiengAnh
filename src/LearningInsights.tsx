@@ -271,7 +271,7 @@ export function LearningInsights({
           <article className="insight-conversation">
             <h4>Kết quả hội thoại, ghi riêng</h4>
             <p className="insight-note">
-              Hiểu và điền từ sau khi xem đoạn hội thoại
+              Hiểu và điền từ sau khi nghe hoặc đọc đoạn hội thoại
             </p>
             <Metric value={report.conversationEvidence.answered} />
             <p className="insight-note">
@@ -284,9 +284,27 @@ export function LearningInsights({
               {report.conversationEvidence.supported.total} câu có nguồn hoặc
               gợi ý hiển thị khi trả lời.
             </p>
+            {report.conversationEvidence.listenFirst.total > 0 && (
+              <div className="insight-skill-metrics">
+                <div>
+                  <span>Nghe trước, chưa mở lời thoại</span>
+                  <Metric
+                    value={report.conversationEvidence.listenFirst}
+                    noun="câu"
+                  />
+                </div>
+                <div>
+                  <span>Hiểu nghĩa trong bài nghe</span>
+                  <Metric
+                    value={report.conversationEvidence.contextMeaning}
+                    noun="câu"
+                  />
+                </div>
+              </div>
+            )}
             <p className="insight-note">
-              Bài tập diễn ra sau khi xem đoạn hội thoại; kết quả này không được
-              dùng để chứng nhận nhớ độc lập hay thành thạo.
+              Kết quả ngữ cảnh được ghi riêng, không chứng nhận nhớ độc lập sau
+              nhiều ngày hoặc thành thạo từ vựng.
             </p>
           </article>
         )}

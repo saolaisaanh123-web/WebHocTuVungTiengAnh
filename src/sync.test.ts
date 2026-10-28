@@ -314,6 +314,8 @@ describe("non-destructive cloud merge", () => {
 });
 
 describe("Supabase protocol and account boundaries", () => {
+  // This uses the real multi-megabyte corpus and browser compression streams;
+  // the small-fixture default timeout is too tight on shared runners.
   it("roundtrips all current vocabulary IDs through the bounded compressed transport", async () => {
     const state = merge(
       empty(),
@@ -327,7 +329,7 @@ describe("Supabase protocol and account boundaries", () => {
     expect(JSON.stringify(payload).length).toBeLessThan(
       JSON.stringify(state).length / 2,
     );
-  });
+  }, 20_000);
   it("compresses and roundtrips UTF-8 data, accepts old snapshots and bounds invalid envelopes", async () => {
     const state = sample();
     state.entries.word.notes = "Tiếng Việt có dấu. ".repeat(1000);

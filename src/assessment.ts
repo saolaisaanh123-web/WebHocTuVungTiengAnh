@@ -5,6 +5,17 @@ export type LearningAssessment = {
   message?: string;
 };
 
+/** Shown only after a mismatch, before the learner confirms whether to count
+ * it as forgotten or leave an ambiguous prompt ungraded. This does not make
+ * any claim about general English correctness or accept a new answer. */
+export function assessmentMismatchFeedback(skill: number): string {
+  if (skill === 3)
+    return "Cách viết chưa khớp lời gốc hoặc biến thể đã khai báo trong bài nghe. Nếu chưa nghe rõ hoặc thấy ngữ cảnh chưa đủ phân biệt, bạn có thể lưu lượt này không chấm.";
+  if (skill === 4)
+    return "Đáp án chưa khớp từ mục tiêu hoặc biến thể đã khai báo trong câu. Một câu có thể có cách điền khác hợp nghĩa; ứng dụng chưa đánh giá được mọi phương án. Hãy đối chiếu trước khi quyết định tính sai.";
+  return "Đáp án chưa khớp từ mục tiêu hoặc biến thể đã khai báo. Nghĩa tiếng Việt có thể có nhiều cách diễn đạt; đây chưa phải kết luận rằng cách dùng tiếng Anh của bạn sai. Hãy đối chiếu trước khi quyết định tính sai.";
+}
+
 // Reordering an explicitly separated Vietnamese gloss does not disambiguate
 // an English answer ("to; lớn" and "lớn; to"). Do not infer equivalence from
 // a shared substring, a translated token or a partially overlapping gloss.

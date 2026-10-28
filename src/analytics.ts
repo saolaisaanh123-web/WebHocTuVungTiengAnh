@@ -194,6 +194,22 @@ export function analyzeLearning(state: State, now = Date.now()) {
       (a) =>
         a.answer.trim() && a.kind !== "reply" && typeof a.correct === "boolean",
     );
+  const listenFirstAnswers = currentConversations
+    .filter(
+      (attempt) =>
+        attempt.mode === "listen" &&
+        attempt.listenedComplete &&
+        attempt.transcriptRevealed === false &&
+        !attempt.retryOf,
+    )
+    .flatMap((attempt) => attempt.answers)
+    .filter(
+      (answer) =>
+        !answer.hint &&
+        answer.kind !== "reply" &&
+        answer.answer.trim() &&
+        typeof answer.correct === "boolean",
+    );
   const conversationEvidence = {
     attempts: conversations.length,
     read: conversations.filter((c) => c.read).length,
@@ -205,6 +221,16 @@ export function analyzeLearning(state: State, now = Date.now()) {
     supported: evidenceMetric(
       conversationAnswers.filter((a) => a.hint).length,
       conversationAnswers.filter((a) => a.hint && a.correct).length,
+    ),
+    listenFirst: evidenceMetric(
+      listenFirstAnswers.length,
+      listenFirstAnswers.filter((answer) => answer.correct).length,
+    ),
+    contextMeaning: evidenceMetric(
+      listenFirstAnswers.filter((answer) => answer.kind === "meaning").length,
+      listenFirstAnswers.filter(
+        (answer) => answer.kind === "meaning" && answer.correct,
+      ).length,
     ),
     retries: conversations.filter((c) => !!c.retryOf).length,
     replies: currentConversations

@@ -89,9 +89,9 @@ describe("Conversation recommendations refer to actual current senses", () => {
     }
     expect(
       new Set(
-        dialogues.flatMap((dialogue) =>
-          dialogue.targets.map((target) => target.id),
-        ),
+        dialogues
+          .filter((dialogue) => !dialogue.id.startsWith("listen-"))
+          .flatMap((dialogue) => dialogue.targets.map((target) => target.id)),
       ).size,
     ).toBe(55);
   });

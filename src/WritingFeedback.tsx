@@ -293,7 +293,8 @@ export default function WritingFeedback({
       <p className="writing-notice">
         Kiểm tra một số cấu trúc ngữ pháp rõ ràng, có giải thích tiếng Việt. Hệ
         thống chưa thể chấm toàn bộ ngữ pháp, nghĩa hoặc độ tự nhiên; không tự
-        cộng bằng chứng thành thạo từ câu viết.
+        cộng bằng chứng thành thạo từ câu viết. Với gợi ý phụ thuộc nghĩa, hãy
+        đối chiếu ý bạn muốn nói trước khi dùng bản sửa.
       </p>
       <label htmlFor={inputId}>Câu tiếng Anh của bạn</label>
       <textarea

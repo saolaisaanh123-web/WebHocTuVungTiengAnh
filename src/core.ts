@@ -104,8 +104,40 @@ export type Session = {
   scheduled: boolean;
   count: number;
   goal?: { due: number; continuing: number; fresh: number };
-  draft?: { key: string; answer: string; hint: boolean; revealed: boolean };
+  draft?: {
+    key: string;
+    answer: string;
+    hint: boolean;
+    revealed: boolean;
+    assessment?: PendingAssessment;
+  };
 };
+/** A mismatched first answer awaits the learner's decision before any grade
+ * or due date is saved. Its original timing survives pause/reload/backup. */
+export type PendingAssessment = {
+  time: number;
+  elapsed: number;
+  hint: boolean;
+  independent: boolean;
+  audioPlayed: boolean;
+  contentVersion: string;
+};
+export function validPendingAssessment(
+  value: unknown,
+): value is PendingAssessment {
+  if (!value || typeof value !== "object") return false;
+  const item = value as PendingAssessment;
+  return (
+    Number.isFinite(item.time) &&
+    item.time >= 0 &&
+    Number.isFinite(item.elapsed) &&
+    item.elapsed >= 0 &&
+    typeof item.hint === "boolean" &&
+    typeof item.independent === "boolean" &&
+    typeof item.audioPlayed === "boolean" &&
+    typeof item.contentVersion === "string"
+  );
+}
 export type State = {
   version: 1;
   entries: Record<string, Entry>;
@@ -904,7 +936,11 @@ export function validateBackup(x: unknown): State {
           typeof v.draft.key !== "string" ||
           typeof v.draft.answer !== "string" ||
           typeof v.draft.hint !== "boolean" ||
-          typeof v.draft.revealed !== "boolean")) ||
+          typeof v.draft.revealed !== "boolean" ||
+          (v.draft.assessment !== undefined &&
+            (!validPendingAssessment(v.draft.assessment) ||
+              !v.draft.revealed ||
+              ![1, 3, 4].includes(v.queue[v.index]?.skill))))) ||
       v.queue.some(
         (t) =>
           !t ||

@@ -249,6 +249,60 @@ describe("writing evidence validation", () => {
 });
 
 describe("conversation evidence validation", () => {
+  it("roundtrips additive listen-first metadata while retaining legacy read records", () => {
+    const legacy = conversation();
+    const listening = conversation({
+      id: "listening:1",
+      mode: "listen",
+      transcriptRevealed: false,
+      read: false,
+      listenedComplete: true,
+      listenedLineIds: ["line-0", "line-1"],
+    });
+    const next = validateBackup({
+      ...fixture(),
+      conversations: [legacy, listening],
+    });
+    expect(next.conversations).toEqual([legacy, listening]);
+  });
+
+  it("rejects unsupported or contradictory listen-first claims", () => {
+    const base = conversation({
+      mode: "listen",
+      transcriptRevealed: false,
+      read: false,
+      listenedComplete: true,
+      listenedLineIds: ["line-0", "line-1"],
+    });
+    for (const overrides of [
+      { listenedComplete: false },
+      { listenedLineIds: [] },
+      { listenedLineIds: ["line-1"] },
+      { listenedLineIds: ["line-0", "line-0"] },
+      { read: true },
+      { transcriptRevealed: undefined },
+      { mode: "unknown" },
+      { mode: undefined, transcriptRevealed: false },
+      { transcriptRevealed: true, read: true },
+    ])
+      expect(() =>
+        validateBackup({
+          ...fixture(),
+          conversations: [{ ...base, ...overrides }],
+        }),
+      ).toThrow();
+    const supported = structuredClone(base);
+    supported.transcriptRevealed = true;
+    supported.read = true;
+    supported.answers.forEach((answer) => {
+      answer.hint = true;
+    });
+    expect(
+      validateBackup({ ...fixture(), conversations: [supported] })
+        .conversations,
+    ).toEqual([supported]);
+  });
+
   it("never interprets reading, listening or an open reply as a correct answer", () => {
     const attempt = conversation({ answers: [] });
     expect(

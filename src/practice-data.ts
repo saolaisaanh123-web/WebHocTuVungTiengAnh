@@ -63,6 +63,9 @@ export type ConversationAttempt = {
   read: boolean;
   listenedLineIds: string[];
   listenedComplete: boolean;
+  /** Missing means a legacy read/practice attempt, never inferred listen-first. */
+  mode?: "read" | "listen";
+  transcriptRevealed?: boolean;
   retryOf?: string;
 };
 
@@ -215,6 +218,11 @@ export function validatePracticeCollections(s: {
         typeof a.read !== "boolean" ||
         !strings(a.listenedLineIds) ||
         typeof a.listenedComplete !== "boolean" ||
+        (a.mode !== undefined &&
+          !["read", "listen"].includes(a.mode as string)) ||
+        (a.transcriptRevealed !== undefined &&
+          typeof a.transcriptRevealed !== "boolean") ||
+        (a.transcriptRevealed !== undefined && a.mode === undefined) ||
         !optionalText(a.retryOf)
       )
         throw Error("Bản ghi luyện hội thoại không hợp lệ.");
@@ -223,6 +231,17 @@ export function validatePracticeCollections(s: {
         (a.listenedComplete && a.listenedLineIds.length === 0)
       )
         throw Error("Dữ liệu tiếp xúc hội thoại không hợp lệ.");
+      if (a.mode === "listen") {
+        const heard = a.listenedLineIds as string[];
+        if (
+          !a.listenedComplete ||
+          typeof a.transcriptRevealed !== "boolean" ||
+          a.read !== a.transcriptRevealed ||
+          new Set(heard).size !== heard.length ||
+          heard.some((id, index) => id !== `line-${index}`)
+        )
+          throw Error("Bằng chứng bài nghe không đầy đủ hoặc không nhất quán.");
+      }
       if (a.retryOf !== undefined) {
         const previous = s.conversations.find(
           (p: unknown) => object(p) && p.id === a.retryOf,
@@ -253,7 +272,10 @@ export function validatePracticeCollections(s: {
           typeof answer.hint !== "boolean" ||
           (answer.correct !== undefined &&
             typeof answer.correct !== "boolean") ||
-          (answer.kind === "reply" && answer.correct !== undefined)
+          (answer.kind === "reply" && answer.correct !== undefined) ||
+          (a.mode === "listen" &&
+            a.transcriptRevealed === true &&
+            answer.hint !== true)
         )
           throw Error("Câu trả lời hội thoại không hợp lệ.");
         questionIds.add(answer.questionId);

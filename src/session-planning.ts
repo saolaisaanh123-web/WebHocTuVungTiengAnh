@@ -46,43 +46,101 @@ export function reviewForecast(state: State, now = Date.now()): number[] {
 }
 
 type PlannedTask = Pick<StudyTask, "id" | "skill">;
+const secondsPerSkill = [15, 30, 25, 40, 30, 90];
+const secondsForSkill = (skill: number) => secondsPerSkill[skill] || 30;
+const sessionBudgetMinutes = 20;
+const sessionTaskLimit = 40;
 
 /** A preview and actual Start share this plan. Inputs are already ordered and
- * ranked by the caller; no random IDs, saved queues or due dates are changed. */
+ * ranked by the caller. Bound only NEW sessions, prioritizing the oldest due
+ * prefix, then unfinished work, then whole fresh-word groups. Omitted reviews
+ * remain due; no random IDs, saved queues, history or due dates are changed.
+ * The time budget uses the same rough base costs as the estimate, not a claim
+ * that every learner will finish in exactly twenty minutes. */
 export function planScheduledStudy(
   state: State,
   active: Entry[],
   fresh: Entry[],
   now = Date.now(),
 ) {
-  const reviews: PlannedTask[] = scheduledReviews(state)
+  const allReviews: PlannedTask[] = scheduledReviews(state)
     .filter(([, schedule]) => schedule.due <= now)
-    .sort((a, b) => a[1].due - b[1].due)
+    .sort((a, b) => a[1].due - b[1].due || compareIds(a[0], b[0]))
     .map(([key]) => ({
       id: key.slice(0, key.lastIndexOf(":")),
       skill: Number(key.slice(key.lastIndexOf(":") + 1)),
     }));
-  const included = new Set(reviews.map((task) => `${task.id}:${task.skill}`));
-  const continuing = filterPendingForPreference(
+  const included = new Set(
+    allReviews.map((task) => `${task.id}:${task.skill}`),
+  );
+  const allContinuing = filterPendingForPreference(
     state,
     pendingScheduledTasks(state, active),
   ).filter((task) => !included.has(`${task.id}:${task.skill}`));
+  let usedSeconds = 0;
+  let usedTasks = 0;
+  const fits = (group: PlannedTask[]) =>
+    usedTasks + group.length <= sessionTaskLimit &&
+    usedSeconds +
+      group.reduce((sum, task) => sum + secondsForSkill(task.skill), 0) <=
+      sessionBudgetMinutes * 60;
+  const admit = (group: PlannedTask[]) => {
+    usedTasks += group.length;
+    usedSeconds += group.reduce(
+      (sum, task) => sum + secondsForSkill(task.skill),
+      0,
+    );
+  };
+  const takePrefix = (tasks: PlannedTask[]) => {
+    const selected: PlannedTask[] = [];
+    for (const task of tasks) {
+      // The fixed budget always accommodates an individual supported task.
+      // Keep a defensive first-task fallback if its rough cost changes later.
+      if (!fits([task]) && usedTasks > 0) break;
+      selected.push(task);
+      admit([task]);
+    }
+    return selected;
+  };
+  const reviews = takePrefix(allReviews);
+  const remainingReviews = allReviews.length - reviews.length;
+  const continuing = remainingReviews ? [] : takePrefix(allContinuing);
+  const remainingContinuing = allContinuing.length - continuing.length;
   const enrolledToday = active.filter(
     (entry) =>
       entry.enrolled && entry.enrolledAt && day(entry.enrolledAt) === day(now),
   ).length;
-  const freshWords = Math.min(
+  const freshLimit = Math.min(
     fresh.length,
     Math.max(0, state.daily - enrolledToday),
-    reviews.length > 20 ? 2 : state.daily,
+    allReviews.length > 20 ? 2 : state.daily,
   );
-  const introductions = fresh.slice(0, freshWords).flatMap((entry) =>
-    chosenStudySkills(state, entry).map((skill) => ({
-      id: entry.word.id,
-      skill,
-    })),
-  );
-  return { reviews, continuing, introductions, freshWords };
+  const introductions: PlannedTask[] = [];
+  let freshWords = 0;
+  if (!remainingReviews && !remainingContinuing)
+    for (const entry of fresh.slice(0, freshLimit)) {
+      const group = chosenStudySkills(state, entry).map((skill) => ({
+        id: entry.word.id,
+        skill,
+      }));
+      if (!group.length) continue;
+      // A new word is introduced with all its chosen skills, rather than
+      // silently dropping some skills to fill the remaining budget.
+      if (!fits(group)) break;
+      introductions.push(...group);
+      freshWords++;
+      admit(group);
+    }
+  return {
+    reviews,
+    continuing,
+    introductions,
+    freshWords,
+    remainingReviews,
+    remainingContinuing,
+    budgetMinutes: sessionBudgetMinutes,
+    taskLimit: sessionTaskLimit,
+  };
 }
 
 /** A transparent rough range, not a prediction of the user's speed. Includes
@@ -90,9 +148,8 @@ export function planScheduledStudy(
 export function estimateStudyMinutes(
   tasks: readonly Pick<StudyTask, "skill">[],
 ) {
-  const secondsPerSkill = [15, 30, 25, 40, 30, 90];
   const seconds = tasks.reduce(
-    (total, task) => total + (secondsPerSkill[task.skill] || 30),
+    (total, task) => total + secondsForSkill(task.skill),
     0,
   );
   return { min: Math.ceil(seconds / 60), max: Math.ceil((seconds * 1.5) / 60) };

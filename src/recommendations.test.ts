@@ -166,6 +166,189 @@ describe("Personal learning recommendations", () => {
     expect(s).toEqual(before);
   });
 
+  it("offers forgotten listening-recognition words only as self-reported requests after actual playback", () => {
+    const e = entry("appointment");
+    let s = state(e);
+    for (let n = 0; n < 3; n++)
+      s = record(
+        s,
+        result(e, {
+          id: `listening-forgot-${n}`,
+          skill: 2,
+          method: "self",
+          correct: false,
+          audioPlayed: true,
+          time: NOW - (3 - n) * DAY,
+          session: `listening-session-${n}`,
+          review: `listening-review-${n}`,
+          contentVersion: contentKey(e.word, 2),
+        }),
+        true,
+      );
+    const before = structuredClone(s);
+    const recommendations = recommendWords(s, [e], {
+      mode: "weak",
+      skill: 2,
+      now: NOW,
+    });
+    expect(ids(recommendations)).toEqual([e.word.id]);
+    expect(recommendations[0].reason).toContain("Bạn tự báo chưa nhớ");
+    expect(recommendations[0].reason).toContain("Nghe nhận biết");
+    expect(recommendations[0].reason).toContain(
+      "chưa phải kết quả kiểm tra khách quan",
+    );
+    expect(recommendations[0].reason).not.toContain("lượt gần nhất sai");
+    expect(
+      recommendWords(s, [e], { mode: "weak", skill: 0, now: NOW }),
+    ).toEqual([]);
+    expect(ids(recommendWords(s, [e], { mode: "weak", now: NOW }))).toEqual([
+      e.word.id,
+    ]);
+    expect(selectLearningEvidence(s, NOW).attempts).toEqual([]);
+    expect(selectLearningEvidence(s, NOW).objective).toEqual([]);
+    expect(selectLearningEvidence(s, NOW).delayed).toEqual([]);
+    expect(s.schedules[`${e.word.id}:2`].step).toBe(0);
+    expect(s).toEqual(before);
+  });
+
+  it("keeps listening and visual self-reported requests separate when the other skill succeeds", () => {
+    const e = entry("appointment");
+    for (const [weakSkill, otherSkill] of [
+      [2, 0],
+      [0, 2],
+    ]) {
+      const s = state(e);
+      s.history = [
+        result(e, {
+          skill: weakSkill,
+          method: "self",
+          correct: false,
+          time: NOW - DAY,
+        }),
+        result(e, {
+          skill: otherSkill,
+          method: "self",
+          correct: true,
+          time: NOW,
+        }),
+      ];
+      expect(
+        ids(
+          recommendWords(s, [e], { mode: "weak", skill: weakSkill, now: NOW }),
+        ),
+      ).toEqual([e.word.id]);
+      expect(
+        recommendWords(s, [e], { mode: "weak", skill: otherSkill, now: NOW }),
+      ).toEqual([]);
+      expect(ids(recommendWords(s, [e], { mode: "weak", now: NOW }))).toEqual([
+        e.word.id,
+      ]);
+    }
+  });
+
+  it("clears only the listening request with a fresh unhinted same-skill success", () => {
+    const e = entry("appointment");
+    const forgotten = result(e, {
+      skill: 2,
+      method: "self",
+      correct: false,
+      time: NOW - DAY,
+    });
+    for (const method of ["self", "rule"] as const) {
+      for (const patch of [
+        {},
+        { hint: true },
+        { audioPlayed: false },
+        { audioPlayed: undefined },
+      ]) {
+        const s = state(e);
+        s.history = [
+          forgotten,
+          result(e, { skill: 2, method, correct: true, time: NOW, ...patch }),
+        ];
+        const recommendations = recommendWords(s, [e], {
+          mode: "weak",
+          skill: 2,
+          now: NOW,
+        });
+        if (Object.keys(patch).length)
+          expect(ids(recommendations)).toEqual([e.word.id]);
+        else expect(recommendations).toEqual([]);
+      }
+    }
+  });
+
+  it("does not clear a first listening self-report with a same-session repair", () => {
+    const e = entry("appointment");
+    const s = state(e);
+    const first = result(e, {
+      skill: 2,
+      method: "self",
+      correct: false,
+      time: NOW - DAY,
+    });
+    s.history = [
+      first,
+      result(e, {
+        id: "listening-repair",
+        skill: 2,
+        method: "self",
+        correct: true,
+        time: first.time + 60_000,
+        session: first.session,
+        review: "another-review-in-the-same-session",
+      }),
+    ];
+    expect(
+      ids(recommendWords(s, [e], { mode: "weak", skill: 2, now: NOW })),
+    ).toEqual([e.word.id]);
+  });
+
+  it("excludes unplayed, obsolete, future and non-first listening self-reports", () => {
+    const e = entry("appointment");
+    const first = result(e, { skill: 2, method: "self", correct: false });
+    for (const patch of [
+      { audioPlayed: false },
+      { audioPlayed: undefined },
+      { contentVersion: "old-meaning" },
+      { time: NOW + 1 },
+      { first: false },
+    ]) {
+      const s = state(e);
+      s.history = [{ ...first, ...patch }];
+      expect(
+        recommendWords(s, [e], { mode: "weak", skill: 2, now: NOW }),
+      ).toEqual([]);
+      expect(recommendWords(s, [e], { mode: "weak", now: NOW })).toEqual([]);
+    }
+  });
+
+  it("uses the latest unresolved self-report across both recognition skills without merging their recovery", () => {
+    const e = entry("appointment");
+    const s = state(e);
+    s.history = [
+      result(e, {
+        skill: 0,
+        method: "self",
+        correct: false,
+        time: NOW - 2 * DAY,
+      }),
+      result(e, { skill: 2, method: "self", correct: false, time: NOW - DAY }),
+    ];
+    expect(
+      recommendWords(s, [e], { mode: "weak", now: NOW })[0].reason,
+    ).toContain("Nghe nhận biết");
+    s.history.push(
+      result(e, { skill: 2, method: "self", correct: true, time: NOW }),
+    );
+    const combined = recommendWords(s, [e], { mode: "weak", now: NOW });
+    expect(ids(combined)).toEqual([e.word.id]);
+    expect(combined[0].reason).toContain("Hiểu nghĩa");
+    expect(
+      recommendWords(s, [e], { mode: "weak", skill: 2, now: NOW }),
+    ).toEqual([]);
+  });
+
   it("clears a self-reported practice request after a newer first self-rating or unhinted valid recognition check", () => {
     const e = entry("appointment");
     const forgotten = result(e, {

@@ -2,6 +2,9 @@ import { defineConfig } from "@playwright/test";
 import { existsSync } from "node:fs";
 export default defineConfig({
   testDir: "./e2e",
+  // Browser workflows include importing the real 8.9 MB corpus and restoring
+  // backups; leave room for those transactions on shared CI runners.
+  timeout: 60_000,
   use: {
     baseURL: "http://127.0.0.1:5173",
     launchOptions: {

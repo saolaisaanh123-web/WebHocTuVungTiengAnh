@@ -148,6 +148,57 @@ async function checkUsage(page) {
     .getByRole("combobox", { name: "Trạng thái", exact: true })
     .selectOption("");
 }
+async function checkListening(page) {
+  await page.getByRole("button", { name: "Luyện tập", exact: true }).click();
+  if (!(await page.locator(".conversation-practice").count()))
+    await page
+      .getByRole("button", { name: "Mở luyện hội thoại", exact: true })
+      .click();
+  await page
+    .getByRole("combobox", { name: "Mức độ hội thoại", exact: true })
+    .selectOption("C1");
+  const picker = page.getByRole("combobox", {
+    name: "Chọn hội thoại",
+    exact: true,
+  });
+  const lessons = await picker
+    .locator('option[value^="listen-"]')
+    .evaluateAll((options) => options.map((option) => option.value));
+  assert.equal(
+    lessons.length,
+    6,
+    "All six authored C1 listening lessons must ship online and offline",
+  );
+  const unseen =
+    lessons.find((id) => !globalThis.__checkedListening?.has(id)) || lessons[0];
+  (globalThis.__checkedListening ||= new Set()).add(unseen);
+  await picker.selectOption(unseen);
+  assert.equal(
+    await page
+      .getByRole("combobox", { name: "Cách luyện hội thoại", exact: true })
+      .inputValue(),
+    "listen",
+  );
+  assert.equal(
+    await page.locator(".conversation-lines").count(),
+    0,
+    "Listen-first must not reveal the transcript",
+  );
+  await page
+    .getByRole("button", {
+      name: "Mở lời và nghĩa từ · tính là gợi ý",
+      exact: true,
+    })
+    .click();
+  assert.ok((await page.locator(".conversation-lines > li").count()) >= 8);
+  await page
+    .getByRole("combobox", { name: "Mức độ hội thoại", exact: true })
+    .selectOption("");
+  assert.equal(
+    await picker.locator('option[value]:not([value=""])').count(),
+    44,
+  );
+}
 const mime = {
   ".html": "text/html",
   ".js": "text/javascript",
@@ -209,6 +260,7 @@ try {
       .waitFor();
     await checkGrammar(page);
     await checkUsage(page);
+    await checkListening(page);
     assert.deepEqual(errors, []);
     console.log(
       `PASS: production ${path} renders, loads ${expectedCount} entries, reloads without error`,
@@ -288,6 +340,7 @@ try {
     );
     await checkGrammar(page);
     await checkUsage(page);
+    await checkListening(page);
     assert.deepEqual(errors, []);
     await page.goto(`${appURL}?utm_source=bookmark`);
     await page

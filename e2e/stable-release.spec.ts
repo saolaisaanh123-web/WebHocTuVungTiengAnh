@@ -291,3 +291,48 @@ test("a saved queue, context and unfinished answer survive reference navigation 
     320,
   );
 });
+
+test("a new review session is bounded while all omitted due dates and a saved queue remain intact", async ({
+  page,
+}) => {
+  const now = Date.UTC(2026, 9, 28, 12);
+  await page.clock.setFixedTime(now);
+  const mature = corpus
+    .filter((item) =>
+      [0, 1, 2, 3, 4].every((skill) => canPractice(item, skill)),
+    )
+    .slice(0, 12);
+  const fresh = word("garden", "noun");
+  await open(page, [...mature, fresh]);
+  const state = merge(empty(), [...mature, fresh], "default");
+  for (const [index, item] of mature.entries()) {
+    state.entries[item.id].enrolled = true;
+    state.entries[item.id].enrolledAt = now - 60 * DAY;
+    for (let skill = 0; skill < 5; skill++)
+      state.schedules[`${item.id}:${skill}`] = {
+        due: now - 2 * DAY + index * 1000 + skill,
+        last: now - 32 * DAY,
+        step: 4,
+        contentVersion: contentKey(item, skill),
+      };
+  }
+  await seed(page, state);
+  await expect(page.getByText(/Phiên mới tối đa 40 lượt/)).toBeVisible();
+  await expect(page.getByText(/Còn 20 lượt đến hạn/)).toBeVisible();
+  await page.getByRole("button", { name: "Bắt đầu học", exact: true }).click();
+  const started = await read(page);
+  expect(started.session?.queue).toHaveLength(40);
+  expect(started.session?.goal?.fresh).toBe(0);
+  expect(started.session?.queue.every((task) => task.id !== fresh.id)).toBe(
+    true,
+  );
+  expect(started.schedules).toEqual(state.schedules);
+  expect(started.history).toEqual([]);
+  await page.getByRole("button", { name: /Lưu & tạm dừng/ }).click();
+  await page.reload();
+  await page
+    .getByRole("button", { name: "Tiếp tục phiên học", exact: true })
+    .click();
+  expect((await read(page)).session?.queue).toEqual(started.session?.queue);
+  expect((await read(page)).schedules).toEqual(state.schedules);
+});

@@ -1,4 +1,6 @@
 import { canPractice, contentKey, type State } from "./core";
+import listeningA from "../data/conversations/listening-a.json" with { type: "json" };
+import listeningB from "../data/conversations/listening-b.json" with { type: "json" };
 import type { ConversationAnswer, ConversationAttempt } from "./practice-data";
 import {
   EVIDENCE_DAY,
@@ -28,7 +30,7 @@ export type Dialogue = {
   id: string;
   version: string;
   title: string;
-  level: "B1" | "B2";
+  level: "B1" | "B2" | "C1";
   lines: DialogueLine[];
   targets: DialogueTarget[];
   questions: DialogueQuestion[];
@@ -94,7 +96,7 @@ const dialogue = (value: Omit<Dialogue, "version">): Dialogue => ({
 
 // These are original teaching dialogues, not excerpts from Oxford or AI output.
 // Exact sense guards below exclude edited, archived or unreviewed source entries.
-export const dialogues: Dialogue[] = [
+const originalDialogues: Dialogue[] = [
   dialogue({
     id: "assignment-feedback",
     title: "Xin góp ý trước hạn nộp",
@@ -1425,6 +1427,17 @@ export const dialogues: Dialogue[] = [
   }),
 ];
 
+/** Original authored listening texts; vocabulary stays bound to reviewed senses.
+ * These are synthesized by the learner's device, never publisher recordings. */
+export const listeningDialogues: Dialogue[] = [
+  ...(listeningA as Dialogue[]),
+  ...(listeningB as Dialogue[]),
+];
+export const dialogues: Dialogue[] = [
+  ...originalDialogues,
+  ...listeningDialogues,
+];
+
 const normalize = (value: string) =>
   value.normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase("en");
 
@@ -1631,11 +1644,22 @@ export function makeConversationAttempt(
     complete: boolean;
     hidden?: boolean;
     usedHint?: boolean;
+    mode?: "read" | "listen";
+    transcriptRevealed?: boolean;
   },
   retryOf?: string,
 ): ConversationAttempt {
+  const listening = audio.mode === "listen";
+  const requiredLines = d.lines.map((_, index) => `line-${index}`);
+  if (
+    listening &&
+    (!audio.complete || requiredLines.some((id) => !audio.lines.includes(id)))
+  )
+    throw Error("Hãy nghe hết đoạn hội thoại trước khi lưu bài nghe.");
   const supported =
-    audio.hidden !== true || audio.usedHint === true || !!retryOf;
+    (listening ? audio.transcriptRevealed === true : audio.hidden !== true) ||
+    audio.usedHint === true ||
+    !!retryOf;
   const answers = d.questions.map((q) =>
     evaluateDialogueAnswer(q, values[q.id] || "", supported),
   );
@@ -1659,9 +1683,17 @@ export function makeConversationAttempt(
       d.targets.map((t) => [t.id, contentKey(state.entries[t.id].word)]),
     ),
     answers,
-    read: true,
-    listenedLineIds: audio.lines,
+    read: listening ? audio.transcriptRevealed === true : true,
+    listenedLineIds: listening ? requiredLines : audio.lines,
     listenedComplete: audio.complete,
+    ...(audio.mode
+      ? {
+          mode: audio.mode,
+          transcriptRevealed: listening
+            ? audio.transcriptRevealed === true
+            : true,
+        }
+      : {}),
     ...(retryOf ? { retryOf } : {}),
   };
 }

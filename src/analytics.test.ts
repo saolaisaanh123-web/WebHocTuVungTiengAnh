@@ -389,6 +389,73 @@ describe("Evidence-based learning insights", () => {
     expect(r.totals.objective).toBe(0);
     expect(r.counts.active).toBe(0);
   });
+  it("separates first listening without a transcript from reading, hints, retries and stale meanings", () => {
+    const state = initial();
+    const listen = dialogue({
+      mode: "listen",
+      transcriptRevealed: false,
+      read: false,
+      listenedComplete: true,
+      listenedLineIds: ["line-0", "line-1"],
+      answers: [
+        {
+          questionId: "detail",
+          kind: "comprehension",
+          answer: "tomorrow",
+          correct: true,
+          targetIds: [word.id],
+          explanation: "",
+          hint: false,
+        },
+        {
+          questionId: "sense",
+          kind: "meaning",
+          answer: "wrong",
+          correct: false,
+          targetIds: [word.id],
+          explanation: "",
+          hint: false,
+        },
+      ],
+    });
+    state.conversations = [
+      listen,
+      {
+        ...listen,
+        id: "revealed",
+        read: true,
+        transcriptRevealed: true,
+        answers: listen.answers.map((a) => ({ ...a, hint: true })),
+      },
+      { ...listen, id: "retry", retryOf: listen.id },
+      { ...listen, id: "incomplete", listenedComplete: false },
+      {
+        ...listen,
+        id: "old",
+        targetContentVersions: { [word.id]: "old-meaning" },
+      },
+      {
+        ...listen,
+        id: "legacy",
+        mode: undefined,
+        transcriptRevealed: undefined,
+      },
+    ];
+    const before = structuredClone(state);
+    const report = analyzeLearning(state, NOW);
+    expect(report.conversationEvidence.listenFirst).toMatchObject({
+      total: 2,
+      correct: 1,
+    });
+    expect(report.conversationEvidence.contextMeaning).toMatchObject({
+      total: 1,
+      correct: 0,
+    });
+    expect(report.totals.objective).toBe(0);
+    expect(report.counts.retained).toBe(0);
+    expect(report.counts.active).toBe(0);
+    expect(state).toEqual(before);
+  });
   it("does not confuse no local/service issues with verified correct active use", () => {
     const state = initial();
     state.writing = [

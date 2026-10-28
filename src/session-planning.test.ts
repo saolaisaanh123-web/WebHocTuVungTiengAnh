@@ -159,6 +159,182 @@ describe("Consistent review forecast and session estimate", () => {
   });
 });
 
+describe("Bounded new scheduled sessions", () => {
+  const matureState = () => {
+    const words: Word[] = Array.from({ length: 120 }, (_, index) => ({
+      ...word,
+      id: `mature-${String(index).padStart(3, "0")}`,
+    }));
+    const state = merge(empty(), words, "default");
+    state.studySkills = [0, 1, 2, 3, 4];
+    for (const [index, item] of words.entries()) {
+      state.entries[item.id].enrolled = true;
+      state.entries[item.id].enrolledAt = START - 60 * DAY;
+      for (let skill = 0; skill < 5; skill++)
+        state.schedules[`${item.id}:${skill}`] = {
+          due: START - (120 - index) * DAY + skill,
+          last: START - (150 - index) * DAY,
+          step: 4,
+          contentVersion: contentKey(item, skill),
+        };
+    }
+    return state;
+  };
+
+  it("takes an oldest-due prefix from 600 reviews, defers fresh words and leaves every stored record untouched", () => {
+    const state = matureState();
+    const freshWord = { ...word, id: "new-after-backlog" };
+    state.entries[freshWord.id] = {
+      word: freshWord,
+      origin: "default",
+      archived: false,
+    };
+    state.session = {
+      id: "frozen-existing-session",
+      queue: tasks("mature-119"),
+      index: 2,
+      started: START - 60_000,
+      scheduled: true,
+      count: 6,
+      draft: {
+        key: "frozen-existing-session:2",
+        answer: "unfinished",
+        hint: true,
+        revealed: false,
+      },
+    };
+    state.pausedScheduled = structuredClone(state.session);
+    const before = structuredClone(state);
+    const plan = planScheduledStudy(
+      state,
+      Object.values(state.entries),
+      [state.entries[freshWord.id]],
+      START,
+    );
+    expect(plan.reviews).toHaveLength(40);
+    expect(plan.remainingReviews).toBe(560);
+    expect(plan.remainingContinuing).toBe(0);
+    expect(plan.introductions).toEqual([]);
+    expect(plan.freshWords).toBe(0);
+    expect(plan.budgetMinutes).toBe(20);
+    expect(plan.taskLimit).toBe(40);
+    expect(estimateStudyMinutes(plan.reviews).min).toBeLessThanOrEqual(20);
+    expect(plan.reviews.map((task) => `${task.id}:${task.skill}`)).toEqual(
+      Object.entries(state.schedules)
+        .sort((a, b) => a[1].due - b[1].due)
+        .slice(0, 40)
+        .map(([key]) => key),
+    );
+    expect(state).toEqual(before);
+  });
+
+  it("lets successive completed sessions cover the entire backlog without duplicates or postponing omitted schedules", () => {
+    let state = matureState();
+    const completed = new Set<string>();
+    for (let batch = 0; batch < 20; batch++) {
+      const now = START + batch * 60_000;
+      const plan = planScheduledStudy(
+        state,
+        Object.values(state.entries),
+        [],
+        now,
+      );
+      if (!plan.reviews.length) break;
+      expect(plan.reviews.length).toBeLessThanOrEqual(40);
+      expect(estimateStudyMinutes(plan.reviews).min).toBeLessThanOrEqual(20);
+      const omitted = Object.fromEntries(
+        Object.entries(state.schedules).filter(
+          ([key]) =>
+            !plan.reviews.some((task) => key === `${task.id}:${task.skill}`),
+        ),
+      );
+      for (const [index, task] of plan.reviews.entries()) {
+        const key = `${task.id}:${task.skill}`;
+        expect(completed.has(key), key).toBe(false);
+        completed.add(key);
+        state = record(
+          state,
+          {
+            ...answer(task.skill, now + index, `batch-${batch}`, index),
+            wordId: task.id,
+            review: `batch-${batch}-${key}`,
+            contentVersion: contentKey(state.entries[task.id].word, task.skill),
+          },
+          true,
+        );
+      }
+      for (const [key, schedule] of Object.entries(omitted))
+        expect(state.schedules[key], key).toEqual(schedule);
+    }
+    expect(completed.size).toBe(600);
+    expect(
+      planScheduledStudy(
+        state,
+        Object.values(state.entries),
+        [],
+        START + DAY / 2,
+      ).reviews,
+    ).toEqual([]);
+    expect(Object.keys(state.schedules)).toHaveLength(600);
+  });
+
+  it("bounds slow unfinished writing tasks and admits fresh words only as complete skill groups", () => {
+    const state = merge(
+      empty(),
+      Array.from({ length: 20 }, (_, index) => ({
+        ...word,
+        id: `pending-${index}`,
+      })),
+      "default",
+    );
+    state.studySkills = [5];
+    for (const entry of Object.values(state.entries)) {
+      entry.enrolled = true;
+      entry.enrolledAt = START - DAY;
+    }
+    const freshWord = { ...word, id: "fresh-later" };
+    state.entries[freshWord.id] = {
+      word: freshWord,
+      origin: "default",
+      archived: false,
+    };
+    const plan = planScheduledStudy(
+      state,
+      Object.values(state.entries),
+      [state.entries[freshWord.id]],
+      START,
+    );
+    expect(plan.continuing).toHaveLength(13);
+    expect(plan.remainingContinuing).toBe(7);
+    expect(plan.introductions).toEqual([]);
+    expect(plan.freshWords).toBe(0);
+    expect(estimateStudyMinutes(plan.continuing).min).toBe(20);
+
+    const fresh = merge(
+      empty(),
+      Array.from({ length: 6 }, (_, index) => ({
+        ...word,
+        id: `fresh-${index}`,
+      })),
+      "default",
+    );
+    fresh.daily = 6;
+    const all = Object.values(fresh.entries);
+    const introductions = planScheduledStudy(fresh, all, all, START);
+    expect(introductions.freshWords).toBe(5);
+    expect(introductions.introductions).toHaveLength(30);
+    for (const entry of all.slice(0, 5))
+      expect(
+        introductions.introductions
+          .filter((task) => task.id === entry.word.id)
+          .map((task) => task.skill),
+      ).toEqual([0, 1, 2, 3, 4, 5]);
+    expect(
+      introductions.introductions.some((task) => task.id === "fresh-5"),
+    ).toBe(false);
+  });
+});
+
 describe("New scheduled-session planning", () => {
   it("rotates the first objective skill across real review dates and keeps SRS unchanged", () => {
     let state = setup();

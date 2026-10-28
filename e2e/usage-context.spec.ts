@@ -237,6 +237,9 @@ test("a failed contextual recall returns after intervening tasks with the same c
     .getByRole("textbox", { name: "Câu trả lời", exact: true })
     .fill("wrong-target");
   await page.getByRole("button", { name: "Kiểm tra", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Tính sai và ôn lại", exact: true })
+    .click();
   await expect(page.getByText(/Cần củng cố/).last()).toBeVisible();
   await expect(page.locator(".session-goal")).toContainText(
     "1 lượt sửa sai đang chờ",

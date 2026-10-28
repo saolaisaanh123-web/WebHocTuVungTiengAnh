@@ -1,6 +1,19 @@
 # Jeongyeon — ghi nhớ cho phiên sửa tiếp theo
 
-Cập nhật mới nhất **28/10/2026**: chốt đợt ổn định với phạm vi cố định, theo yêu cầu dừng vòng sửa/mở rộng liên tục của người dùng. Báo cáo hiện hành: [stable-release-2026-10-28.md](stable-release-2026-10-28.md).
+Cập nhật mới nhất **28/10/2026 — mở rộng bài nghe theo yêu cầu mới**. Báo cáo: [listening-upgrade-2026-10-28.md](listening-upgrade-2026-10-28.md).
+
+- Thêm 30 bài nghe (10 B1/14 B2/6 C1), tổng44bài;272lượt thoại/120câu hỏi/97IDhiện có được luyện trong bài. Dữ liệu tự biên soạn Anh–Mỹ, giọng TTS thiết bị, không giả bản thu nhà xuất bản. Mức B1–C1 do Jeongyeon gợi ý, không phải chứng nhận độ khó/band.
+- Bài mới mặc định nghe trước, ẩn lời/nghĩa/câu hỏi trước khi nghe xong; lỗi/dừng không có kết quả nghe, mở lời/retry đánh dấu hỗ trợ. Nghe/từng câu/toàn bài/tốc độ/tìm Việt không dấu+English/C1, lưu nháp và kết quả. Giữ14bài cũ nguyên byte/version.
+- Đáp án chưa khớp ở1/3/4 chờ người học chọn tính sai hoặc lưu không chấm trước khi ghi lịch sử/SRS. Nháp giữ timing/audio/context qua pause/reload/JSON; không hồi tố sửa kết quả cũ, không cấp điểm đúng khi người học cho rằng đề mơ hồ.
+- Phiên ôn mới tối đa40lượt/ngân sách cơ sở20phút;oldestdue→học dở→từ mới nguyên nhóm. Phần còn lại giữ nguyên due; dừng từ mới nếu còn backlog chưa vừa. Phiên đã lưu không thay queue. SRS1–3–7–14–30 giữ nguyên.
+- Weakmode nhận tự báo quên skill2 đã phát audio, tách theo kỹ năng; không biến self thành objective. Tiến độ tách listen-first/contextmeaning khỏi điểm nhớ lâu; bộ sửa viết không tự sửa literal look-forward-to-see.
+- Thêm16supplements B1–C1 vào group-n, tổng203/253URL metadata. Reread16bài Oxford American HTML lưu20–21Oct/hashverified; không nhận đã mở online khi proxy403. TXT5.586mục/SHA bfedc903… và187supplements cũ nguyênbyte.
+- Kiểm thử tích hợp:492unit/46data/153caChromiumđãđạt (148lượttoànbộ+5chạylạiđạt); TypeScript/productionroot+subpathonline/offlinebao gồm6C1/nghetrước/44bàiđạt. Kiểm thử audio dùngmockđểxácminhbằngchứng, khônggọilàđãràgiọngthậtcủangườidùng.
+- Giới hạn cần công bố: TTS theo thiết bị, chưa chấm nói/viết toàn diện, chưa kiểm Safari/iPhone thật/Supabase thật; đồng bộ thật cần cấu hình bên ngoài. Không tự mở rộng phạm vi hoặc đổi SRS thêm sau bàn giao.
+
+## Mốc ổn định 28/10/2026 (lịch sử, trước yêu cầu thêm bài nghe)
+
+Cập nhật **28/10/2026**: chốt đợt ổn định với phạm vi cố định, theo yêu cầu dừng vòng sửa/mở rộng liên tục của người dùng. Báo cáo hiện hành: [stable-release-2026-10-28.md](stable-release-2026-10-28.md).
 
 - Phạm vi: biến thể chính tả hợp lệ; đáp án mơ hồ đã xác nhận; bộ lọc lộ đáp án; củng cố hội thoại; dự báo/ước lượng phiên; cập nhật cặp TXT/manifest offline an toàn.
 - Đã sửa các lỗi trên và thêm hồi quy. Không thêm từ, cách dùng, hội thoại, trang, API trả phí hoặc dependency; giữ nguyên ID, TXT, lịch sử, SRS, queue/context/nháp đang dở và định dạng sao lưu.

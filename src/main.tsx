@@ -26,6 +26,8 @@ import {
   type State,
   type Word,
   type Session,
+  type PendingAssessment,
+  validPendingAssessment,
   empty,
   read,
   save,
@@ -88,11 +90,12 @@ import {
 import { analyzeLearning } from "./analytics";
 import { LearningInsights } from "./LearningInsights";
 import ConversationPractice from "./ConversationPractice";
+import { dialogues, listeningDialogues } from "./conversations";
 import WritingFeedback from "./WritingFeedback";
 import { flushWritingDrafts, writingDraftSavedEvent } from "./writing-drafts";
 import SyncSettings from "./SyncSettings";
 import { useVisibleExposure } from "./useVisibleExposure";
-import { assessLearningAnswer } from "./assessment";
+import { assessLearningAnswer, assessmentMismatchFeedback } from "./assessment";
 import { sessionProgress, sessionSummaryLines } from "./session-guidance";
 import GrammarReference from "./GrammarReference";
 import { grammarArticles, grammarGroups } from "./grammar-data";
@@ -196,6 +199,7 @@ function App() {
     [revealed, setRevealed] = useState(false),
     [hint, setHint] = useState(false),
     [feedback, setFeedback] = useState<string>(),
+    [pendingAssessment, setPendingAssessment] = useState<PendingAssessment>(),
     [busy, setBusy] = useState(false),
     [summary, setSummary] = useState<string>();
   const hasModal =
@@ -598,7 +602,9 @@ function App() {
         local?.key === taskKey &&
         typeof local.answer === "string" &&
         typeof local.hint === "boolean" &&
-        typeof local.revealed === "boolean"
+        typeof local.revealed === "boolean" &&
+        (local.assessment === undefined ||
+          validPendingAssessment(local.assessment))
       )
         draft = local;
     } catch {
@@ -608,6 +614,7 @@ function App() {
     setAnswer(saved?.answer ?? draft?.answer ?? "");
     setHint(draft?.hint ?? false);
     setRevealed(!!saved || !!draft?.revealed);
+    setPendingAssessment(saved ? undefined : draft?.assessment);
     setFeedback(
       saved
         ? (saved.assessmentNote ? saved.assessmentNote + " " : "") +
@@ -1125,6 +1132,7 @@ function App() {
     result?: boolean,
     hintOverride?: boolean,
     neutralNote?: string,
+    confirmMismatch = false,
   ) {
     if (!task || !w || !state.session || lock.current) return;
     if (entry?.archived || !exercise || !canPractice(w, task.skill)) {
@@ -1133,7 +1141,12 @@ function App() {
       );
       return;
     }
-    if (!neutralNote && [2, 3].includes(task.skill) && !audioPlayed) {
+    if (
+      !neutralNote &&
+      !pendingAssessment &&
+      [2, 3].includes(task.skill) &&
+      !audioPlayed
+    ) {
       setNotice(
         "Hãy nghe hết âm thanh trước khi ghi nhận bài nghe. Nếu không phát được, chọn bỏ qua; lượt này không bị tính sai.",
       );
@@ -1160,36 +1173,91 @@ function App() {
                   : undefined),
             )
           : undefined;
+      if (
+        assessment?.outcome === "incorrect" &&
+        !pendingAssessment &&
+        !confirmMismatch
+      ) {
+        const snapshot: PendingAssessment = {
+          time: Date.now(),
+          elapsed: Math.max(0, Date.now() - started.current),
+          hint: hintOverride ?? (hint || revealed),
+          independent: independence(base, w.id, Date.now(), task.skill),
+          audioPlayed,
+          contentVersion: contentKey(w, task.skill),
+        };
+        const draft = {
+          key: taskKey,
+          answer,
+          hint: snapshot.hint,
+          revealed: true,
+          assessment: snapshot,
+        };
+        // Revealing feedback is a real exposure even when no grade is saved.
+        // It follows the submitted answer, including on millisecond clocks.
+        const shown = expose(
+          base,
+          w.id,
+          Math.max(Date.now(), snapshot.time + 1),
+        );
+        await commit(
+          { ...shown, session: { ...shown.session!, draft } },
+          undefined,
+          base,
+        );
+        answerDraft.current = draft;
+        storeBrowserDraft(draft);
+        setPendingAssessment(snapshot);
+        setRevealed(true);
+        lock.current = false;
+        return;
+      }
+      if (
+        pendingAssessment &&
+        pendingAssessment.contentVersion !== contentKey(w, task.skill)
+      ) {
+        throw Error(
+          "Nội dung đã thay đổi sau khi kiểm tra. Hãy bỏ qua lượt này để giữ nguyên lịch ôn.",
+        );
+      }
       const ungraded = task.skill === 5 || assessment?.outcome === "ungraded";
-      const correct = ungraded
-        ? false
-        : self
-          ? !!result
-          : assessment?.outcome === "correct";
+      const correct =
+        ungraded || pendingAssessment
+          ? false
+          : self
+            ? !!result
+            : assessment?.outcome === "correct";
       const prior = state.history.filter(
         (h) => h.wordId === w.id && h.skill === task.skill,
       );
-      const independent = !ungraded && independence(base, w.id);
+      const independent =
+        !ungraded &&
+        (pendingAssessment?.independent ?? independence(base, w.id));
       const r = {
         evidenceVersion: 2 as const,
         independent,
         ...(assessment?.outcome === "ungraded"
           ? { assessmentNote: assessment.message }
           : {}),
-        audioPlayed: [2, 3].includes(task.skill) ? audioPlayed : undefined,
+        audioPlayed: [2, 3].includes(task.skill)
+          ? (pendingAssessment?.audioPlayed ?? audioPlayed)
+          : undefined,
         id: state.session.id + ":" + state.session.index,
         wordId: w.id,
-        time: Date.now(),
+        time: pendingAssessment?.time ?? Date.now(),
         skill: task.skill,
         answer,
         correct,
-        hint: hintOverride ?? (hint || (!self && revealed)),
+        hint:
+          pendingAssessment?.hint ??
+          hintOverride ??
+          (hint || (!self && revealed)),
         method: ungraded
           ? ("ungraded" as const)
           : self
             ? ("self" as const)
             : ("rule" as const),
-        elapsed: Date.now() - started.current,
+        elapsed: pendingAssessment?.elapsed ?? Date.now() - started.current,
         session: state.session.id,
         review: task.review,
         ...(task.skill === 4 && task.context ? { context: task.context } : {}),
@@ -1234,6 +1302,7 @@ function App() {
       await commit(next, undefined, base);
       answerDraft.current = undefined;
       storeBrowserDraft();
+      setPendingAssessment(undefined);
       setRevealed(true);
       setFeedback(
         ungraded
@@ -1684,6 +1753,18 @@ function App() {
                   </div>
                 </div>
               </section>
+              {!resumable &&
+                (todayPlan.remainingReviews > 0 ||
+                  todayPlan.remainingContinuing > 0) && (
+                  <p className="notice" role="status">
+                    Phiên mới tối đa {todayPlan.taskLimit} lượt ban đầu, khoảng{" "}
+                    {todayPlan.budgetMinutes} phút theo dạng bài. Còn{" "}
+                    {todayPlan.remainingReviews} lượt đến hạn và{" "}
+                    {todayPlan.remainingContinuing} lượt học tiếp cho phiên sau.{" "}
+                    Các lịch này được giữ nguyên; tạm dừng thêm từ mới khi phiên
+                    còn đầy lượt ôn.
+                  </p>
+                )}
               <div className="stats">
                 <div className="stat">
                   <span className="stat-icon peach">
@@ -1833,8 +1914,9 @@ function App() {
               )}
               {due.length > 20 && (
                 <div className="notice">
-                  Bạn còn nhiều mục cần ôn. Hôm nay giảm đề xuất từ mới xuống 2
-                  mục.
+                  Ưu tiên xử lý lượt ôn trước. Mỗi phiên mới tối đa{" "}
+                  {todayPlan.taskLimit} lượt; từ mới chỉ được thêm khi còn chỗ
+                  và không bỏ lại lượt ôn đến hạn.
                 </div>
               )}
               <div className="dashboard-grid">
@@ -2284,9 +2366,11 @@ function App() {
               <section className="panel">
                 <h3>Hội thoại thực tế</h3>
                 <p>
-                  Đưa từ đã học vào đoạn hội thoại có hai người nói. Nội dung
-                  biên soạn sẵn, dùng được ngoại tuyến; đọc hoặc nghe không tự
-                  tạo bằng chứng thành thạo.
+                  {dialogues.length} đoạn hội thoại, gồm{" "}
+                  {listeningDialogues.length} bài nghe mới B1–C1. Nghe trước khi
+                  mở lời thoại, trả lời câu hỏi và xem nghĩa trong ngữ cảnh. Nội
+                  dung biên soạn sẵn; âm thanh dùng giọng đọc của thiết bị, ưu
+                  tiên Anh–Mỹ. Đọc hoặc nghe không tự tạo bằng chứng thành thạo.
                 </p>
                 <button
                   className="primary"
@@ -2615,7 +2699,7 @@ function App() {
                         task.skill === 5 ? "Câu của bạn…" : "Gõ câu trả lời…"
                       }
                       value={answer}
-                      disabled={!!feedback}
+                      disabled={!!feedback || !!pendingAssessment}
                       onChange={(e) => updateDraft(e.target.value)}
                     />
                   )}{" "}
@@ -2709,6 +2793,7 @@ function App() {
                         compact
                       />
                       {!feedback &&
+                        !pendingAssessment &&
                         ([0, 2].includes(task.skill) ? (
                           <div className="study-actions">
                             <button
@@ -2756,6 +2841,44 @@ function App() {
                             Lưu lượt có hỗ trợ
                           </button>
                         ))}
+                    </div>
+                  )}
+                  {pendingAssessment && !feedback && (
+                    <div
+                      className="notice"
+                      role="status"
+                      aria-label="Đối chiếu đáp án trước khi chấm"
+                    >
+                      <strong>Chưa khớp đáp án — chưa ghi kết quả</strong>
+                      <p>{assessmentMismatchFeedback(task.skill)}</p>
+                      <p>
+                        Lịch ôn chưa thay đổi. Câu trả lời ban đầu được giữ
+                        nguyên; xem đáp án không tự tạo kết quả đúng.
+                      </p>
+                      <div className="study-actions">
+                        <button
+                          className="primary"
+                          disabled={busy}
+                          onClick={() =>
+                            submit(false, undefined, undefined, true)
+                          }
+                        >
+                          Tính sai và ôn lại
+                        </button>
+                        <button
+                          disabled={busy}
+                          onClick={() =>
+                            submit(
+                              undefined,
+                              undefined,
+                              "Bạn chọn lưu không chấm sau khi đối chiếu đáp án. Chưa đủ căn cứ kết luận câu trả lời sai; lượt này không tính đúng/sai, không thay đổi lịch ôn và không xác nhận đã nhớ.",
+                              true,
+                            )
+                          }
+                        >
+                          Đề chưa rõ — lưu không chấm
+                        </button>
+                      </div>
                     </div>
                   )}
                   {feedback && (

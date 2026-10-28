@@ -292,3 +292,33 @@
     flex: 1 1 auto;
   }
 }
+.conversation-search,
+.conversation-mode,
+.conversation-speed {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  font-size: 14px;
+  margin: 15px 0;
+}
+.conversation-search input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+}
+.conversation-mode select,
+.conversation-speed select {
+  width: min(100%, 420px);
+  min-height: 44px;
+}
+.conversation-sentence-audio {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+.conversation-sentence-audio button {
+  min-height: 44px;
+  font-size: 13px;
+  flex: 1 1 150px;
+}

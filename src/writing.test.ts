@@ -98,6 +98,41 @@ describe("bounded, offline sentence feedback", () => {
     expect(attempt.assessment.grammar).toBe("uncertain");
   });
 
+  it.each([
+    "In the cockpit, I looked forward to see the runway.",
+    "At the front window, she looked forward to see the road ahead.",
+    "He looks forward to see whether the path is clear.",
+  ])(
+    "does not turn literal forward + purpose into anticipation: %s",
+    (text) => {
+      const attempt = makeWritingAttempt(word, text);
+      expect(attempt.issues).toEqual([]);
+      expect(attempt.status).toBe("ungraded");
+      expect(attempt.assessment.grammar).toBe("uncertain");
+      expect(attempt).not.toHaveProperty("correctedText");
+      expect(applyWritingSuggestions(text, attempt.issues)).toBe(text);
+    },
+  );
+
+  it("limits look-forward advice to the intended anticipation meaning and still checks independent errors", () => {
+    const anticipation = checkWritingLocally("I look forward to meet you.");
+    expect(anticipation).toHaveLength(1);
+    expect(anticipation[0].message).toContain("mong đợi");
+    expect(anticipation[0].explanation.toLowerCase()).toContain("nếu");
+    expect(
+      applyWritingSuggestions("I look forward to meet you.", anticipation),
+    ).toBe("I look forward to meeting you.");
+    const literal =
+      "In the cockpit, I looked forward to see the runway. I am agree with you.";
+    const issues = checkWritingLocally(literal);
+    expect(issues.map((issue) => issue.id.split(":")[0])).toEqual([
+      "i-am-agree",
+    ]);
+    expect(applyWritingSuggestions(literal, issues)).toBe(
+      "In the cockpit, I looked forward to see the runway. I agree with you.",
+    );
+  });
+
   it("retains modal-to detection with a clear pronoun subject and exact offsets", () => {
     const text =
       "Maybe they should to discuss the plan, but I need a can to make a lantern.";

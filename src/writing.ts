@@ -96,13 +96,16 @@ const rules: Rule[] = [
   {
     id: "look-forward-gerund",
     pattern:
-      /\b(look(?:s|ed|ing)?\s+forward\s+to)\s+(see|meet|hear|receive|visit|learn|speak|join|attend|discuss)\s+(you|him|her|us|them|the|a|an|my|your|our|their|more)\b/gi,
+      /\b(look(?:s|ed|ing)?\s+forward\s+to)\s+(meet|hear|receive|visit|learn|speak|join|attend|discuss)\s+(you|him|her|us|them|the|a|an|my|your|our|their|more)\b/gi,
     category: "verb-pattern",
-    message: "Sau look forward to, động từ cần ở dạng V-ing.",
+    message: "Nếu nghĩa là “mong đợi”, sau look forward to dùng V-ing.",
     explanation:
-      "To trong look forward to là giới từ; khi theo sau bằng động từ, dùng V-ing. Hệ thống chỉ nhận diện một số mẫu rõ ràng, không đoán mọi từ sau to là động từ.",
+      "Nếu bạn muốn diễn đạt sự mong đợi, to trong look forward to là giới từ; động từ theo sau dùng V-ing. Hãy kiểm tra ý nghĩa trước khi dùng gợi ý: look forward còn có thể là nhìn về phía trước, với to + động từ chỉ mục đích. Bộ kiểm không tự sửa look forward to see vì chưa phân biệt chắc hai cách hiểu đó.",
     example:
       "I look forward to meeting you. / We look forward to hearing your ideas.",
+    // Perception with see can also describe a literal direction followed by a
+    // purpose infinitive. Without parsing intent, leaving it ungraded is safer
+    // than changing the learner's meaning to anticipation.
     replace: (m) => `${m[1]} ${gerunds[m[2].toLowerCase()]} ${m[3]}`,
   },
   {

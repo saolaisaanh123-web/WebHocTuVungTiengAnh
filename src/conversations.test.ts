@@ -4,6 +4,7 @@ import { contentKey, empty, merge, parse, type Result } from "./core";
 import {
   availableDialogues,
   dialogues,
+  listeningDialogues,
   evaluateDialogueAnswer,
   makeConversationAttempt,
   recommendDialogues,
@@ -36,10 +37,14 @@ const result = (wordId: string, overrides: Partial<Result> = {}): Result => ({
 });
 
 describe("Authored contextual conversation practice", () => {
-  it("maps all 14 authored dialogues to reviewed corpus senses and actual English occurrences", () => {
+  it("keeps all 14 existing texts and adds 30 complete listening lessons bound to reviewed senses", () => {
     const state = source();
-    expect(availableDialogues(state)).toHaveLength(14);
-    expect(new Set(dialogues.map((d) => d.id)).size).toBe(14);
+    expect(dialogues.filter((d) => !d.id.startsWith("listen-"))).toHaveLength(
+      14,
+    );
+    expect(listeningDialogues).toHaveLength(30);
+    expect(availableDialogues(state)).toHaveLength(44);
+    expect(new Set(dialogues.map((d) => d.id)).size).toBe(44);
     for (const d of dialogues) {
       expect(d.targets.length).toBeGreaterThanOrEqual(3);
       expect(d.targets.length).toBeLessThanOrEqual(7);
@@ -55,7 +60,16 @@ describe("Authored contextual conversation practice", () => {
           d.lines.some((l) => l.en.toLowerCase().includes(target.lemma)),
         ).toBe(true);
       }
-      expect(d.questions).toHaveLength(3);
+      expect(d.questions).toHaveLength(d.id.startsWith("listen-") ? 4 : 3);
+      if (d.id.startsWith("listen-")) {
+        expect(d.lines.length).toBeGreaterThanOrEqual(8);
+        expect(d.lines.length).toBeLessThanOrEqual(12);
+        expect(
+          d.questions.filter((q) => q.kind === "comprehension"),
+        ).toHaveLength(2);
+        expect(d.questions.filter((q) => q.kind === "meaning")).toHaveLength(1);
+        expect(d.questions.filter((q) => q.kind === "cloze")).toHaveLength(1);
+      }
       for (const q of d.questions) {
         expect(
           q.targetIds.every((id) => d.targets.some((t) => t.id === id)),
@@ -64,9 +78,14 @@ describe("Authored contextual conversation practice", () => {
           expect(q.accepted.every((a) => q.options!.includes(a))).toBe(true);
       }
     }
-    expect(new Set(dialogues.map((d) => d.lines.length))).toEqual(
-      new Set([6, 8]),
-    );
+    expect(
+      new Set(
+        dialogues
+          .filter((d) => !d.id.startsWith("listen-"))
+          .map((d) => d.lines.length),
+      ),
+    ).toEqual(new Set([6, 8]));
+    expect(listeningDialogues.filter((d) => d.level === "C1")).toHaveLength(6);
   });
 
   it("declines archived, lookup-only, missing or changed-sense targets", () => {
@@ -128,7 +147,7 @@ describe("Authored contextual conversation practice", () => {
     const state = source();
     expect(
       recommendDialogues(state, { level: "B2", length: "long" }).every(
-        (r) => r.dialogue.level === "B2" && r.dialogue.lines.length === 8,
+        (r) => r.dialogue.level === "B2" && r.dialogue.lines.length > 6,
       ),
     ).toBe(true);
     expect(recommendDialogues(state, { weakOnly: true })).toEqual([]);
@@ -356,5 +375,74 @@ describe("Authored contextual conversation practice", () => {
     expect(
       recommendDialogues(state, { weakOnly: true, now: start + 4 * day }),
     ).toEqual([]);
+  });
+});
+
+describe("Listen-first attempt evidence", () => {
+  it("requires successful complete audio with every line before storing a listening result", () => {
+    const state = source();
+    const values = Object.fromEntries(
+      sample.questions.map((question) => [question.id, question.accepted[0]]),
+    );
+    const lines = sample.lines.map((_, index) => `line-${index}`);
+    for (const audio of [
+      { mode: "listen" as const, lines, complete: false },
+      { mode: "listen" as const, lines: lines.slice(1), complete: true },
+      { mode: "listen" as const, lines: [], complete: true },
+    ])
+      expect(() =>
+        makeConversationAttempt(state, sample, values, audio),
+      ).toThrow(/nghe hết/);
+    const before = structuredClone(state);
+    const attempt = makeConversationAttempt(state, sample, values, {
+      mode: "listen",
+      lines,
+      complete: true,
+      transcriptRevealed: false,
+    });
+    expect(attempt).toMatchObject({
+      mode: "listen",
+      read: false,
+      transcriptRevealed: false,
+      listenedComplete: true,
+      listenedLineIds: lines,
+    });
+    expect(
+      attempt.answers.every((answer) => answer.correct && !answer.hint),
+    ).toBe(true);
+    validatePracticeCollections({ ...state, conversations: [attempt] });
+    expect(state).toEqual(before);
+  });
+
+  it("records opening the transcript and retries as supported, preserving legacy read records", () => {
+    const state = source();
+    const values = Object.fromEntries(
+      sample.questions.map((question) => [question.id, question.accepted[0]]),
+    );
+    const audio = {
+      mode: "listen" as const,
+      lines: sample.lines.map((_, index) => `line-${index}`),
+      complete: true,
+      transcriptRevealed: true,
+    };
+    const revealed = makeConversationAttempt(state, sample, values, audio);
+    expect(revealed.read).toBe(true);
+    expect(revealed.answers.every((answer) => answer.hint)).toBe(true);
+    const retry = makeConversationAttempt(
+      state,
+      sample,
+      values,
+      { ...audio, transcriptRevealed: false },
+      revealed.id,
+    );
+    expect(retry.answers.every((answer) => answer.hint)).toBe(true);
+    validatePracticeCollections({ ...state, conversations: [revealed, retry] });
+    const legacy = makeConversationAttempt(state, sample, values, {
+      lines: [],
+      complete: false,
+    });
+    expect(legacy).not.toHaveProperty("mode");
+    expect(legacy).not.toHaveProperty("transcriptRevealed");
+    expect(legacy.read).toBe(true);
   });
 });

@@ -1,0 +1,594 @@
+[
+  {
+    "wordId": "feedback-01",
+    "headword": "feedback",
+    "partOfSpeech": "noun",
+    "meaningVi": "nhận xét góp ý",
+    "patterns": [
+      {
+        "form": "feedback on + bài làm/sản phẩm",
+        "explanation": "Dùng on để nêu công việc hoặc sản phẩm được nhận xét."
+      },
+      {
+        "form": "feedback from + người đưa nhận xét",
+        "explanation": "Dùng from để nêu người hoặc nhóm đưa góp ý; give feedback là đưa nhận xét."
+      }
+    ],
+    "countability": "Không đếm được ở nghĩa góp ý: some feedback, useful feedback; không thêm -s để đếm từng lời nhận xét.",
+    "note": "Ở nghĩa nhận xét góp ý đang học, feedback nói về thông tin giúp đánh giá hoặc cải thiện công việc. Positive feedback là phản hồi tích cực, negative feedback là phản hồi tiêu cực; không đồng nghĩa mọi lời chê đều hữu ích. Nghĩa tiếng hú của thiết bị âm thanh là một nghĩa khác.",
+    "mistake": {
+      "incorrect": "Could you give me a feedback on this draft?",
+      "correct": "Could you give me some feedback on this draft?",
+      "explanation": "Trong nghĩa góp ý, feedback không đếm được: dùng some feedback, không dùng a feedback. Nếu muốn đếm từng nhận xét, có thể dùng a comment hoặc a piece of feedback."
+    },
+    "example": {
+      "id": "usage-feedback-2026-10-28",
+      "en": "Could you give me feedback on the revised introduction before Friday?",
+      "vi": "Bạn góp ý cho phần mở đầu đã sửa trước thứ Sáu được không?",
+      "alternatives": ["comments", "advice"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/feedback",
+        "title": "feedback noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:45:12+00:00",
+        "sha256": "4921e26bfe67bbba35619199836b459138231c09abba3384b97191cfee5d7eea"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-de38e0881e31dd-01",
+    "headword": "associated",
+    "partOfSpeech": "adjective",
+    "meaningVi": "có liên hệ hoặc gắn liền với",
+    "patterns": [
+      {
+        "form": "be associated with + người/sự việc",
+        "explanation": "Diễn tả mối liên hệ giữa hai điều, hoặc giữa một người và tổ chức."
+      },
+      {
+        "form": "associated + danh từ",
+        "explanation": "Đứng trước danh từ để chỉ thứ liên quan hoặc đi kèm, chẳng hạn associated costs."
+      }
+    ],
+    "note": "Associated nói có liên hệ; riêng cấu trúc này không chứng minh rằng một điều chắc chắn gây ra điều kia. Khi đọc nghiên cứu hoặc báo cáo, cần xem bằng chứng trước khi suy ra quan hệ nguyên nhân.",
+    "mistake": {
+      "incorrect": "The additional cost is associated of delivery.",
+      "correct": "The additional cost is associated with delivery.",
+      "explanation": "Với nghĩa có liên hệ với trong câu này, cụm được dùng là associated with, không phải associated of."
+    },
+    "example": {
+      "id": "usage-associated-2026-10-28",
+      "en": "The report describes the risks associated with storing customer data online.",
+      "vi": "Báo cáo mô tả những rủi ro liên quan đến việc lưu dữ liệu khách hàng trực tuyến.",
+      "alternatives": ["connected"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/associated",
+        "title": "associated adjective - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:50:58+00:00",
+        "sha256": "b3d8339493ab04ed3511fd6dc9f6d77e9aee59f320b928b88648be9615889068"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-bd00a996380547-01",
+    "headword": "constraint",
+    "partOfSpeech": "noun",
+    "meaningVi": "hạn chế; điều ràng buộc",
+    "patterns": [
+      {
+        "form": "a constraint on + hoạt động/khả năng",
+        "explanation": "Nêu điều bị hạn chế, như một giới hạn đối với chi tiêu."
+      },
+      {
+        "form": "budget/time/space constraints",
+        "explanation": "Gọi tên các ràng buộc về ngân sách, thời gian hoặc không gian; có thể nói work under constraints."
+      }
+    ],
+    "countability": "Đếm được khi nói từng điều ràng buộc: a constraint, several constraints. Nguồn còn ghi một nghĩa không đếm được khác.",
+    "note": "Ở nghĩa đang học, một constraint là điều ràng buộc khả năng hành động, có thể do thực tế nguồn lực hoặc do quyết định tạo ra. Restriction thường nhấn mạnh quy định hạn chế hơn; không thay mọi từ này cho nhau máy móc. Nghĩa không đếm được trong without constraint nói về sự kiềm chế hoặc gò bó, khác cách dùng đang luyện.",
+    "mistake": {
+      "incorrect": "The lack of space is an important constrain on the project.",
+      "correct": "The lack of space is an important constraint on the project.",
+      "explanation": "Sau an important cần danh từ constraint. Constrain là động từ, không phải dạng danh từ trong cụm này."
+    },
+    "example": {
+      "id": "usage-constraint-2026-10-28",
+      "en": "Limited storage space is a constraint on the number of samples we can keep.",
+      "vi": "Không gian lưu trữ hạn chế là một ràng buộc đối với số mẫu chúng tôi có thể giữ.",
+      "alternatives": ["limit", "restriction"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/constraint",
+        "title": "constraint noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-20T17:29:58+00:00",
+        "sha256": "3afaae11007da04b289c91721fd70200f0a3c805aa143328b308dc3d55d3cab7"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-c2fca2aa3a976c-01",
+    "headword": "copyright",
+    "partOfSpeech": "noun",
+    "meaningVi": "bản quyền",
+    "patterns": [
+      {
+        "form": "own/hold the copyright on/in + tác phẩm",
+        "explanation": "Nói ai nắm bản quyền đối với một tác phẩm."
+      },
+      {
+        "form": "infringement of copyright",
+        "explanation": "Cụm chỉ việc xâm phạm bản quyền; không dùng thông tin từ vựng để tự kết luận pháp lý cho một trường hợp cụ thể."
+      }
+    ],
+    "countability": "Nguồn ghi có cách dùng đếm được và không đếm được. Trong the copyright on this photograph, đang nói quyền đối với một tác phẩm cụ thể.",
+    "note": "Copyright là bản quyền đối với tác phẩm, không đồng nghĩa chỉ ghi tên tác giả là được phép dùng lại tác phẩm. Thời hạn và ngoại lệ phụ thuộc luật áp dụng; bài từ vựng này không đưa ra một thời hạn pháp lý chung cho mọi nơi.",
+    "mistake": {
+      "incorrect": "The copyright on this photograph belong to the photographer.",
+      "correct": "The copyright on this photograph belongs to the photographer.",
+      "explanation": "Chủ ngữ the copyright trong câu này ở số ít nên dùng belongs. Không chia động từ theo danh từ photograph hoặc photographer đứng gần nó."
+    },
+    "example": {
+      "id": "usage-copyright-2026-10-28",
+      "en": "The photographer owns the copyright on the images used in the brochure.",
+      "vi": "Nhiếp ảnh gia nắm bản quyền đối với những hình ảnh được dùng trong tờ giới thiệu."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/copyright_1",
+        "title": "copyright noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-20T17:29:57+00:00",
+        "sha256": "f429f83fe456fc5db00038bdb79544a6cf6e04a068f835304175c33ae413a1a6"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-6afb642998f6a6-01",
+    "headword": "frustrated",
+    "partOfSpeech": "adjective",
+    "meaningVi": "bực bội vì không đạt được điều muốn",
+    "patterns": [
+      {
+        "form": "feel/get frustrated",
+        "explanation": "Nêu cảm giác bực bội hoặc mất kiên nhẫn vì không làm được điều mong muốn."
+      },
+      {
+        "form": "frustrated at/with + sự việc",
+        "explanation": "Nêu điều khiến người nói bực bội, như sự thiếu tiến triển hoặc trục trặc lặp lại."
+      }
+    ],
+    "note": "Ở nghĩa đang học, frustrated mô tả cảm xúc của người gặp trở ngại. Từ này không đơn thuần có nghĩa tức giận trong mọi tình huống. Các cách dùng như frustrated desires hoặc a frustrated artist có phạm vi khác, không tự gộp vào mọi câu về cảm xúc.",
+    "mistake": {
+      "incorrect": "I feel frustrated of the repeated delays.",
+      "correct": "I feel frustrated with the repeated delays.",
+      "explanation": "Để nêu điều gây bực bội trong nghĩa này, dùng frustrated with hoặc frustrated at. Câu này không dùng frustrated of."
+    },
+    "example": {
+      "id": "usage-frustrated-2026-10-28",
+      "en": "I feel frustrated with the repeated errors in the booking system.",
+      "vi": "Tôi thấy bực bội vì các lỗi lặp đi lặp lại trong hệ thống đặt chỗ.",
+      "alternatives": ["annoyed", "irritated"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/frustrated",
+        "title": "frustrated adjective - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-20T17:29:25+00:00",
+        "sha256": "45524c8fa177853b6d141d380abde9d3203d15d72883932a807ba20243cab3f8"
+      }
+    ]
+  },
+  {
+    "wordId": "heritage-01",
+    "headword": "heritage",
+    "partOfSpeech": "noun",
+    "meaningVi": "di sản",
+    "patterns": [
+      {
+        "form": "cultural/national heritage",
+        "explanation": "Nói về di sản văn hóa hoặc di sản của một quốc gia."
+      },
+      {
+        "form": "part of + tính từ sở hữu + heritage",
+        "explanation": "Nêu một công trình hoặc truyền thống là một phần di sản của một cộng đồng."
+      }
+    ],
+    "countability": "Thường dùng ở số ít trong nghĩa này: a rich cultural heritage, our national heritage.",
+    "note": "Heritage trong bài này là lịch sử, truyền thống và những giá trị được truyền lại, không phải chỉ mọi đồ vật cũ. Nguồn ghi thường dùng số ít, không phải một quy tắc cấm tuyệt đối mọi cách dùng số nhiều trong mọi ngữ cảnh.",
+    "mistake": {
+      "incorrect": "The town has a rich cultural heritages.",
+      "correct": "The town has a rich cultural heritage.",
+      "explanation": "Sau a rich cultural trong câu này dùng heritage ở số ít. Không ghép a với dạng số nhiều heritages."
+    },
+    "example": {
+      "id": "usage-heritage-2026-10-28",
+      "en": "The community center hosts events that celebrate the neighborhood’s cultural heritage.",
+      "vi": "Trung tâm cộng đồng tổ chức những sự kiện tôn vinh di sản văn hóa của khu phố."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/heritage",
+        "title": "heritage noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:50:58+00:00",
+        "sha256": "392b45fb18f7917745fc376a9b38952278cb361610b4ca41ee673d0d89f38ec6"
+      }
+    ]
+  },
+  {
+    "wordId": "sustainable-01",
+    "headword": "sustainable",
+    "partOfSpeech": "adjective",
+    "meaningVi": "bền vững",
+    "patterns": [
+      {
+        "form": "sustainable + hoạt động/sự phát triển",
+        "explanation": "Dùng như tính từ trước danh từ, như sustainable growth hoặc sustainable management."
+      },
+      {
+        "form": "be sustainable",
+        "explanation": "Nêu một cách làm có thể duy trì lâu dài; trong ngữ cảnh môi trường còn nhấn mạnh sử dụng tài nguyên mà không gây hại cho môi trường."
+      }
+    ],
+    "note": "Sustainable có cả nghĩa liên quan đến bảo vệ môi trường và nghĩa có thể duy trì lâu dài. Phải đọc danh từ và ngữ cảnh đi cùng để biết trọng tâm; không phải hễ xuất hiện sustainable là câu đang nói riêng về môi trường.",
+    "mistake": {
+      "incorrect": "The team wants a sustainably way to manage the forest.",
+      "correct": "The team wants a sustainable way to manage the forest.",
+      "explanation": "Trước danh từ way cần tính từ sustainable. Sustainably là trạng từ, dùng để bổ nghĩa cho hành động trong một cấu trúc khác."
+    },
+    "example": {
+      "id": "usage-sustainable-2026-10-28",
+      "en": "The city is looking for a sustainable way to reduce food waste.",
+      "vi": "Thành phố đang tìm một cách bền vững để giảm lãng phí thực phẩm."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/sustainable",
+        "title": "sustainable adjective - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:45:13+00:00",
+        "sha256": "27cb429a98b618a088bc1f1433850c118bab60d17e9a7767f56cc4e6e9a44bda"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-f45b59736bd986-01",
+    "headword": "transparency",
+    "partOfSpeech": "noun",
+    "meaningVi": "sự minh bạch; việc công khai và rõ ràng về thông tin hoặc quyết định",
+    "patterns": [
+      {
+        "form": "transparency in + tài liệu/quá trình",
+        "explanation": "Nêu lĩnh vực cần thông tin rõ ràng, dễ hiểu."
+      },
+      {
+        "form": "greater/more transparency",
+        "explanation": "Nêu nhu cầu tăng mức độ minh bạch; trong nghĩa này không đếm từng đơn vị transparency."
+      }
+    ],
+    "countability": "Không đếm được ở nghĩa minh bạch đang học: greater transparency, a need for transparency.",
+    "note": "Chỉ luyện nghĩa minh bạch, rõ ràng về thông tin ở đây. Transparency còn có nghĩa độ trong suốt của vật liệu; dạng đếm được transparencies có thể chỉ những tấm ảnh trên phim dùng để chiếu. Không lấy dạng số nhiều của nghĩa ảnh chiếu để đếm mức độ minh bạch.",
+    "mistake": {
+      "incorrect": "Customers want more transparencies about these fees.",
+      "correct": "Customers want more transparency about these fees.",
+      "explanation": "Nếu ý là khách hàng muốn các khoản phí minh bạch hơn, dùng transparency không đếm được. Transparencies không diễn đạt ý đó trong câu này."
+    },
+    "example": {
+      "id": "usage-transparency-2026-10-28",
+      "en": "Publishing the selection criteria would improve transparency in the hiring process.",
+      "vi": "Công khai các tiêu chí lựa chọn sẽ tăng tính minh bạch trong quá trình tuyển dụng.",
+      "alternatives": ["clarity"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/transparency",
+        "title": "transparency noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:48:51+00:00",
+        "sha256": "56fedef4b45e9b08ff5fe6fb4585a80fcbc10366e6b40f9376696999ea51e46d"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-5d13e04fd93bd7-01",
+    "headword": "undermine",
+    "partOfSpeech": "verb",
+    "meaningVi": "làm suy yếu dần, làm kém hiệu quả",
+    "patterns": [
+      {
+        "form": "undermine + confidence/authority/morale",
+        "explanation": "Nhận tân ngữ trực tiếp khi nói làm suy yếu sự tự tin, quyền uy hoặc tinh thần."
+      },
+      {
+        "form": "be undermined by + nguyên nhân",
+        "explanation": "Dùng bị động khi nhấn mạnh điều bị suy yếu hơn là người hoặc việc gây tác động."
+      }
+    ],
+    "note": "Undermine ở nghĩa đang học nhấn mạnh việc làm cho điều gì yếu dần hoặc kém hiệu quả. Từ này còn có nghĩa làm yếu phần chân hoặc nền của một vật; bài đang luyện nghĩa trừu tượng, không tự suy ra nghĩa kỹ thuật từ một câu về lòng tin.",
+    "mistake": {
+      "incorrect": "Conflicting instructions can undermine to the team’s confidence.",
+      "correct": "Conflicting instructions can undermine the team’s confidence.",
+      "explanation": "Ở nghĩa làm suy yếu, undermine đi trực tiếp với đối tượng bị tác động; không thêm to trước confidence."
+    },
+    "example": {
+      "id": "usage-undermine-2026-10-28",
+      "en": "Conflicting instructions can undermine the team’s confidence in the plan.",
+      "vi": "Những chỉ dẫn mâu thuẫn có thể làm suy yếu lòng tin của nhóm vào kế hoạch.",
+      "alternatives": ["weaken", "damage"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/undermine",
+        "title": "undermine verb - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:45:29+00:00",
+        "sha256": "90afc59c82c8d76d476fd7406154bde848401aba8c84be28ea14fb1c62c84b9d"
+      }
+    ]
+  },
+  {
+    "wordId": "wage-01",
+    "headword": "wage",
+    "partOfSpeech": "noun",
+    "meaningVi": "tiền công tính theo giờ hoặc tuần",
+    "patterns": [
+      {
+        "form": "an hourly/weekly wage of + số tiền",
+        "explanation": "Nêu mức tiền công theo giờ hoặc theo tuần."
+      },
+      {
+        "form": "a wage increase/cut",
+        "explanation": "Nói tăng hoặc giảm tiền công; wage đứng trước danh từ chính trong cụm này."
+      }
+    ],
+    "countability": "Nguồn ghi wage dùng số ít để nêu mức tiền công; wages là dạng số nhiều và đi với động từ số nhiều khi làm chủ ngữ.",
+    "note": "Nguồn phân biệt wage/wages với salary theo cách nói về tiền công và lương; đây là xu hướng sử dụng, không phải cứ trả theo tháng thì luôn gọi salary. Wage thường nói một mức tiền công, còn wages nói khoản thu nhập từ công việc ở dạng số nhiều. Các con số trong ví dụ là giả định học tập, không phải mức lương tối thiểu hiện hành.",
+    "mistake": {
+      "incorrect": "The weekly wage are paid every Thursday.",
+      "correct": "The weekly wage is paid every Thursday.",
+      "explanation": "The weekly wage là chủ ngữ số ít nên dùng is. Nếu dùng wages làm chủ ngữ số nhiều thì dùng are."
+    },
+    "example": {
+      "id": "usage-wage-2026-10-28",
+      "en": "The job offers an hourly wage of twenty dollars during the training period.",
+      "vi": "Công việc trả mức tiền công hai mươi đô la mỗi giờ trong thời gian đào tạo."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/wage_1",
+        "title": "wage noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:45:13+00:00",
+        "sha256": "598cb1e5038612b36e92912bb95139c63547f8c07c48a757e903b5999778d408"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-d296add506bba3-01",
+    "headword": "disability",
+    "partOfSpeech": "noun",
+    "meaningVi": "khuyết tật",
+    "patterns": [
+      {
+        "form": "a disability / learning disabilities",
+        "explanation": "Nêu một khuyết tật cụ thể hoặc các khuyết tật liên quan đến việc học."
+      },
+      {
+        "form": "disability insurance",
+        "explanation": "Cụm nói về bảo hiểm liên quan đến tình trạng không thể làm việc do vấn đề sức khỏe; quyền lợi cụ thể tùy hợp đồng và nơi áp dụng."
+      }
+    ],
+    "countability": "Đếm được khi nói một khuyết tật cụ thể: a disability, disabilities; cũng có nghĩa không đếm được khi nói tình trạng chung.",
+    "note": "Disability có cách dùng chỉ một tình trạng cụ thể và cách dùng chỉ khái niệm chung. Không suy từ từ này rằng mọi người có khuyết tật đều có cùng khả năng hoặc nhu cầu. Các cụm trong bài phục vụ học cách dùng từ, không đánh giá một cá nhân.",
+    "mistake": {
+      "incorrect": "The program supports students with a disabilities.",
+      "correct": "The program supports students with disabilities.",
+      "explanation": "Không dùng a trước danh từ số nhiều disabilities. Nếu nói một khuyết tật cụ thể, có thể dùng a disability tùy ý định diễn đạt."
+    },
+    "example": {
+      "id": "usage-disability-2026-10-28",
+      "en": "The university provides extra support for a student with a learning disability.",
+      "vi": "Trường đại học hỗ trợ thêm cho một sinh viên có khuyết tật liên quan đến việc học."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/disability",
+        "title": "disability noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:38:27+00:00",
+        "sha256": "809e870b721e9767c19dfe6f9b4090e43a0aca3d059c251154de2792d0a5b8c0"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-089857f9c40794-01",
+    "headword": "goods",
+    "partOfSpeech": "noun",
+    "meaningVi": "hàng hóa",
+    "patterns": [
+      {
+        "form": "goods and services",
+        "explanation": "Phân biệt hàng hóa với dịch vụ trong hoạt động mua bán."
+      },
+      {
+        "form": "consumer/household goods",
+        "explanation": "Nói về hàng tiêu dùng hoặc hàng dùng trong gia đình; goods là dạng số nhiều ở nghĩa hàng hóa."
+      }
+    ],
+    "countability": "Danh từ số nhiều ở nghĩa hàng hóa: the goods are, không dùng a goods để nói một món hàng.",
+    "note": "Ở nghĩa đang học, goods là những thứ được sản xuất để bán. Khi muốn nói một món hàng riêng lẻ trong giao tiếp thông thường, có thể dùng a product hoặc an item. Goods còn có nghĩa tài sản có thể di chuyển, nhưng không phải nghĩa đang luyện trong ví dụ bán hàng.",
+    "mistake": {
+      "incorrect": "The goods is stored in a dry room.",
+      "correct": "The goods are stored in a dry room.",
+      "explanation": "Goods ở nghĩa hàng hóa có dạng số nhiều nên dùng are khi nó là chủ ngữ của câu này."
+    },
+    "example": {
+      "id": "usage-goods-2026-10-28",
+      "en": "The warehouse stores household goods before they are shipped to local stores.",
+      "vi": "Kho hàng lưu trữ hàng gia dụng trước khi chúng được chuyển đến các cửa hàng địa phương.",
+      "alternatives": ["products", "items"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/goods",
+        "title": "goods noun - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:38:18+00:00",
+        "sha256": "81efddbc976a7a9c0c22a42c562e917342f60bb869655d18ac02f267ce9bfebf"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-a97541517d61b2-01",
+    "headword": "whereas",
+    "partOfSpeech": "conjunction",
+    "meaningVi": "trong khi, dùng đối chiếu hai sự thật",
+    "patterns": [
+      {
+        "form": "mệnh đề + whereas + mệnh đề",
+        "explanation": "Đặt hai sự thật hoặc đặc điểm cạnh nhau để làm rõ sự tương phản."
+      },
+      {
+        "form": "whereas / while khi đối chiếu",
+        "explanation": "Trong cách dùng đối chiếu hai sự thật này, while cũng có thể phù hợp; whereas không được dùng như từ chỉ đồng thời cho mọi câu có nghĩa trong khi."
+      }
+    ],
+    "note": "Bài này dùng whereas để so sánh hoặc đối chiếu hai sự thật. Nguồn còn ghi một cách dùng pháp lý ở đầu văn bản chính thức; không suy nghĩa pháp lý đó cho hội thoại thông thường. Cần diễn đạt rõ cả hai vế khi muốn viết một câu đầy đủ.",
+    "mistake": {
+      "incorrect": "Whereas the first plan is cheaper.",
+      "correct": "Whereas the first plan is cheaper, the second plan is easier to maintain.",
+      "explanation": "Nếu đây là toàn bộ câu trong một đoạn văn thông thường, vế Whereas the first plan is cheaper còn thiếu vế chính để hoàn thành sự đối chiếu. Câu sửa bổ sung thông tin cho vế còn lại; không phải chỉ thêm một dấu câu."
+    },
+    "example": {
+      "id": "usage-whereas-2026-10-28",
+      "en": "The first plan costs less, whereas the second plan gives us more flexibility.",
+      "vi": "Phương án thứ nhất có chi phí thấp hơn, trong khi phương án thứ hai cho chúng tôi linh hoạt hơn.",
+      "alternatives": ["while", "but"]
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/whereas",
+        "title": "whereas conjunction - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:49:33+00:00",
+        "sha256": "825395eb5d0c524b8100b56bbecf4e9dff5d687cc91a2222f0457a4884eac480"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-c8a69f69754487-01",
+    "headword": "unless",
+    "partOfSpeech": "conjunction",
+    "meaningVi": "trừ khi, nếu không có điều kiện nêu ra",
+    "patterns": [
+      {
+        "form": "mệnh đề + unless + điều kiện ngoại lệ",
+        "explanation": "Nêu trường hợp ngoại lệ khiến điều ở vế còn lại không diễn ra hoặc không đúng."
+      },
+      {
+        "form": "unless + điều kiện, mệnh đề",
+        "explanation": "Có thể đưa điều kiện ngoại lệ lên đầu, như một lời hẹn chỉ thay đổi nếu phát sinh việc khác."
+      }
+    ],
+    "note": "Unless thường có thể hiểu là trừ khi, nhưng không thay tất cả if ... not bằng unless máy móc. Nguồn lưu ý khi đang nói về một việc đã biết là không xảy ra hoặc không đúng thì có những trường hợp cần dùng if ... not. Dấu hiệu nhận biết chỉ là gợi ý; phải kiểm tra ý của cả câu.",
+    "mistake": {
+      "incorrect": "We’ll meet outside unless it doesn’t rain.",
+      "correct": "We’ll meet outside unless it rains.",
+      "explanation": "Nếu ý định là sẽ gặp ngoài trời trừ khi trời mưa, dùng unless it rains. Thêm doesn’t làm đổi điều kiện ngoại lệ thành không mưa. Điều này không có nghĩa mọi câu phủ định sau unless đều sai."
+    },
+    "example": {
+      "id": "usage-unless-2026-10-28",
+      "en": "We can keep the current schedule unless the client requests a change.",
+      "vi": "Chúng ta có thể giữ lịch hiện tại trừ khi khách hàng yêu cầu thay đổi."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/unless",
+        "title": "unless conjunction - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:49:30+00:00",
+        "sha256": "fa37077b7fd81db4272fef51ccf739b9d70049a7a3927cd5920a9cfa380c2c2c"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-3509fd899235fb-01",
+    "headword": "whether",
+    "partOfSpeech": "conjunction",
+    "meaningVi": "liệu có hay không, giới thiệu hai khả năng",
+    "patterns": [
+      {
+        "form": "whether + mệnh đề (or not)",
+        "explanation": "Giới thiệu điều chưa biết hoặc lựa chọn giữa hai khả năng, như liệu một phòng có còn trống hay không."
+      },
+      {
+        "form": "whether to + động từ / whether ... or ...",
+        "explanation": "Nêu lựa chọn cần cân nhắc, như có làm việc gì hoặc chọn giữa hai việc."
+      }
+    ],
+    "note": "Trong nhiều câu hỏi gián tiếp có câu trả lời có hoặc không, cả if và whether đều có thể dùng. Nguồn ghi whether thường tự nhiên hơn với một số động từ như discuss, consider và decide. Không suy ra rằng if và whether thay nhau được trong mọi cấu trúc.",
+    "mistake": {
+      "incorrect": "I don’t know whether is the room available.",
+      "correct": "I don’t know whether the room is available.",
+      "explanation": "Trong câu hỏi gián tiếp sau whether ở đây, dùng trật tự the room is, không đảo is lên trước chủ ngữ như câu hỏi trực tiếp Is the room available?"
+    },
+    "example": {
+      "id": "usage-whether-2026-10-28",
+      "en": "We need to decide whether to repair the printer or replace it.",
+      "vi": "Chúng ta cần quyết định nên sửa máy in hay thay máy mới."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/whether",
+        "title": "whether conjunction - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:49:33+00:00",
+        "sha256": "0f3f040b613d0e2d554b552963b2da0b8ecc697d3ad30945a8f17b8c58a37708"
+      }
+    ]
+  },
+  {
+    "wordId": "ox-f106376011688e-01",
+    "headword": "within",
+    "partOfSpeech": "preposition",
+    "meaningVi": "trong vòng một khoảng thời gian",
+    "patterns": [
+      {
+        "form": "within + khoảng thời gian",
+        "explanation": "Diễn tả trước khi một khoảng thời gian kết thúc; có thể sớm hơn mốc cuối."
+      },
+      {
+        "form": "within + khoảng thời gian + of + sự kiện",
+        "explanation": "Nêu thêm mốc sự kiện, như trong vài phút kể từ khi nhận cuộc gọi."
+      }
+    ],
+    "note": "Chỉ luyện nghĩa thời gian trong vòng ở đây. Within two days nói giới hạn hai ngày, không bắt buộc đúng vào thời điểm đủ hai ngày mới xảy ra. Within còn có nghĩa về khoảng cách hoặc phạm vi; cần phân biệt bằng phần đi sau, không gộp mọi nghĩa vào một câu dịch.",
+    "mistake": {
+      "incorrect": "You should receive a reply within of two business days.",
+      "correct": "You should receive a reply within two business days.",
+      "explanation": "Đặt thẳng khoảng thời gian sau within. Of có thể xuất hiện sau một cụm thời gian để nêu sự kiện mốc, như within minutes of the call; không đặt ngay trước two business days trong câu này."
+    },
+    "example": {
+      "id": "usage-within-2026-10-28",
+      "en": "Please send the missing form within three business days of receiving this email.",
+      "vi": "Vui lòng gửi biểu mẫu còn thiếu trong vòng ba ngày làm việc kể từ khi nhận email này."
+    },
+    "sources": [
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/within_1",
+        "title": "within preposition - Definition, pictures, pronunciation and usage notes | Oxford Advanced American Dictionary at OxfordLearnersDictionaries.com",
+        "status": 200,
+        "checkedAt": "2026-10-21T02:49:36+00:00",
+        "sha256": "0f8053d93dc6690da66cee688289e07a2dad96745d0485554b09bf6a8c5a3ad6"
+      }
+    ]
+  }
+]

@@ -1,0 +1,2088 @@
+[
+  {
+    "id": "listen-b-apartment-repair",
+    "version": "authored-2026-10-28-v1:listen-b-apartment-repair",
+    "title": "Hẹn sửa bồn rửa trong căn hộ",
+    "level": "B1",
+    "targets": [
+      {
+        "id": "ox-0e9fd1596c4b1d-01",
+        "lemma": "rent",
+        "partOfSpeech": "noun",
+        "meaning": "tiền thuê",
+        "context": "tiền thuê căn hộ hằng tháng"
+      },
+      {
+        "id": "ox-a1a14ff4aab4f1-01",
+        "lemma": "repair",
+        "partOfSpeech": "verb",
+        "meaning": "sửa chữa",
+        "context": "sửa bồn rửa đang rò nước"
+      },
+      {
+        "id": "ox-1f58b9145b24d1-01",
+        "lemma": "request",
+        "partOfSpeech": "noun",
+        "meaning": "yêu cầu chính thức",
+        "context": "yêu cầu sửa chữa gửi cho ban quản lý"
+      },
+      {
+        "id": "available-01",
+        "lemma": "available",
+        "partOfSpeech": "adjective",
+        "meaning": "có sẵn; có thể dùng hoặc lấy được",
+        "context": "khung giờ có thể sử dụng để đến kiểm tra"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Nina",
+        "en": "Hi, I pay rent for apartment 3B. The kitchen sink is leaking.",
+        "vi": "Chào anh, tôi là người trả tiền thuê căn hộ 3B. Bồn rửa trong bếp đang rò nước."
+      },
+      {
+        "speaker": "Owen",
+        "en": "Thanks for calling. Did you send a repair request through the resident app?",
+        "vi": "Cảm ơn chị đã gọi. Chị đã gửi yêu cầu sửa chữa qua ứng dụng cư dân chưa?"
+      },
+      {
+        "speaker": "Nina",
+        "en": "Yes, this morning. The cabinet underneath is getting wet.",
+        "vi": "Rồi, sáng nay tôi đã gửi. Tủ bên dưới đang bị ướt."
+      },
+      {
+        "speaker": "Owen",
+        "en": "We can repair the pipe tomorrow. Would someone be home between nine and eleven?",
+        "vi": "Chúng tôi có thể sửa đường ống vào ngày mai. Từ chín đến mười một giờ có ai ở nhà không?"
+      },
+      {
+        "speaker": "Nina",
+        "en": "I work mornings. Is an afternoon appointment available?",
+        "vi": "Tôi làm việc vào buổi sáng. Có khung hẹn buổi chiều nào còn trống không?"
+      },
+      {
+        "speaker": "Owen",
+        "en": "Two to four is open. Please keep the area under the sink clear.",
+        "vi": "Khung hai đến bốn giờ còn trống. Chị vui lòng dọn trống khu vực bên dưới bồn rửa."
+      },
+      {
+        "speaker": "Nina",
+        "en": "That works. Should I leave the water on?",
+        "vi": "Giờ đó được. Tôi có nên để nước mở không?"
+      },
+      {
+        "speaker": "Owen",
+        "en": "Turn off the valve under the sink for now. Call us again if the leak gets worse.",
+        "vi": "Trước mắt chị hãy khóa van bên dưới bồn rửa. Nếu nước rò nhiều hơn, hãy gọi lại cho chúng tôi."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Vì sao Nina liên hệ ban quản lý?",
+        "targetIds": ["ox-0e9fd1596c4b1d-01", "ox-a1a14ff4aab4f1-01"],
+        "accepted": ["Bồn rửa trong căn hộ thuê đang rò nước"],
+        "explanation": "Nina nói bồn rửa trong bếp đang rò; Owen sắp xếp người đến sửa đường ống.",
+        "options": [
+          "Bồn rửa trong căn hộ thuê đang rò nước",
+          "Cô muốn trả tiền thuê sớm",
+          "Cô cần thay đổi số căn hộ"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Sau khi đã gửi yêu cầu qua ứng dụng, Nina chọn khung giờ nào?",
+        "targetIds": ["ox-1f58b9145b24d1-01", "available-01"],
+        "accepted": ["Hai đến bốn giờ chiều ngày mai"],
+        "explanation": "Nina làm buổi sáng nên hỏi khung chiều; Owen đề xuất hai đến bốn giờ và cô đồng ý.",
+        "options": [
+          "Chín đến mười một giờ sáng nay",
+          "Bốn đến sáu giờ chiều hôm nay",
+          "Hai đến bốn giờ chiều ngày mai"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "available trong câu hỏi về cuộc hẹn có nghĩa gì?",
+        "targetIds": ["available-01"],
+        "accepted": ["Còn trống và có thể đặt được"],
+        "explanation": "Available ở đây nói đến một khung giờ còn có thể dùng để đặt cuộc hẹn.",
+        "options": [
+          "Không cần người ở nhà",
+          "Còn trống và có thể đặt được",
+          "Đã bị hủy hoàn toàn"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "Is an afternoon appointment ____?",
+        "targetIds": ["available-01"],
+        "accepted": ["available"],
+        "explanation": "Lời thoại gốc dùng available để hỏi có khung hẹn buổi chiều còn trống không; bài này yêu cầu khôi phục đúng từ đã nghe."
+      }
+    ],
+    "reply": "Bạn là Nina. Hãy xác nhận lịch chiều mai và nói bạn sẽ dọn trống tủ dưới bồn rửa."
+  },
+  {
+    "id": "listen-b-community-pantry",
+    "version": "authored-2026-10-28-v1:listen-b-community-pantry",
+    "title": "Đăng ký giúp kho thực phẩm cộng đồng",
+    "level": "B1",
+    "targets": [
+      {
+        "id": "volunteer-01",
+        "lemma": "volunteer",
+        "partOfSpeech": "noun",
+        "meaning": "tình nguyện viên",
+        "context": "người giúp công việc mà không nhận lương"
+      },
+      {
+        "id": "community-01",
+        "lemma": "community",
+        "partOfSpeech": "noun",
+        "meaning": "cộng đồng",
+        "context": "cộng đồng cư dân trong khu vực"
+      },
+      {
+        "id": "ox-81824c90f8a527-01",
+        "lemma": "collect",
+        "partOfSpeech": "verb",
+        "meaning": "thu thập; gom lại",
+        "context": "gom những hộp thực phẩm quyên góp"
+      },
+      {
+        "id": "provide-01",
+        "lemma": "provide",
+        "partOfSpeech": "verb",
+        "meaning": "cung cấp",
+        "context": "cung cấp găng tay và bảng hướng dẫn"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Luis",
+        "en": "Is there room for one more volunteer on Saturday?",
+        "vi": "Thứ Bảy còn nhận thêm một tình nguyện viên không?"
+      },
+      {
+        "speaker": "Ava",
+        "en": "Absolutely. The community pantry needs help from ten until noon.",
+        "vi": "Có chứ. Kho thực phẩm cộng đồng cần người giúp từ mười giờ đến trưa."
+      },
+      {
+        "speaker": "Luis",
+        "en": "What would I be doing? I have never worked there before.",
+        "vi": "Tôi sẽ làm những việc gì? Tôi chưa từng làm ở đó."
+      },
+      {
+        "speaker": "Ava",
+        "en": "You would collect food boxes from the front desk and sort them by date.",
+        "vi": "Bạn sẽ gom các hộp thực phẩm từ quầy phía trước rồi phân loại theo ngày."
+      },
+      {
+        "speaker": "Luis",
+        "en": "Should I bring gloves or any other equipment?",
+        "vi": "Tôi có nên mang găng tay hay dụng cụ nào khác không?"
+      },
+      {
+        "speaker": "Ava",
+        "en": "We provide gloves and a simple checklist. Wear shoes that cover your toes.",
+        "vi": "Chúng tôi cung cấp găng tay và một bảng kiểm đơn giản. Bạn hãy đi giày kín mũi."
+      },
+      {
+        "speaker": "Luis",
+        "en": "Okay. Can I take the bus there?",
+        "vi": "Được rồi. Tôi có thể đi xe buýt đến đó không?"
+      },
+      {
+        "speaker": "Ava",
+        "en": "Yes. Get off at Maple Street, then come to the side entrance.",
+        "vi": "Được. Bạn xuống ở phố Maple rồi đến cửa bên hông nhé."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Luis sẽ giúp ở đâu và vào thời gian nào?",
+        "targetIds": ["volunteer-01", "community-01"],
+        "accepted": ["Kho thực phẩm cộng đồng, từ mười giờ đến trưa thứ Bảy"],
+        "explanation": "Ava xác nhận kho thực phẩm cần tình nguyện viên từ ten until noon vào thứ Bảy.",
+        "options": [
+          "Một quán ăn, từ trưa đến hai giờ Chủ nhật",
+          "Quầy vé xe buýt, từ tám đến mười giờ thứ Bảy",
+          "Kho thực phẩm cộng đồng, từ mười giờ đến trưa thứ Bảy"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Luis cần tự chuẩn bị thứ gì thay vì chờ nơi tổ chức cung cấp?",
+        "targetIds": ["ox-81824c90f8a527-01", "provide-01"],
+        "accepted": ["Giày kín mũi"],
+        "explanation": "Nơi tổ chức cung cấp găng tay và bảng kiểm; Ava yêu cầu Luis đi giày kín mũi.",
+        "options": [
+          "Bảng kiểm phân loại thực phẩm",
+          "Giày kín mũi",
+          "Găng tay chuyên dụng"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "collect trong nhiệm vụ của Luis diễn tả việc gì?",
+        "targetIds": ["ox-81824c90f8a527-01"],
+        "accepted": ["Gom các hộp thực phẩm lại để phân loại"],
+        "explanation": "Collect ở đây là gom, thu nhận các hộp từ quầy phía trước, không phải bán hay nấu chúng.",
+        "options": [
+          "Gom các hộp thực phẩm lại để phân loại",
+          "Nấu toàn bộ thực phẩm trước giờ mở cửa",
+          "Bán các hộp thực phẩm tại quầy"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "We ____ gloves and a simple checklist.",
+        "targetIds": ["provide-01"],
+        "accepted": ["provide"],
+        "explanation": "Provide là cung cấp những vật dụng cần thiết. Điền đúng từ provide trong lời thoại đã nghe."
+      }
+    ],
+    "reply": "Bạn là Luis. Hãy xác nhận giờ đến và hỏi tên người phụ trách tại cửa bên hông."
+  },
+  {
+    "id": "listen-b-library-tool-kit",
+    "version": "authored-2026-10-28-v1:listen-b-library-tool-kit",
+    "title": "Mượn bộ dụng cụ ở thư viện",
+    "level": "B1",
+    "targets": [
+      {
+        "id": "ox-d106ccb1fe638b-01",
+        "lemma": "borrow",
+        "partOfSpeech": "verb",
+        "meaning": "mượn; vay",
+        "context": "mượn bộ dụng cụ để dùng tạm"
+      },
+      {
+        "id": "ox-97488fbab32821-01",
+        "lemma": "charge",
+        "partOfSpeech": "noun",
+        "meaning": "khoản phí; số tiền phải trả",
+        "context": "khoản phí phải trả nếu nộp muộn"
+      },
+      {
+        "id": "policy-01",
+        "lemma": "policy",
+        "partOfSpeech": "noun",
+        "meaning": "chính sách",
+        "context": "quy định cho mượn dụng cụ của thư viện"
+      },
+      {
+        "id": "ox-5de95319f17467-01",
+        "lemma": "resource",
+        "partOfSpeech": "noun",
+        "meaning": "nguồn lực hỗ trợ",
+        "context": "nguồn hỗ trợ cho người chỉ cần dùng dụng cụ ít lần"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Mia",
+        "en": "I heard I can borrow a basic tool kit here. Is that right?",
+        "vi": "Tôi nghe nói có thể mượn bộ dụng cụ cơ bản ở đây. Đúng không ạ?"
+      },
+      {
+        "speaker": "Noah",
+        "en": "Yes. It is a useful resource if you only need tools for a small job.",
+        "vi": "Đúng vậy. Đây là một nguồn hỗ trợ hữu ích nếu bạn chỉ cần dụng cụ cho một việc nhỏ."
+      },
+      {
+        "speaker": "Mia",
+        "en": "I want to put up two shelves. How long can I keep it?",
+        "vi": "Tôi muốn lắp hai chiếc kệ. Tôi được giữ bộ dụng cụ bao lâu?"
+      },
+      {
+        "speaker": "Noah",
+        "en": "Our policy allows seven days. Bring every item back together.",
+        "vi": "Quy định của chúng tôi cho mượn trong bảy ngày. Hãy mang trả đầy đủ các món cùng một lần."
+      },
+      {
+        "speaker": "Mia",
+        "en": "Is there a charge if I bring it back a day late?",
+        "vi": "Nếu trả muộn một ngày thì có khoản phí nào không?"
+      },
+      {
+        "speaker": "Noah",
+        "en": "Yes, five dollars per day. If you need more time, call before it is due.",
+        "vi": "Có, năm đô la mỗi ngày. Nếu cần thêm thời gian, hãy gọi trước hạn trả."
+      },
+      {
+        "speaker": "Mia",
+        "en": "Thanks. Do I need a separate membership?",
+        "vi": "Cảm ơn. Tôi có cần đăng ký thẻ thành viên riêng không?"
+      },
+      {
+        "speaker": "Noah",
+        "en": "Your regular library card is enough. We will check the contents with you now.",
+        "vi": "Thẻ thư viện thông thường là đủ. Bây giờ chúng tôi sẽ cùng bạn kiểm tra các món bên trong."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Mia muốn mượn dụng cụ để làm gì?",
+        "targetIds": ["ox-d106ccb1fe638b-01", "ox-5de95319f17467-01"],
+        "accepted": ["Lắp hai chiếc kệ"],
+        "explanation": "Mia nói cô muốn put up two shelves; thư viện cho mượn dụng cụ để dùng tạm.",
+        "options": [
+          "Tổ chức một lớp dạy dùng dụng cụ",
+          "Lắp hai chiếc kệ",
+          "Sửa đường ống cho cả tòa nhà"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Theo quy định, Mia nên làm gì nếu cần giữ dụng cụ quá bảy ngày?",
+        "targetIds": ["ox-97488fbab32821-01", "policy-01"],
+        "accepted": ["Gọi thư viện trước hạn trả"],
+        "explanation": "Noah yêu cầu gọi trước hạn nếu cần thêm thời gian; trả muộn có phí năm đô la mỗi ngày.",
+        "options": [
+          "Gọi thư viện trước hạn trả",
+          "Tự giữ thêm một tuần mà không liên hệ",
+          "Chỉ mang trả những món đã dùng"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "charge trong câu hỏi của Mia có nghĩa gì?",
+        "targetIds": ["ox-97488fbab32821-01"],
+        "accepted": ["Khoản tiền phải trả"],
+        "explanation": "Ở đây charge là khoản phí cho việc trả muộn, không nói đến sạc điện hay trách nhiệm phụ trách.",
+        "options": [
+          "Mức pin của dụng cụ",
+          "Nhiệm vụ quản lý thư viện",
+          "Khoản tiền phải trả"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "Our ____ allows seven days.",
+        "targetIds": ["policy-01"],
+        "accepted": ["policy"],
+        "explanation": "Policy ở đây là quy định chi phối việc mượn dụng cụ. Điền policy theo lời Noah, không suy ra mọi thư viện đều có cùng quy định."
+      }
+    ],
+    "reply": "Bạn là Mia. Hãy nhắc lại thời hạn mượn và hỏi thư viện đóng cửa lúc mấy giờ vào ngày trả."
+  },
+  {
+    "id": "listen-b-damaged-headphones",
+    "version": "authored-2026-10-28-v1:listen-b-damaged-headphones",
+    "title": "Mang tai nghe lỗi đến cửa hàng",
+    "level": "B1",
+    "targets": [
+      {
+        "id": "ox-6f32860910ca0f-01",
+        "lemma": "receipt",
+        "partOfSpeech": "noun",
+        "meaning": "hóa đơn hoặc biên nhận thanh toán",
+        "context": "biên nhận chứng minh đã mua hàng"
+      },
+      {
+        "id": "ox-7ab3778776cde4-01",
+        "lemma": "replace",
+        "partOfSpeech": "verb",
+        "meaning": "thay thế",
+        "context": "thay chiếc tai nghe lỗi bằng chiếc khác"
+      },
+      {
+        "id": "ox-5d08b02d678fc0-01",
+        "lemma": "complaint",
+        "partOfSpeech": "noun",
+        "meaning": "lời phàn nàn; khiếu nại",
+        "context": "lời phàn nàn về trải nghiệm mua hàng"
+      },
+      {
+        "id": "ox-97488fbab32821-01",
+        "lemma": "charge",
+        "partOfSpeech": "noun",
+        "meaning": "khoản phí; số tiền phải trả",
+        "context": "số tiền phát sinh khi đổi hàng"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Ethan",
+        "en": "I bought these headphones on Monday, but the left side does not work.",
+        "vi": "Tôi mua chiếc tai nghe này hôm thứ Hai, nhưng bên trái không hoạt động."
+      },
+      {
+        "speaker": "Sara",
+        "en": "I am sorry about that. Do you have the receipt?",
+        "vi": "Tôi rất tiếc về việc đó. Anh có mang biên nhận không?"
+      },
+      {
+        "speaker": "Ethan",
+        "en": "Yes, it is on my phone. I would rather replace them than wait for a repair.",
+        "vi": "Có, biên nhận ở trong điện thoại. Tôi muốn đổi chiếc khác hơn là chờ sửa."
+      },
+      {
+        "speaker": "Sara",
+        "en": "We can do that under this store policy. Let me check the same model first.",
+        "vi": "Theo chính sách cửa hàng này thì chúng tôi có thể đổi. Để tôi kiểm tra mẫu giống vậy trước."
+      },
+      {
+        "speaker": "Ethan",
+        "en": "Will there be an extra charge?",
+        "vi": "Tôi có phải trả thêm khoản phí nào không?"
+      },
+      {
+        "speaker": "Sara",
+        "en": "No. The replacement is the same price, and we have one in stock.",
+        "vi": "Không. Chiếc thay thế có cùng giá, và chúng tôi còn một chiếc trong kho."
+      },
+      {
+        "speaker": "Ethan",
+        "en": "Thanks. I was about to send a complaint because I could not reach anyone yesterday.",
+        "vi": "Cảm ơn cô. Tôi đã định gửi một lời khiếu nại vì hôm qua không liên lạc được với ai."
+      },
+      {
+        "speaker": "Sara",
+        "en": "I understand. I will note that for the manager and test this pair before you leave.",
+        "vi": "Tôi hiểu. Tôi sẽ ghi lại việc đó cho quản lý và kiểm tra chiếc này trước khi anh rời đi."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Ethan muốn cửa hàng xử lý chiếc tai nghe thế nào?",
+        "targetIds": ["ox-6f32860910ca0f-01", "ox-7ab3778776cde4-01"],
+        "accepted": ["Đổi sang một chiếc khác cùng mẫu"],
+        "explanation": "Ethan nói muốn replace them thay vì đợi sửa; Sara kiểm tra cùng mẫu và xác nhận còn hàng.",
+        "options": [
+          "Đổi sang một chiếc khác cùng mẫu",
+          "Gửi đi sửa rồi chờ nhận lại",
+          "Đổi sang mẫu đắt nhất trong cửa hàng"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Sara nói gì về chi phí và lời phàn nàn của Ethan?",
+        "targetIds": ["ox-5d08b02d678fc0-01", "ox-97488fbab32821-01"],
+        "accepted": [
+          "Không thu thêm tiền và sẽ ghi nhận việc khó liên lạc cho quản lý"
+        ],
+        "explanation": "Chiếc thay thế cùng giá nên không có phụ phí; việc Ethan không liên hệ được sẽ được ghi nhận riêng.",
+        "options": [
+          "Thu thêm phí đổi hàng và bỏ qua việc khó liên lạc",
+          "Chỉ miễn phí nếu Ethan không gửi khiếu nại",
+          "Không thu thêm tiền và sẽ ghi nhận việc khó liên lạc cho quản lý"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "receipt được dùng để chỉ thứ gì trong tình huống này?",
+        "targetIds": ["ox-6f32860910ca0f-01"],
+        "accepted": ["Biên nhận thanh toán lưu trên điện thoại"],
+        "explanation": "Receipt là bằng chứng thanh toán; Ethan cho biết có bản trên điện thoại.",
+        "options": [
+          "Phiếu đăng ký nhận quảng cáo",
+          "Biên nhận thanh toán lưu trên điện thoại",
+          "Một bản hướng dẫn sử dụng tai nghe"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "Will there be an extra ____?",
+        "targetIds": ["ox-97488fbab32821-01"],
+        "accepted": ["charge"],
+        "explanation": "Extra charge là khoản tiền phải trả thêm. Bài yêu cầu điền đúng từ đã nghe, không đánh giá mọi từ gần nghĩa."
+      }
+    ],
+    "reply": "Bạn là Ethan. Hãy cảm ơn và nhờ Sara cho bạn thử cả hai bên tai nghe trước khi rời cửa hàng."
+  },
+  {
+    "id": "listen-b-water-bill",
+    "version": "authored-2026-10-28-v1:listen-b-water-bill",
+    "title": "Kiểm tra hóa đơn nước tăng bất thường",
+    "level": "B1",
+    "targets": [
+      {
+        "id": "ox-040ffd5925d40e-01",
+        "lemma": "payment",
+        "partOfSpeech": "noun",
+        "meaning": "khoản thanh toán",
+        "context": "khoản tiền đã thanh toán cho hóa đơn"
+      },
+      {
+        "id": "ox-9368a7d21e018f-01",
+        "lemma": "notice",
+        "partOfSpeech": "verb",
+        "meaning": "nhận thấy; để ý thấy",
+        "context": "nhận thấy số nước sử dụng tăng"
+      },
+      {
+        "id": "available-01",
+        "lemma": "available",
+        "partOfSpeech": "adjective",
+        "meaning": "có sẵn; có thể dùng hoặc lấy được",
+        "context": "thông tin có sẵn để đối chiếu"
+      },
+      {
+        "id": "reliable-01",
+        "lemma": "reliable",
+        "partOfSpeech": "adjective",
+        "meaning": "đáng tin cậy",
+        "context": "thông tin đủ đáng tin để kiểm tra hóa đơn"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Lena",
+        "en": "My water bill is much higher this month, but I already made the payment.",
+        "vi": "Hóa đơn nước tháng này cao hơn nhiều, nhưng tôi đã thanh toán rồi."
+      },
+      {
+        "speaker": "Marcus",
+        "en": "We can still review it. Did you notice a leak or a running toilet?",
+        "vi": "Chúng tôi vẫn có thể kiểm tra lại. Chị có nhận thấy chỗ rò nước hoặc bồn cầu chảy liên tục không?"
+      },
+      {
+        "speaker": "Lena",
+        "en": "No. I was away for a week, so the increase surprised me.",
+        "vi": "Không. Tôi đi vắng một tuần nên mức tăng làm tôi ngạc nhiên."
+      },
+      {
+        "speaker": "Marcus",
+        "en": "Do you have a recent meter photo available?",
+        "vi": "Chị có sẵn ảnh đồng hồ nước gần đây không?"
+      },
+      {
+        "speaker": "Lena",
+        "en": "I took one yesterday. Is that useful?",
+        "vi": "Hôm qua tôi có chụp một ảnh. Ảnh đó có hữu ích không?"
+      },
+      {
+        "speaker": "Marcus",
+        "en": "Yes. A clear photo with the date gives us reliable information to compare with our reading.",
+        "vi": "Có. Ảnh rõ kèm ngày chụp cho chúng tôi thông tin đáng tin cậy để đối chiếu với số đã ghi."
+      },
+      {
+        "speaker": "Lena",
+        "en": "Where should I send it?",
+        "vi": "Tôi nên gửi ảnh đến đâu?"
+      },
+      {
+        "speaker": "Marcus",
+        "en": "Use the secure upload link in your account. Keep your payment confirmation while we check.",
+        "vi": "Chị hãy dùng đường dẫn tải lên bảo mật trong tài khoản. Hãy giữ xác nhận thanh toán trong lúc chúng tôi kiểm tra."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Điều gì làm Lena thấy hóa đơn cần được kiểm tra lại?",
+        "targetIds": ["ox-040ffd5925d40e-01", "ox-9368a7d21e018f-01"],
+        "accepted": ["Tiền nước tăng nhiều dù cô đã đi vắng một tuần"],
+        "explanation": "Lena đã thanh toán, nhưng thấy mức tăng đáng ngờ vì cô đi vắng một tuần; đoạn hội thoại chưa kết luận nguyên nhân.",
+        "options": [
+          "Hóa đơn ghi chưa thanh toán trong ba tháng",
+          "Cô vừa lắp thêm hai đồng hồ nước",
+          "Tiền nước tăng nhiều dù cô đã đi vắng một tuần"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Marcus yêu cầu loại thông tin nào để đối chiếu số nước?",
+        "targetIds": ["available-01", "reliable-01"],
+        "accepted": ["Ảnh đồng hồ rõ và có ngày chụp"],
+        "explanation": "Ảnh rõ kèm ngày chụp giúp so với số đã ghi; Marcus không yêu cầu thông tin đăng nhập ngân hàng.",
+        "options": [
+          "Mã đăng nhập tài khoản ngân hàng",
+          "Ảnh đồng hồ rõ và có ngày chụp",
+          "Ảnh căn bếp không kèm đồng hồ"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "reliable information ở đây có ý nghĩa gì?",
+        "targetIds": ["reliable-01"],
+        "accepted": ["Thông tin có thể tin cậy để đem so sánh"],
+        "explanation": "Reliable là đáng tin cậy; ảnh giúp kiểm tra nhưng chưa tự chứng minh bên nào sai.",
+        "options": [
+          "Thông tin có thể tin cậy để đem so sánh",
+          "Thông tin chắc chắn chứng minh công ty tính sai",
+          "Thông tin được lưu lâu nhất trong tài khoản"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "Did you ____ a leak or a running toilet?",
+        "targetIds": ["ox-9368a7d21e018f-01"],
+        "accepted": ["notice"],
+        "explanation": "Notice trong lời Marcus là nhận thấy hoặc để ý thấy dấu hiệu bất thường, không phải danh từ thông báo."
+      }
+    ],
+    "reply": "Bạn là Lena. Hãy nói bạn sẽ gửi ảnh chụp hôm qua và hỏi khi nào có kết quả kiểm tra."
+  },
+  {
+    "id": "listen-b-monthly-spending",
+    "version": "authored-2026-10-28-v1:listen-b-monthly-spending",
+    "title": "Điều chỉnh kế hoạch chi tiêu hằng tháng",
+    "level": "B2",
+    "targets": [
+      {
+        "id": "budget-01",
+        "lemma": "budget",
+        "partOfSpeech": "noun",
+        "meaning": "ngân sách; khoản tiền dự tính cho một việc",
+        "context": "khoản tiền dự tính cho các khoản sinh hoạt"
+      },
+      {
+        "id": "income-01",
+        "lemma": "income",
+        "partOfSpeech": "noun",
+        "meaning": "thu nhập",
+        "context": "tiền thu nhập nhận đều từ công việc"
+      },
+      {
+        "id": "ox-23b18e504dd459-01",
+        "lemma": "expense",
+        "partOfSpeech": "noun",
+        "meaning": "chi phí",
+        "context": "một khoản chi phí như hóa đơn mạng"
+      },
+      {
+        "id": "affordable-01",
+        "lemma": "affordable",
+        "partOfSpeech": "adjective",
+        "meaning": "có giá phải chăng",
+        "context": "mức giá phù hợp với khả năng chi trả"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Riley",
+        "en": "My monthly budget worked until the internet company raised its price.",
+        "vi": "Ngân sách hằng tháng của tôi vẫn ổn cho đến khi công ty mạng tăng giá."
+      },
+      {
+        "speaker": "Jordan",
+        "en": "Did your income change too, or just that bill?",
+        "vi": "Thu nhập của bạn cũng thay đổi, hay chỉ có hóa đơn đó?"
+      },
+      {
+        "speaker": "Riley",
+        "en": "My pay is the same. I want to cut one expense without losing something I need.",
+        "vi": "Lương vẫn như cũ. Tôi muốn cắt bớt một khoản chi mà không bỏ thứ mình cần."
+      },
+      {
+        "speaker": "Jordan",
+        "en": "Then compare plans before canceling. A slower connection might still be enough for your work.",
+        "vi": "Vậy hãy so sánh các gói trước khi hủy. Kết nối chậm hơn có thể vẫn đủ cho công việc của bạn."
+      },
+      {
+        "speaker": "Riley",
+        "en": "I found a more affordable plan, but the price only lasts three months.",
+        "vi": "Tôi tìm được một gói vừa túi tiền hơn, nhưng giá đó chỉ có hiệu lực ba tháng."
+      },
+      {
+        "speaker": "Jordan",
+        "en": "Check the regular price and any equipment fees. The introductory rate is not the whole cost.",
+        "vi": "Hãy kiểm tra giá thông thường và mọi phí thiết bị. Giá ưu đãi ban đầu không phải toàn bộ chi phí."
+      },
+      {
+        "speaker": "Riley",
+        "en": "Good point. I should compare the total for a full year.",
+        "vi": "Bạn nói đúng. Tôi nên so tổng tiền trong cả một năm."
+      },
+      {
+        "speaker": "Jordan",
+        "en": "Yes, and leave a little room for bills that do not arrive every month.",
+        "vi": "Đúng vậy, và chừa một khoản nhỏ cho những hóa đơn không đến hằng tháng."
+      },
+      {
+        "speaker": "Riley",
+        "en": "I will list those tonight instead of guessing.",
+        "vi": "Tối nay tôi sẽ liệt kê chúng thay vì ước chừng."
+      },
+      {
+        "speaker": "Jordan",
+        "en": "That should make the decision clearer without forcing you to cancel right away.",
+        "vi": "Như vậy bạn sẽ dễ quyết định hơn mà không bị buộc phải hủy ngay."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Vấn đề chính của Riley là gì?",
+        "targetIds": ["budget-01", "income-01"],
+        "accepted": ["Giá mạng tăng trong khi thu nhập không đổi"],
+        "explanation": "Riley nói lương không đổi nhưng nhà cung cấp tăng giá, làm ngân sách cũ không còn phù hợp.",
+        "options": [
+          "Công ty đã hủy mạng dù hóa đơn được thanh toán",
+          "Giá mạng tăng trong khi thu nhập không đổi",
+          "Thu nhập tăng nhưng không có mạng để dùng"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Vì sao Jordan khuyên so tổng chi phí trong cả năm?",
+        "targetIds": ["ox-23b18e504dd459-01", "affordable-01"],
+        "accepted": [
+          "Giá gói rẻ hơn chỉ là ưu đãi ba tháng và có thể còn phí thiết bị"
+        ],
+        "explanation": "Giá affordable ban đầu chưa phản ánh giá thông thường và các khoản phí khác; cần so trên cùng khoảng thời gian.",
+        "options": [
+          "Giá gói rẻ hơn chỉ là ưu đãi ba tháng và có thể còn phí thiết bị",
+          "Mọi gói mạng đều miễn phí sau một năm",
+          "Riley chỉ sử dụng mạng trong ba tháng đầu"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "affordable nói gì về gói mạng mới?",
+        "targetIds": ["affordable-01"],
+        "accepted": ["Có mức giá người mua có khả năng chi trả"],
+        "explanation": "Affordable nói về khả năng chi trả, không bảo đảm tốc độ, chất lượng hay miễn phí.",
+        "options": [
+          "Chắc chắn nhanh hơn mọi gói còn lại",
+          "Luôn miễn mọi loại phí phát sinh",
+          "Có mức giá người mua có khả năng chi trả"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "I want to cut one ____ without losing something I need.",
+        "targetIds": ["ox-23b18e504dd459-01"],
+        "accepted": ["expense"],
+        "explanation": "An expense là một khoản chi phí. Câu này nói Riley muốn giảm một khoản chi, không muốn bỏ thứ cần thiết."
+      }
+    ],
+    "reply": "Bạn là Riley. Hãy hỏi nhà cung cấp về giá sau ba tháng và phí thuê thiết bị bằng hai câu tiếng Anh."
+  },
+  {
+    "id": "listen-b-membership-renewal",
+    "version": "authored-2026-10-28-v1:listen-b-membership-renewal",
+    "title": "Cân nhắc gia hạn thẻ phòng tập",
+    "level": "B2",
+    "targets": [
+      {
+        "id": "ox-ee5e2878c48558-01",
+        "lemma": "annual",
+        "partOfSpeech": "adjective",
+        "meaning": "hằng năm",
+        "context": "mức phí tính cho một năm"
+      },
+      {
+        "id": "ox-b80cdaae9b322b-01",
+        "lemma": "fee",
+        "partOfSpeech": "noun",
+        "meaning": "phí",
+        "context": "phí thành viên phải trả để sử dụng dịch vụ"
+      },
+      {
+        "id": "ox-040ffd5925d40e-01",
+        "lemma": "payment",
+        "partOfSpeech": "noun",
+        "meaning": "khoản thanh toán",
+        "context": "khoản thanh toán bị chia thành từng tháng"
+      },
+      {
+        "id": "debt-01",
+        "lemma": "debt",
+        "partOfSpeech": "noun",
+        "meaning": "khoản nợ",
+        "context": "khoản tiền còn nợ cần tính vào quyết định chi tiêu"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Chris",
+        "en": "The gym offered me a discount on its annual fee if I renew today.",
+        "vi": "Phòng tập đề nghị giảm phí hằng năm nếu tôi gia hạn ngay hôm nay."
+      },
+      {
+        "speaker": "Morgan",
+        "en": "Would you pay the full amount now?",
+        "vi": "Bạn sẽ trả toàn bộ số tiền ngay bây giờ à?"
+      },
+      {
+        "speaker": "Chris",
+        "en": "No, each payment would come out monthly, but I would be signing up for the whole year.",
+        "vi": "Không, từng khoản thanh toán sẽ được trừ hằng tháng, nhưng tôi sẽ cam kết cho cả năm."
+      },
+      {
+        "speaker": "Morgan",
+        "en": "Then monthly billing does not mean you can cancel every month.",
+        "vi": "Vậy việc thu tiền hằng tháng không có nghĩa bạn được hủy sau từng tháng."
+      },
+      {
+        "speaker": "Chris",
+        "en": "Exactly. I also have a small debt to pay off, so I am trying not to add fixed costs.",
+        "vi": "Đúng vậy. Tôi còn một khoản nợ nhỏ cần trả, nên đang cố không tăng các chi phí cố định."
+      },
+      {
+        "speaker": "Morgan",
+        "en": "How often have you actually gone recently?",
+        "vi": "Gần đây bạn thực sự đi tập thường xuyên đến mức nào?"
+      },
+      {
+        "speaker": "Chris",
+        "en": "About once a week. The community center has drop-in classes, too.",
+        "vi": "Khoảng một lần mỗi tuần. Trung tâm cộng đồng cũng có lớp trả tiền từng buổi."
+      },
+      {
+        "speaker": "Morgan",
+        "en": "Compare the yearly total with those classes, and read the cancellation terms before deciding.",
+        "vi": "Hãy so tổng tiền cả năm với các lớp đó, rồi đọc điều khoản hủy trước khi quyết định."
+      },
+      {
+        "speaker": "Chris",
+        "en": "I will ask them to email the terms. I do not want to decide just because the offer ends today.",
+        "vi": "Tôi sẽ nhờ họ gửi điều khoản qua email. Tôi không muốn quyết định chỉ vì ưu đãi hết hôm nay."
+      },
+      {
+        "speaker": "Morgan",
+        "en": "That sounds sensible. A discount is useful only if the plan fits how you use it.",
+        "vi": "Như vậy hợp lý đấy. Giảm giá chỉ hữu ích khi gói đó phù hợp với cách bạn sử dụng."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Điều gì vẫn ràng buộc Chris dù tiền được thu hằng tháng?",
+        "targetIds": ["ox-ee5e2878c48558-01", "ox-040ffd5925d40e-01"],
+        "accepted": ["Anh sẽ cam kết sử dụng gói trong cả năm"],
+        "explanation": "Chris nói rõ anh ký cho cả năm; hình thức thanh toán hằng tháng không đồng nghĩa quyền hủy hằng tháng.",
+        "options": [
+          "Anh sẽ cam kết sử dụng gói trong cả năm",
+          "Anh phải đến phòng tập mỗi ngày",
+          "Anh được hủy tự do sau mỗi buổi tập"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Vì sao Chris chưa muốn quyết định gia hạn ngay?",
+        "targetIds": ["ox-b80cdaae9b322b-01", "debt-01"],
+        "accepted": [
+          "Anh còn nợ cần trả và muốn so chi phí với mức sử dụng thực tế"
+        ],
+        "explanation": "Chris muốn hạn chế chi cố định vì còn nợ, và hiện chỉ tập khoảng mỗi tuần một lần.",
+        "options": [
+          "Anh được thông báo trung tâm cộng đồng sắp đóng cửa",
+          "Phòng tập từ chối gửi điều khoản bằng văn bản",
+          "Anh còn nợ cần trả và muốn so chi phí với mức sử dụng thực tế"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "annual fee được hiểu thế nào trong đoạn này?",
+        "targetIds": ["ox-ee5e2878c48558-01", "ox-b80cdaae9b322b-01"],
+        "accepted": ["Phí thành viên tính cho một năm"],
+        "explanation": "Annual là hằng năm; fee là phí cho dịch vụ hoặc quyền sử dụng. Cách thu tiền vẫn có thể chia theo tháng.",
+        "options": [
+          "Khoản hoàn tiền khi ngừng tập",
+          "Phí thành viên tính cho một năm",
+          "Phí chỉ thu sau mỗi buổi tập"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "Exactly. I also have a small ____ to pay off, so I am trying not to add fixed costs.",
+        "targetIds": ["debt-01"],
+        "accepted": ["debt"],
+        "explanation": "Debt là khoản tiền còn nợ; pay off a debt là trả hết nợ. Đây là tình huống minh họa, không phải lời tư vấn tài chính cá nhân."
+      }
+    ],
+    "reply": "Bạn là Chris. Hãy yêu cầu phòng tập xác nhận bằng văn bản tổng phí năm và điều kiện chấm dứt sớm."
+  },
+  {
+    "id": "listen-b-building-energy",
+    "version": "authored-2026-10-28-v1:listen-b-building-energy",
+    "title": "Chọn phương án tiết kiệm năng lượng cho tòa nhà",
+    "level": "B2",
+    "targets": [
+      {
+        "id": "ox-480e4f1d08e907-01",
+        "lemma": "efficient",
+        "partOfSpeech": "adjective",
+        "meaning": "hiệu quả; ít tốn nguồn lực",
+        "context": "dùng ít năng lượng hơn để thực hiện cùng công việc"
+      },
+      {
+        "id": "reduce-01",
+        "lemma": "reduce",
+        "partOfSpeech": "verb",
+        "meaning": "giảm",
+        "context": "làm lượng điện sử dụng nhỏ đi"
+      },
+      {
+        "id": "emission-01",
+        "lemma": "emission",
+        "partOfSpeech": "noun",
+        "meaning": "sự phát thải",
+        "context": "sự phát thải gắn với việc sử dụng năng lượng"
+      },
+      {
+        "id": "sustainable-01",
+        "lemma": "sustainable",
+        "partOfSpeech": "adjective",
+        "meaning": "bền vững",
+        "context": "giải pháp có thể duy trì mà giảm tổn hại lâu dài"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Dana",
+        "en": "We need a more efficient way to heat the meeting rooms. Some are empty all afternoon.",
+        "vi": "Chúng ta cần cách sưởi các phòng họp ít tốn năng lượng hơn. Có phòng trống suốt buổi chiều."
+      },
+      {
+        "speaker": "Alex",
+        "en": "Could separate timers reduce the amount of energy we use?",
+        "vi": "Bộ hẹn giờ riêng có thể giảm lượng năng lượng sử dụng không?"
+      },
+      {
+        "speaker": "Dana",
+        "en": "Possibly, but we should check when people actually use each room first.",
+        "vi": "Có thể, nhưng trước hết chúng ta nên kiểm tra giờ mọi người thực sự dùng từng phòng."
+      },
+      {
+        "speaker": "Alex",
+        "en": "The maintenance team has a week of readings. Is that enough?",
+        "vi": "Đội bảo trì có số liệu đo trong một tuần. Như vậy có đủ không?"
+      },
+      {
+        "speaker": "Dana",
+        "en": "It is a start. A colder week could give us a different picture.",
+        "vi": "Đó là bước khởi đầu. Một tuần lạnh hơn có thể cho kết quả khác."
+      },
+      {
+        "speaker": "Alex",
+        "en": "The proposal also mentions emission levels, but it does not show how they were calculated.",
+        "vi": "Bản đề xuất cũng nhắc đến mức phát thải, nhưng không chỉ ra cách tính."
+      },
+      {
+        "speaker": "Dana",
+        "en": "Then let us ask for the method. Lower electricity use does not tell us everything about the energy source.",
+        "vi": "Vậy hãy hỏi về phương pháp. Dùng ít điện hơn chưa cho biết đầy đủ về nguồn năng lượng."
+      },
+      {
+        "speaker": "Alex",
+        "en": "I would like a sustainable option, but we need evidence for the claims.",
+        "vi": "Tôi muốn một phương án bền vững, nhưng chúng ta cần bằng chứng cho các nhận định đó."
+      },
+      {
+        "speaker": "Dana",
+        "en": "Agreed. We can test the timers on one floor before changing the entire building.",
+        "vi": "Đồng ý. Chúng ta có thể thử bộ hẹn giờ ở một tầng trước khi thay đổi cả tòa nhà."
+      },
+      {
+        "speaker": "Alex",
+        "en": "And compare similar weather conditions, so the results are easier to interpret.",
+        "vi": "Và so sánh trong điều kiện thời tiết tương tự để kết quả dễ diễn giải hơn."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Vì sao Dana không muốn dựa ngay vào số liệu của một tuần?",
+        "targetIds": ["ox-480e4f1d08e907-01", "reduce-01"],
+        "accepted": ["Thời tiết lạnh hơn có thể làm nhu cầu sưởi thay đổi"],
+        "explanation": "Dana nhận xét một tuần lạnh hơn có thể cho bức tranh khác; họ cần xét giờ sử dụng và điều kiện thời tiết.",
+        "options": [
+          "Không phòng nào có người sử dụng",
+          "Đội bảo trì chưa từng đo gì",
+          "Thời tiết lạnh hơn có thể làm nhu cầu sưởi thay đổi"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Họ thống nhất bước tiếp theo nào?",
+        "targetIds": ["emission-01", "sustainable-01"],
+        "accepted": ["Hỏi cách tính phát thải và thử bộ hẹn giờ ở một tầng"],
+        "explanation": "Họ muốn kiểm phương pháp tính và thử nhỏ trước; chưa kết luận chắc chắn về hiệu quả hay tính bền vững.",
+        "options": [
+          "Bỏ qua nguồn năng lượng vì chỉ số điện đã đủ",
+          "Hỏi cách tính phát thải và thử bộ hẹn giờ ở một tầng",
+          "Đổi ngay hệ thống sưởi của toàn bộ tòa nhà"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "efficient trong lời mở đầu nhấn mạnh điều gì?",
+        "targetIds": ["ox-480e4f1d08e907-01"],
+        "accepted": ["Sưởi ấm mà ít lãng phí năng lượng hơn"],
+        "explanation": "Efficient nói đến kết quả đạt được so với nguồn lực dùng, ở đây là tránh sưởi không cần thiết khi phòng trống.",
+        "options": [
+          "Sưởi ấm mà ít lãng phí năng lượng hơn",
+          "Làm tất cả các phòng nóng hơn liên tục",
+          "Thay đổi thiết kế chỉ vì trông hiện đại"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "Could separate timers ____ the amount of energy we use?",
+        "targetIds": ["reduce-01"],
+        "accepted": ["reduce"],
+        "explanation": "Reduce nghĩa là làm lượng sử dụng nhỏ đi. Câu hỏi đề xuất một khả năng cần kiểm chứng, không khẳng định chắc chắn sẽ tiết kiệm."
+      }
+    ],
+    "reply": "Bạn là Alex. Hãy đề xuất hai thông tin cần ghi trong đợt thử bộ hẹn giờ để so sánh công bằng."
+  },
+  {
+    "id": "listen-b-recycling-collection",
+    "version": "authored-2026-10-28-v1:listen-b-recycling-collection",
+    "title": "Điều chỉnh điểm thu gom đồ tái chế",
+    "level": "B2",
+    "targets": [
+      {
+        "id": "ox-0bb5e9329f190a-01",
+        "lemma": "waste",
+        "partOfSpeech": "noun",
+        "meaning": "chất thải hoặc vật bị bỏ đi",
+        "context": "vật bỏ đi được phân loại trước khi xử lý"
+      },
+      {
+        "id": "ox-81824c90f8a527-01",
+        "lemma": "collect",
+        "partOfSpeech": "verb",
+        "meaning": "thu thập; gom lại",
+        "context": "gom vật liệu tại điểm tiếp nhận"
+      },
+      {
+        "id": "pollution-01",
+        "lemma": "pollution",
+        "partOfSpeech": "noun",
+        "meaning": "sự ô nhiễm",
+        "context": "sự ô nhiễm có thể phát sinh khi xử lý không đúng"
+      },
+      {
+        "id": "ox-5de95319f17467-01",
+        "lemma": "resource",
+        "partOfSpeech": "noun",
+        "meaning": "nguồn lực hỗ trợ",
+        "context": "nguồn hỗ trợ để cư dân biết phân loại"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Harper",
+        "en": "The waste bins behind our building fill up before the weekly pickup.",
+        "vi": "Các thùng chất thải phía sau tòa nhà thường đầy trước ngày thu gom hằng tuần."
+      },
+      {
+        "speaker": "Drew",
+        "en": "Is most of it regular trash, or material we could collect separately?",
+        "vi": "Phần lớn là rác thông thường, hay vật liệu có thể gom riêng?"
+      },
+      {
+        "speaker": "Harper",
+        "en": "There is a lot of cardboard, but people put food containers in with it.",
+        "vi": "Có nhiều bìa các-tông, nhưng mọi người bỏ lẫn hộp đựng thức ăn vào."
+      },
+      {
+        "speaker": "Drew",
+        "en": "Then another bin alone may not solve the problem. The instructions need to be clearer.",
+        "vi": "Vậy chỉ thêm một thùng có thể chưa giải quyết được. Hướng dẫn cần rõ hơn."
+      },
+      {
+        "speaker": "Harper",
+        "en": "The city has a picture guide. It could be a useful resource near the bins.",
+        "vi": "Thành phố có bảng hướng dẫn bằng hình. Đó có thể là nguồn hỗ trợ hữu ích đặt gần các thùng."
+      },
+      {
+        "speaker": "Drew",
+        "en": "Good idea. We should also check where batteries and cleaning products can go.",
+        "vi": "Ý hay. Chúng ta cũng nên kiểm tra nơi tiếp nhận pin và sản phẩm tẩy rửa."
+      },
+      {
+        "speaker": "Harper",
+        "en": "Yes. We want to avoid pollution, not just move the mess somewhere else.",
+        "vi": "Đúng vậy. Chúng ta muốn tránh ô nhiễm, chứ không chỉ chuyển đống bừa bộn sang nơi khác."
+      },
+      {
+        "speaker": "Drew",
+        "en": "Let us ask the city for local instructions rather than guessing from another area.",
+        "vi": "Hãy hỏi thành phố về hướng dẫn tại địa phương thay vì đoán theo khu vực khác."
+      },
+      {
+        "speaker": "Harper",
+        "en": "I can bring that up at the residents meeting on Thursday.",
+        "vi": "Tôi có thể nêu việc đó tại buổi họp cư dân vào thứ Năm."
+      },
+      {
+        "speaker": "Drew",
+        "en": "And I will take photos of the current labels so we can explain what is confusing.",
+        "vi": "Còn tôi sẽ chụp các nhãn hiện tại để giải thích chỗ nào gây nhầm lẫn."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Vấn đề nào khiến thêm một thùng rác có thể chưa đủ?",
+        "targetIds": ["ox-0bb5e9329f190a-01", "ox-81824c90f8a527-01"],
+        "accepted": ["Mọi người đang bỏ lẫn hộp thức ăn với bìa các-tông"],
+        "explanation": "Drew cho rằng cần hướng dẫn rõ hơn vì vật liệu đang bị trộn lẫn, không chỉ thiếu chỗ chứa.",
+        "options": [
+          "Cư dân không có bất kỳ vật liệu giấy nào",
+          "Mọi người đang bỏ lẫn hộp thức ăn với bìa các-tông",
+          "Không có dịch vụ thu gom hằng tuần"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Họ định lấy hướng dẫn xử lý pin và chất tẩy rửa từ đâu?",
+        "targetIds": ["pollution-01", "ox-5de95319f17467-01"],
+        "accepted": ["Cơ quan thành phố phụ trách hướng dẫn tại địa phương"],
+        "explanation": "Họ thống nhất hỏi thành phố vì cách xử lý và nơi tiếp nhận có thể tùy địa phương.",
+        "options": [
+          "Cơ quan thành phố phụ trách hướng dẫn tại địa phương",
+          "Một khu vực khác bất kỳ trên mạng",
+          "Ý kiến tự đoán của một cư dân"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "resource trong cuộc nói chuyện chỉ thứ gì?",
+        "targetIds": ["ox-5de95319f17467-01"],
+        "accepted": ["Bảng hướng dẫn bằng hình giúp cư dân phân loại"],
+        "explanation": "Resource ở đây là nguồn hỗ trợ cung cấp thông tin; nó không chỉ có nghĩa tài nguyên thiên nhiên.",
+        "options": [
+          "Nguồn tiền cho một công ty tư nhân",
+          "Số vật liệu bắt buộc phải bán",
+          "Bảng hướng dẫn bằng hình giúp cư dân phân loại"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "We want to avoid ____, not just move the mess somewhere else.",
+        "targetIds": ["pollution-01"],
+        "accepted": ["pollution"],
+        "explanation": "Pollution là sự ô nhiễm. Hai người muốn xử lý đúng thay vì chỉ chuyển vấn đề sang vị trí khác."
+      }
+    ],
+    "reply": "Bạn là Harper. Hãy trình bày ngắn hai thay đổi muốn đề xuất tại buổi họp cư dân."
+  },
+  {
+    "id": "listen-b-shared-room",
+    "version": "authored-2026-10-28-v1:listen-b-shared-room",
+    "title": "Thống nhất cách dùng phòng sinh hoạt chung",
+    "level": "B2",
+    "targets": [
+      {
+        "id": "ox-ecd1378bc9dc13-01",
+        "lemma": "proposal",
+        "partOfSpeech": "noun",
+        "meaning": "đề xuất",
+        "context": "đề xuất về giờ hoạt động của phòng"
+      },
+      {
+        "id": "ox-27747689baf990-01",
+        "lemma": "alternative",
+        "partOfSpeech": "noun",
+        "meaning": "lựa chọn thay thế",
+        "context": "phương án khác thay cho việc đóng phòng sớm"
+      },
+      {
+        "id": "ox-3092a5f0dba05f-01",
+        "lemma": "priority",
+        "partOfSpeech": "noun",
+        "meaning": "điều được ưu tiên",
+        "context": "điều được coi là quan trọng trước hết"
+      },
+      {
+        "id": "ox-25a63e52a98f6f-01",
+        "lemma": "outcome",
+        "partOfSpeech": "noun",
+        "meaning": "kết quả",
+        "context": "kết quả mong muốn của thay đổi"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Jamie",
+        "en": "I read the proposal to close the shared room at eight every evening.",
+        "vi": "Tôi đã đọc đề xuất đóng phòng sinh hoạt chung lúc tám giờ mỗi tối."
+      },
+      {
+        "speaker": "Quinn",
+        "en": "The neighbors upstairs say the noise keeps their children awake.",
+        "vi": "Các hộ phía trên nói tiếng ồn làm con họ không ngủ được."
+      },
+      {
+        "speaker": "Jamie",
+        "en": "I understand, but some residents do not get home from work until seven thirty.",
+        "vi": "Tôi hiểu, nhưng một số cư dân phải bảy giờ rưỡi mới đi làm về."
+      },
+      {
+        "speaker": "Quinn",
+        "en": "Do you have an alternative that would address both problems?",
+        "vi": "Bạn có phương án thay thế nào xử lý được cả hai vấn đề không?"
+      },
+      {
+        "speaker": "Jamie",
+        "en": "We could allow quiet activities until ten and move group exercise to Saturday mornings.",
+        "vi": "Chúng ta có thể cho các hoạt động yên tĩnh đến mười giờ và chuyển tập thể dục nhóm sang sáng thứ Bảy."
+      },
+      {
+        "speaker": "Quinn",
+        "en": "For me, the priority is reducing the noise after bedtime, not locking an empty room.",
+        "vi": "Với tôi, điều ưu tiên là giảm tiếng ồn sau giờ ngủ, chứ không phải khóa một căn phòng trống."
+      },
+      {
+        "speaker": "Jamie",
+        "en": "Then we should explain that outcome clearly when we ask residents for comments.",
+        "vi": "Vậy khi xin góp ý của cư dân, chúng ta nên giải thích rõ kết quả muốn đạt đó."
+      },
+      {
+        "speaker": "Quinn",
+        "en": "Agreed. We could try the new hours for two weeks and keep a record of complaints.",
+        "vi": "Đồng ý. Chúng ta có thể thử giờ mới trong hai tuần và ghi nhận các lời phàn nàn."
+      },
+      {
+        "speaker": "Jamie",
+        "en": "We should also ask people who work late whether they can still use the room.",
+        "vi": "Chúng ta cũng nên hỏi người làm việc muộn xem họ còn dùng được phòng không."
+      },
+      {
+        "speaker": "Quinn",
+        "en": "Right. Fewer complaints would not be enough if the room became useless to them.",
+        "vi": "Đúng. Ít lời phàn nàn hơn vẫn chưa đủ nếu căn phòng không còn dùng được với họ."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Jamie nêu vấn đề gì với đề xuất đóng cửa lúc tám giờ?",
+        "targetIds": ["ox-ecd1378bc9dc13-01", "ox-27747689baf990-01"],
+        "accepted": [
+          "Người về từ chỗ làm lúc bảy giờ rưỡi sẽ có rất ít thời gian sử dụng"
+        ],
+        "explanation": "Jamie muốn cân bằng tiếng ồn với việc tiếp cận phòng của người đi làm muộn, nên đề xuất giờ yên tĩnh.",
+        "options": [
+          "Người về từ chỗ làm lúc bảy giờ rưỡi sẽ có rất ít thời gian sử dụng",
+          "Phòng đã được đặt kín vào mọi buổi sáng",
+          "Tòa nhà không có cư dân sống ở phía trên"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Họ sẽ xem xét những gì sau thời gian thử hai tuần?",
+        "targetIds": ["ox-3092a5f0dba05f-01", "ox-25a63e52a98f6f-01"],
+        "accepted": [
+          "Cả lời phàn nàn về tiếng ồn và khả năng dùng phòng của người về muộn"
+        ],
+        "explanation": "Kết quả mong muốn phải giảm tiếng ồn mà vẫn giữ phòng hữu ích cho các nhóm cư dân.",
+        "options": [
+          "Chỉ số người tập thể dục vào buổi sáng",
+          "Chỉ thời gian căn phòng bị khóa",
+          "Cả lời phàn nàn về tiếng ồn và khả năng dùng phòng của người về muộn"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "priority trong lời Quinn nhấn mạnh điều gì?",
+        "targetIds": ["ox-3092a5f0dba05f-01"],
+        "accepted": ["Việc giảm tiếng ồn sau giờ ngủ được đặt lên trước"],
+        "explanation": "Priority là điều được coi là quan trọng trước hết. Quinn phân biệt mục tiêu giảm tiếng ồn với biện pháp đóng cửa.",
+        "options": [
+          "Khóa phòng càng lâu càng tốt",
+          "Việc giảm tiếng ồn sau giờ ngủ được đặt lên trước",
+          "Mọi cư dân phải có cùng lịch làm việc"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "Do you have an ____ that would address both problems?",
+        "targetIds": ["ox-27747689baf990-01"],
+        "accepted": ["alternative"],
+        "explanation": "An alternative là một phương án khác có thể chọn. Điền đúng từ của lời thoại gốc, không xem mọi từ thay thế hợp nghĩa là sai tiếng Anh."
+      }
+    ],
+    "reply": "Bạn là Jamie. Hãy viết lời mời cư dân góp ý, nêu cả mục tiêu giảm tiếng ồn và nhu cầu của người về muộn."
+  },
+  {
+    "id": "listen-b-research-sample",
+    "version": "authored-2026-10-28-v1:listen-b-research-sample",
+    "title": "Đánh giá kết luận từ một mẫu khảo sát",
+    "level": "B2",
+    "targets": [
+      {
+        "id": "ox-d454bec656d327-01",
+        "lemma": "objective",
+        "partOfSpeech": "adjective",
+        "meaning": "khách quan",
+        "context": "đánh giá dựa trên bằng chứng thay vì cảm tính"
+      },
+      {
+        "id": "ox-fa4824e8374648-01",
+        "lemma": "bias",
+        "partOfSpeech": "noun",
+        "meaning": "sự thiên lệch; thành kiến",
+        "context": "sự thiên lệch do cách chọn người trả lời"
+      },
+      {
+        "id": "evidence-01",
+        "lemma": "evidence",
+        "partOfSpeech": "noun",
+        "meaning": "bằng chứng",
+        "context": "thông tin hỗ trợ nhận định về nhu cầu"
+      },
+      {
+        "id": "ox-c081dd376ba93a-01",
+        "lemma": "assumption",
+        "partOfSpeech": "noun",
+        "meaning": "giả định; điều được xem là đúng khi chưa chứng minh",
+        "context": "điều được tạm coi là đúng nhưng chưa kiểm chứng"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Taylor",
+        "en": "The report says most residents want a new parking lot.",
+        "vi": "Báo cáo nói phần lớn cư dân muốn có bãi đỗ xe mới."
+      },
+      {
+        "speaker": "Cameron",
+        "en": "Before we accept that, can we look at the evidence behind it?",
+        "vi": "Trước khi chấp nhận kết luận đó, chúng ta xem bằng chứng phía sau được không?"
+      },
+      {
+        "speaker": "Taylor",
+        "en": "They asked fifty people at a meeting about parking. Forty said yes.",
+        "vi": "Họ hỏi năm mươi người tại một buổi họp về chỗ đỗ xe. Bốn mươi người trả lời có."
+      },
+      {
+        "speaker": "Cameron",
+        "en": "That may introduce bias. People without cars might not have attended that meeting.",
+        "vi": "Điều đó có thể tạo ra sự thiên lệch. Những người không có xe có thể đã không dự buổi họp ấy."
+      },
+      {
+        "speaker": "Taylor",
+        "en": "So the problem is the assumption that the group represents everyone?",
+        "vi": "Vậy vấn đề là giả định nhóm đó đại diện cho tất cả mọi người à?"
+      },
+      {
+        "speaker": "Cameron",
+        "en": "Exactly. We should be objective about what the numbers can and cannot tell us.",
+        "vi": "Đúng vậy. Chúng ta nên khách quan về những gì số liệu có thể và không thể cho biết."
+      },
+      {
+        "speaker": "Taylor",
+        "en": "We could invite responses online and offer paper forms in the lobby.",
+        "vi": "Chúng ta có thể mời trả lời trên mạng và để phiếu giấy ở sảnh."
+      },
+      {
+        "speaker": "Cameron",
+        "en": "That would give more people a chance, though we would still need to check who responds.",
+        "vi": "Như vậy nhiều người có cơ hội hơn, dù chúng ta vẫn cần kiểm tra những nhóm nào trả lời."
+      },
+      {
+        "speaker": "Taylor",
+        "en": "I will change the summary to say forty of the fifty meeting participants supported it.",
+        "vi": "Tôi sẽ sửa phần tóm tắt thành bốn mươi trong năm mươi người dự họp ủng hộ."
+      },
+      {
+        "speaker": "Cameron",
+        "en": "Good. That describes the result without making a claim about the whole neighborhood.",
+        "vi": "Tốt. Như vậy mô tả đúng kết quả mà không khẳng định về cả khu dân cư."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Cameron nghi ngờ kết luận ban đầu vì lý do nào?",
+        "targetIds": ["ox-d454bec656d327-01", "ox-fa4824e8374648-01"],
+        "accepted": [
+          "Nhóm dự họp về chỗ đỗ xe có thể không đại diện cho tất cả cư dân"
+        ],
+        "explanation": "Cách chọn người ở một buổi họp về đỗ xe có thể gây thiên lệch; đoạn không nói những người trả lời đã nói dối.",
+        "options": [
+          "Báo cáo không ghi bất kỳ con số nào",
+          "Bốn mươi người trả lời có chắc chắn đều không có xe",
+          "Nhóm dự họp về chỗ đỗ xe có thể không đại diện cho tất cả cư dân"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Taylor quyết định thay đổi phần tóm tắt thế nào?",
+        "targetIds": ["evidence-01", "ox-c081dd376ba93a-01"],
+        "accepted": [
+          "Nêu đúng tỷ lệ trong nhóm dự họp thay vì nói phần lớn toàn bộ cư dân"
+        ],
+        "explanation": "Sửa câu thành forty of the fifty meeting participants giới hạn nhận định ở đúng nhóm đã được hỏi.",
+        "options": [
+          "Loại bỏ tất cả số liệu và chỉ giữ ý kiến riêng",
+          "Nêu đúng tỷ lệ trong nhóm dự họp thay vì nói phần lớn toàn bộ cư dân",
+          "Khẳng định cả khu dân cư phản đối bãi đỗ xe"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "assumption trong câu hỏi của Taylor chỉ điều gì?",
+        "targetIds": ["ox-c081dd376ba93a-01"],
+        "accepted": [
+          "Việc coi nhóm dự họp là đại diện cho mọi cư dân khi chưa chứng minh"
+        ],
+        "explanation": "Assumption là điều đang được xem như đúng mà chưa chứng minh; ở đây là tính đại diện của mẫu.",
+        "options": [
+          "Việc coi nhóm dự họp là đại diện cho mọi cư dân khi chưa chứng minh",
+          "Bằng chứng chắc chắn rằng mọi người đều có xe",
+          "Một quy định yêu cầu mọi người phải dự họp"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "We should be ____ about what the numbers can and cannot tell us.",
+        "targetIds": ["ox-d454bec656d327-01"],
+        "accepted": ["objective"],
+        "explanation": "Objective là khách quan, dựa trên điều quan sát và bằng chứng. Không dùng nghĩa danh từ objective là mục tiêu trong câu này."
+      }
+    ],
+    "reply": "Bạn là Taylor. Hãy viết hai câu tóm tắt kết quả và nêu một giới hạn của cách thu thập dữ liệu."
+  },
+  {
+    "id": "listen-b-local-shuttle",
+    "version": "authored-2026-10-28-v1:listen-b-local-shuttle",
+    "title": "Thử tuyến xe đưa đón của khu phố",
+    "level": "B2",
+    "targets": [
+      {
+        "id": "ox-14b9005e4f90ef-01",
+        "lemma": "assess",
+        "partOfSpeech": "verb",
+        "meaning": "đánh giá",
+        "context": "đánh giá liệu dịch vụ đáp ứng nhu cầu"
+      },
+      {
+        "id": "ox-10aca1d8b72438-01",
+        "lemma": "evaluate",
+        "partOfSpeech": "verb",
+        "meaning": "đánh giá",
+        "context": "đánh giá kết quả thử nghiệm bằng nhiều thông tin"
+      },
+      {
+        "id": "ox-f9bb818d84838e-01",
+        "lemma": "implement",
+        "partOfSpeech": "verb",
+        "meaning": "triển khai; đưa vào thực hiện",
+        "context": "đưa kế hoạch tuyến xe vào thực hiện"
+      },
+      {
+        "id": "ox-f86e4b17a89f8d-01",
+        "lemma": "limitation",
+        "partOfSpeech": "noun",
+        "meaning": "hạn chế; điều giới hạn",
+        "context": "điểm giới hạn của đợt thử ngắn"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Parker",
+        "en": "The city wants to implement a weekend shuttle between the station and the clinic.",
+        "vi": "Thành phố muốn triển khai tuyến xe đưa đón cuối tuần giữa ga và phòng khám."
+      },
+      {
+        "speaker": "Reese",
+        "en": "Before making it permanent, how will we assess whether people need it?",
+        "vi": "Trước khi duy trì lâu dài, chúng ta sẽ đánh giá nhu cầu bằng cách nào?"
+      },
+      {
+        "speaker": "Parker",
+        "en": "The first step is a four-week trial, with passenger counts on every trip.",
+        "vi": "Bước đầu là thử trong bốn tuần và đếm hành khách trên mỗi chuyến."
+      },
+      {
+        "speaker": "Reese",
+        "en": "That helps, but one limitation is that the trial falls during a school break.",
+        "vi": "Điều đó có ích, nhưng một hạn chế là đợt thử rơi vào kỳ nghỉ học."
+      },
+      {
+        "speaker": "Parker",
+        "en": "True. Travel patterns might be different when classes start again.",
+        "vi": "Đúng. Việc đi lại có thể khác khi các lớp học bắt đầu trở lại."
+      },
+      {
+        "speaker": "Reese",
+        "en": "We should evaluate the service using more than total passenger numbers.",
+        "vi": "Chúng ta nên đánh giá dịch vụ dựa vào nhiều yếu tố hơn tổng số hành khách."
+      },
+      {
+        "speaker": "Parker",
+        "en": "Such as whether it gets people to their appointments on time?",
+        "vi": "Chẳng hạn xe có đưa mọi người đến cuộc hẹn đúng giờ không?"
+      },
+      {
+        "speaker": "Reese",
+        "en": "Yes, and whether people who need an accessible vehicle can actually use it.",
+        "vi": "Đúng, và những người cần phương tiện phù hợp khả năng tiếp cận có thực sự dùng được không."
+      },
+      {
+        "speaker": "Parker",
+        "en": "I will add those questions and make the timing issue clear in the report.",
+        "vi": "Tôi sẽ thêm những câu hỏi đó và nêu rõ vấn đề thời điểm trong báo cáo."
+      },
+      {
+        "speaker": "Reese",
+        "en": "Then the trial can guide a decision without pretending to answer every question.",
+        "vi": "Như vậy đợt thử có thể hỗ trợ quyết định mà không giả như đã giải đáp mọi câu hỏi."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Hạn chế nào của đợt thử khiến Reese lưu ý?",
+        "targetIds": ["ox-14b9005e4f90ef-01", "ox-f86e4b17a89f8d-01"],
+        "accepted": [
+          "Đợt thử diễn ra trong kỳ nghỉ học nên nhu cầu có thể khác lúc bình thường"
+        ],
+        "explanation": "Reese chỉ ra thời điểm thử có thể ảnh hưởng mô hình đi lại; đó là hạn chế của việc suy rộng kết quả.",
+        "options": [
+          "Không ai dự định đếm số hành khách",
+          "Đợt thử diễn ra trong kỳ nghỉ học nên nhu cầu có thể khác lúc bình thường",
+          "Đợt thử không có chuyến xe nào đến phòng khám"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Ngoài tổng hành khách, họ muốn đánh giá thêm điều gì?",
+        "targetIds": ["ox-10aca1d8b72438-01", "ox-f9bb818d84838e-01"],
+        "accepted": [
+          "Việc đến đúng giờ và khả năng sử dụng của người cần xe phù hợp tiếp cận"
+        ],
+        "explanation": "Hai tiêu chí bổ sung gắn với việc dịch vụ thực sự đáp ứng người dùng, không chỉ số lượt lên xe.",
+        "options": [
+          "Việc đến đúng giờ và khả năng sử dụng của người cần xe phù hợp tiếp cận",
+          "Màu sơn nào được tài xế yêu thích nhất",
+          "Số lớp học của từng hành khách"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "implement trong câu đầu có nghĩa gì?",
+        "targetIds": ["ox-f9bb818d84838e-01"],
+        "accepted": ["Đưa kế hoạch tuyến xe vào thực hiện"],
+        "explanation": "Implement a plan là triển khai kế hoạch. Đoạn này vẫn phân biệt thử nghiệm với quyết định duy trì lâu dài.",
+        "options": [
+          "Chỉ thảo luận tên gọi mà chưa làm gì",
+          "Hủy bỏ hoàn toàn một tuyến đang chạy",
+          "Đưa kế hoạch tuyến xe vào thực hiện"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "We should ____ the service using more than total passenger numbers.",
+        "targetIds": ["ox-10aca1d8b72438-01"],
+        "accepted": ["evaluate"],
+        "explanation": "Lời Reese dùng evaluate để đánh giá dịch vụ qua nhiều thông tin. Bài yêu cầu khôi phục từ gốc; assess có thể gần nghĩa ở ngữ cảnh khác."
+      }
+    ],
+    "reply": "Bạn là Parker. Hãy đề xuất một câu hỏi ngắn để thu phản hồi về việc xe giúp hành khách đến đúng giờ."
+  },
+  {
+    "id": "listen-b-research-consent",
+    "version": "authored-2026-10-28-v1:listen-b-research-consent",
+    "title": "Chuẩn bị lời mời tham gia nghiên cứu",
+    "level": "C1",
+    "targets": [
+      {
+        "id": "ox-12423e0482f3e8-01",
+        "lemma": "consent",
+        "partOfSpeech": "noun",
+        "meaning": "sự đồng ý; sự cho phép",
+        "context": "sự cho phép có hiểu biết trước khi tham gia và được ghi âm"
+      },
+      {
+        "id": "ox-2f183a4e64493a-01",
+        "lemma": "anonymous",
+        "partOfSpeech": "adjective",
+        "meaning": "ẩn danh; không rõ danh tính",
+        "context": "không gắn phản hồi với danh tính người trả lời"
+      },
+      {
+        "id": "ox-c0cde073e7e5fc-01",
+        "lemma": "participant",
+        "partOfSpeech": "noun",
+        "meaning": "người tham gia",
+        "context": "người tham gia nghiên cứu"
+      },
+      {
+        "id": "ox-e4f3477880707e-01",
+        "lemma": "relevant",
+        "partOfSpeech": "adjective",
+        "meaning": "liên quan đến vấn đề đang xét",
+        "context": "thông tin có liên quan đến câu hỏi nghiên cứu"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Blair",
+        "en": "The invitation is ready, but I am not sure the consent section is clear enough.",
+        "vi": "Thư mời đã xong, nhưng tôi chưa chắc phần đồng ý tham gia đủ rõ."
+      },
+      {
+        "speaker": "Casey",
+        "en": "It should explain what each participant will do before asking for permission.",
+        "vi": "Phần đó nên giải thích mỗi người tham gia sẽ làm gì trước khi xin sự cho phép."
+      },
+      {
+        "speaker": "Blair",
+        "en": "They will discuss their experience with the new bus route for about twenty minutes.",
+        "vi": "Họ sẽ trao đổi trải nghiệm sử dụng tuyến xe buýt mới trong khoảng hai mươi phút."
+      },
+      {
+        "speaker": "Casey",
+        "en": "Will we record the conversation, or just take notes?",
+        "vi": "Chúng ta sẽ ghi âm cuộc nói chuyện hay chỉ ghi chép?"
+      },
+      {
+        "speaker": "Blair",
+        "en": "Record it, but only if they agree separately. Saying no should not prevent them from taking part.",
+        "vi": "Ghi âm, nhưng chỉ khi họ đồng ý riêng cho việc đó. Từ chối ghi âm không nên ngăn họ tham gia."
+      },
+      {
+        "speaker": "Casey",
+        "en": "Good. The current draft also calls the interviews anonymous. Is that accurate?",
+        "vi": "Tốt. Bản nháp hiện tại còn gọi các cuộc phỏng vấn là ẩn danh. Như vậy có chính xác không?"
+      },
+      {
+        "speaker": "Blair",
+        "en": "Not completely. We need contact details to arrange the interviews, and a voice could identify someone.",
+        "vi": "Không hoàn toàn. Chúng ta cần thông tin liên hệ để hẹn phỏng vấn, và giọng nói có thể nhận diện một người."
+      },
+      {
+        "speaker": "Casey",
+        "en": "Then describe exactly how we will protect the information rather than promising anonymity.",
+        "vi": "Vậy hãy mô tả chính xác cách chúng ta bảo vệ thông tin thay vì hứa ẩn danh."
+      },
+      {
+        "speaker": "Blair",
+        "en": "I will also remove the question about household income. It is not relevant to our research question.",
+        "vi": "Tôi cũng sẽ bỏ câu hỏi về thu nhập hộ gia đình. Nó không liên quan đến câu hỏi nghiên cứu của chúng ta."
+      },
+      {
+        "speaker": "Casey",
+        "en": "That keeps the request focused. Explain who can access the recording and when it will be deleted.",
+        "vi": "Như vậy yêu cầu sẽ tập trung hơn. Hãy giải thích ai có thể truy cập bản ghi và khi nào nó được xóa."
+      },
+      {
+        "speaker": "Blair",
+        "en": "And I will give people time to ask questions instead of treating a signature as the whole process.",
+        "vi": "Tôi cũng sẽ cho mọi người thời gian hỏi lại, thay vì coi một chữ ký là toàn bộ quá trình."
+      },
+      {
+        "speaker": "Casey",
+        "en": "Exactly. Clear information matters more than making the form sound reassuring.",
+        "vi": "Chính xác. Thông tin rõ ràng quan trọng hơn việc làm biểu mẫu nghe có vẻ trấn an."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Vì sao Casey không muốn gọi phỏng vấn là anonymous?",
+        "targetIds": ["ox-12423e0482f3e8-01", "ox-2f183a4e64493a-01"],
+        "accepted": [
+          "Nhóm còn giữ thông tin liên hệ và giọng ghi âm có thể nhận diện người tham gia"
+        ],
+        "explanation": "Hai người nhận ra không thể hứa hoàn toàn ẩn danh khi nhóm biết người tham gia và có thể lưu giọng nói.",
+        "options": [
+          "Nhóm còn giữ thông tin liên hệ và giọng ghi âm có thể nhận diện người tham gia",
+          "Mọi câu trả lời đều bắt buộc phải công bố kèm tên",
+          "Từ anonymous chỉ dùng cho khảo sát viết tay"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Họ sẽ thay đổi cách xin phép và thu thập thông tin như thế nào?",
+        "targetIds": ["ox-c0cde073e7e5fc-01", "ox-e4f3477880707e-01"],
+        "accepted": [
+          "Xin phép ghi âm riêng và bỏ câu hỏi thu nhập không liên quan"
+        ],
+        "explanation": "Từ chối ghi âm không ngăn tham gia; câu hỏi không liên quan được bỏ. Đây là tình huống biên soạn, không phải tư vấn pháp lý.",
+        "options": [
+          "Chỉ cho tham gia nếu đồng ý ghi âm và trả lời mọi câu",
+          "Bỏ mọi giải thích để biểu mẫu ngắn hơn",
+          "Xin phép ghi âm riêng và bỏ câu hỏi thu nhập không liên quan"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "relevant trong lời Blair được hiểu thế nào?",
+        "targetIds": ["ox-e4f3477880707e-01"],
+        "accepted": ["Có liên quan đến vấn đề nghiên cứu đang xem xét"],
+        "explanation": "Relevant nói đến sự liên quan với mục tiêu đang xét; cuộc nói chuyện không đặt quy tắc tuyệt đối cho mọi nghiên cứu.",
+        "options": [
+          "Riêng tư nên tuyệt đối không bao giờ được hỏi",
+          "Có liên quan đến vấn đề nghiên cứu đang xem xét",
+          "Dễ hỏi và vì vậy luôn cần thu thập"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "The invitation is ready, but I am not sure the ____ section is clear enough.",
+        "targetIds": ["ox-12423e0482f3e8-01"],
+        "accepted": ["consent"],
+        "explanation": "Consent là sự đồng ý hoặc cho phép. Đoạn nhấn mạnh cần có giải thích rõ trước khi xin phép, không chỉ một chữ ký."
+      }
+    ],
+    "reply": "Bạn là Blair. Hãy viết lời giải thích ngắn cho người tham gia rằng ghi âm là tùy chọn và họ có thể hỏi trước khi quyết định."
+  },
+  {
+    "id": "listen-b-housing-compromise",
+    "version": "authored-2026-10-28-v1:listen-b-housing-compromise",
+    "title": "Thương lượng việc sửa hành lang chung",
+    "level": "C1",
+    "targets": [
+      {
+        "id": "ox-c4a11b3a02a790-01",
+        "lemma": "landlord",
+        "partOfSpeech": "noun",
+        "meaning": "chủ nhà cho thuê",
+        "context": "chủ nhà cho thuê chịu trách nhiệm sắp xếp sửa chữa"
+      },
+      {
+        "id": "ox-e9da86d351cf9a-01",
+        "lemma": "tenant",
+        "partOfSpeech": "noun",
+        "meaning": "người thuê nhà hoặc đất",
+        "context": "người thuê đang sống trong tòa nhà"
+      },
+      {
+        "id": "ox-1caece2e3bd1aa-01",
+        "lemma": "compromise",
+        "partOfSpeech": "noun",
+        "meaning": "sự thỏa hiệp",
+        "context": "thỏa thuận trong đó hai phía cùng nhượng bộ"
+      },
+      {
+        "id": "ox-c983c585ac3c40-01",
+        "lemma": "consensus",
+        "partOfSpeech": "noun",
+        "meaning": "sự đồng thuận",
+        "context": "sự đồng thuận của nhóm cư dân về một phương án"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Devon",
+        "en": "As the landlord, I need to schedule the hallway repairs before the damage gets worse.",
+        "vi": "Với vai trò chủ nhà cho thuê, tôi cần sắp xếp sửa hành lang trước khi hư hỏng nặng hơn."
+      },
+      {
+        "speaker": "Skyler",
+        "en": "I understand. As a tenant who works nights, I am worried about drilling all morning.",
+        "vi": "Tôi hiểu. Là người thuê làm ca đêm, tôi lo việc khoan suốt buổi sáng."
+      },
+      {
+        "speaker": "Devon",
+        "en": "The crew originally offered five consecutive mornings. They cannot work late evenings.",
+        "vi": "Đội thợ ban đầu đề xuất năm buổi sáng liên tiếp. Họ không thể làm vào tối muộn."
+      },
+      {
+        "speaker": "Skyler",
+        "en": "Could we find a compromise, perhaps starting the loud work after ten?",
+        "vi": "Chúng ta có thể tìm cách thỏa hiệp, chẳng hạn bắt đầu công việc ồn sau mười giờ không?"
+      },
+      {
+        "speaker": "Devon",
+        "en": "That might extend the project by two days, which adds to the cost.",
+        "vi": "Như vậy có thể kéo dài công việc thêm hai ngày và làm tăng chi phí."
+      },
+      {
+        "speaker": "Skyler",
+        "en": "I would accept a longer project if the noisiest work started later. Other residents may have different needs.",
+        "vi": "Tôi chấp nhận công việc kéo dài hơn nếu phần ồn nhất bắt đầu muộn. Các cư dân khác có thể có nhu cầu khác."
+      },
+      {
+        "speaker": "Devon",
+        "en": "Then I should not assume there is a consensus among all the residents.",
+        "vi": "Vậy tôi không nên cho rằng mọi cư dân đều đã đồng thuận."
+      },
+      {
+        "speaker": "Skyler",
+        "en": "Right. We could send out the two options and ask people to explain any access problems.",
+        "vi": "Đúng. Chúng ta có thể gửi hai phương án và nhờ mọi người nêu vấn đề về việc đi lại, tiếp cận."
+      },
+      {
+        "speaker": "Devon",
+        "en": "One entrance will remain open either way. I will include that in the message.",
+        "vi": "Dù chọn phương án nào, một lối vào vẫn sẽ mở. Tôi sẽ nêu điều đó trong tin nhắn."
+      },
+      {
+        "speaker": "Skyler",
+        "en": "And please give a date for feedback, so the decision does not drift indefinitely.",
+        "vi": "Và xin cho một hạn góp ý để quyết định không bị kéo dài vô thời hạn."
+      },
+      {
+        "speaker": "Devon",
+        "en": "Friday should work. I will explain what can change and what the contractor cannot offer.",
+        "vi": "Thứ Sáu phù hợp đấy. Tôi sẽ giải thích điều gì có thể thay đổi và điều gì nhà thầu không đáp ứng được."
+      },
+      {
+        "speaker": "Skyler",
+        "en": "That would make the choices clearer, even if we cannot satisfy every preference.",
+        "vi": "Như vậy các lựa chọn sẽ rõ hơn, dù chúng ta không thể đáp ứng mọi mong muốn."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Điều đánh đổi chính trong phương án Skyler đề nghị là gì?",
+        "targetIds": ["ox-c4a11b3a02a790-01", "ox-1caece2e3bd1aa-01"],
+        "accepted": [
+          "Công việc ồn bắt đầu muộn hơn nhưng dự án có thể dài và tốn hơn"
+        ],
+        "explanation": "Devon giải thích bắt đầu muộn có thể thêm hai ngày và tăng chi phí; Skyler chấp nhận thời gian dài hơn.",
+        "options": [
+          "Nhà thầu làm ban đêm để dự án rẻ hơn",
+          "Ngừng sửa hoàn toàn để tránh mọi tiếng ồn",
+          "Công việc ồn bắt đầu muộn hơn nhưng dự án có thể dài và tốn hơn"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Vì sao họ cần hỏi những cư dân khác trước khi coi đó là quyết định chung?",
+        "targetIds": ["ox-e9da86d351cf9a-01", "ox-c983c585ac3c40-01"],
+        "accepted": [
+          "Hai người chưa đại diện cho nhu cầu và sự đồng ý của cả tòa nhà"
+        ],
+        "explanation": "Skyler nêu các nhu cầu có thể khác nhau; Devon thừa nhận cuộc nói chuyện riêng chưa tạo thành consensus.",
+        "options": [
+          "Nhà thầu yêu cầu tất cả cư dân rời tòa nhà",
+          "Hai người chưa đại diện cho nhu cầu và sự đồng ý của cả tòa nhà",
+          "Mọi người chắc chắn đều làm ca đêm giống Skyler"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "compromise trong cuộc thương lượng hàm ý gì?",
+        "targetIds": ["ox-1caece2e3bd1aa-01"],
+        "accepted": [
+          "Hai phía chấp nhận nhượng bộ để tìm phương án cùng có thể chấp nhận"
+        ],
+        "explanation": "Skyler chấp nhận công trình lâu hơn, còn phía sắp xếp cân nhắc bắt đầu tiếng ồn muộn; đó là các nhượng bộ khác nhau.",
+        "options": [
+          "Hai phía chấp nhận nhượng bộ để tìm phương án cùng có thể chấp nhận",
+          "Một phía chắc chắn đạt toàn bộ yêu cầu ban đầu",
+          "Tự động có sự đồng ý của mọi cư dân"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "Then I should not assume there is a ____ among all the residents.",
+        "targetIds": ["ox-c983c585ac3c40-01"],
+        "accepted": ["consensus"],
+        "explanation": "Consensus là sự đồng thuận của một nhóm. Cuộc trao đổi giữa hai người không đủ để suy ra cả tòa nhà đã đồng thuận."
+      }
+    ],
+    "reply": "Bạn là Devon. Hãy soạn lời mời góp ý, nêu hai lựa chọn, điều đánh đổi và hạn trả lời vào thứ Sáu."
+  },
+  {
+    "id": "listen-b-grant-allocation",
+    "version": "authored-2026-10-28-v1:listen-b-grant-allocation",
+    "title": "Phân bổ khoản hỗ trợ cho dự án khu phố",
+    "level": "C1",
+    "targets": [
+      {
+        "id": "ox-33b7bcc005217d-01",
+        "lemma": "allocate",
+        "partOfSpeech": "verb",
+        "meaning": "phân bổ",
+        "context": "phân bổ tiền theo kế hoạch cho các hạng mục"
+      },
+      {
+        "id": "ox-03939fbeaa4a9d-01",
+        "lemma": "accountability",
+        "partOfSpeech": "noun",
+        "meaning": "trách nhiệm giải trình",
+        "context": "trách nhiệm giải thích và chịu trách nhiệm về cách dùng tiền"
+      },
+      {
+        "id": "ox-94a48d9e39baad-01",
+        "lemma": "substantial",
+        "partOfSpeech": "adjective",
+        "meaning": "đáng kể về quy mô hoặc giá trị",
+        "context": "khoản hỗ trợ có giá trị đáng kể"
+      },
+      {
+        "id": "ox-b9abdfa5387bf9-01",
+        "lemma": "sufficient",
+        "partOfSpeech": "adjective",
+        "meaning": "đủ để đáp ứng nhu cầu",
+        "context": "đủ tiền để đáp ứng nhu cầu đã xác định"
+      }
+    ],
+    "lines": [
+      {
+        "speaker": "Finley",
+        "en": "The neighborhood grant is substantial, but it will not cover every project on our list.",
+        "vi": "Khoản hỗ trợ cho khu phố khá đáng kể, nhưng sẽ không đủ cho mọi dự án trong danh sách."
+      },
+      {
+        "speaker": "Rowan",
+        "en": "Then we need to decide how to allocate the money before promising anything publicly.",
+        "vi": "Vậy chúng ta cần quyết định phân bổ tiền thế nào trước khi hứa công khai."
+      },
+      {
+        "speaker": "Finley",
+        "en": "The playground repairs are urgent. The garden expansion could wait until next spring.",
+        "vi": "Việc sửa sân chơi đang cấp thiết. Mở rộng khu vườn có thể chờ đến mùa xuân tới."
+      },
+      {
+        "speaker": "Rowan",
+        "en": "Do we have sufficient information about the repair costs, or just an early estimate?",
+        "vi": "Chúng ta đã có đủ thông tin về chi phí sửa chữa chưa, hay mới chỉ là ước tính ban đầu?"
+      },
+      {
+        "speaker": "Finley",
+        "en": "Only an estimate. We should get written quotes and keep something aside for unexpected work.",
+        "vi": "Mới chỉ là ước tính. Chúng ta nên lấy báo giá bằng văn bản và để dành một khoản cho công việc phát sinh."
+      },
+      {
+        "speaker": "Rowan",
+        "en": "Agreed. Accountability also means explaining why some requests are not funded this year.",
+        "vi": "Đồng ý. Trách nhiệm giải trình còn có nghĩa giải thích vì sao một số yêu cầu không được cấp tiền trong năm nay."
+      },
+      {
+        "speaker": "Finley",
+        "en": "So we should publish the selection process, not just a list of final amounts.",
+        "vi": "Vậy chúng ta nên công bố quá trình lựa chọn, không chỉ danh sách số tiền cuối cùng."
+      },
+      {
+        "speaker": "Rowan",
+        "en": "Yes, and assign someone to track actual spending against the approved plan.",
+        "vi": "Đúng, và giao một người theo dõi chi tiêu thực tế so với kế hoạch đã được duyệt."
+      },
+      {
+        "speaker": "Finley",
+        "en": "Could that person be separate from whoever approves the invoices?",
+        "vi": "Người đó có thể khác với người duyệt các hóa đơn không?"
+      },
+      {
+        "speaker": "Rowan",
+        "en": "That would give us an additional check. We should make the responsibilities clear from the start.",
+        "vi": "Như vậy có thêm một bước kiểm tra. Chúng ta nên làm rõ trách nhiệm ngay từ đầu."
+      },
+      {
+        "speaker": "Finley",
+        "en": "I will revise the proposal with those safeguards before the committee meets.",
+        "vi": "Tôi sẽ sửa đề xuất và thêm các biện pháp đó trước khi ủy ban họp."
+      },
+      {
+        "speaker": "Rowan",
+        "en": "And mark the figures as provisional until the quotes arrive, so nobody mistakes a draft for a commitment.",
+        "vi": "Và đánh dấu các con số là tạm tính cho đến khi có báo giá, để không ai nhầm bản nháp thành cam kết."
+      }
+    ],
+    "questions": [
+      {
+        "id": "understand-1",
+        "kind": "comprehension",
+        "prompt": "Vì sao họ chưa nên hứa tài trợ mọi dự án ngay?",
+        "targetIds": ["ox-33b7bcc005217d-01", "ox-94a48d9e39baad-01"],
+        "accepted": [
+          "Khoản hỗ trợ đáng kể nhưng không đủ mọi dự án, còn chi phí sửa mới là ước tính"
+        ],
+        "explanation": "Finley nói tiền không đủ mọi dự án và mới có ước tính sửa chữa; họ cần báo giá và khoản dự phòng.",
+        "options": [
+          "Họ đã thanh toán hết cho khu vườn từ trước",
+          "Khoản hỗ trợ đáng kể nhưng không đủ mọi dự án, còn chi phí sửa mới là ước tính",
+          "Khoản hỗ trợ đã bị thu hồi hoàn toàn"
+        ]
+      },
+      {
+        "id": "understand-2",
+        "kind": "comprehension",
+        "prompt": "Họ đề xuất những biện pháp nào để giải trình và kiểm tra chi tiêu?",
+        "targetIds": ["ox-03939fbeaa4a9d-01", "ox-b9abdfa5387bf9-01"],
+        "accepted": [
+          "Công bố quá trình lựa chọn, theo dõi chi thực tế và phân định trách nhiệm kiểm tra"
+        ],
+        "explanation": "Đoạn nêu công bố cách chọn, so chi thực tế với kế hoạch, thêm bước kiểm tra và làm rõ vai trò.",
+        "options": [
+          "Công bố quá trình lựa chọn, theo dõi chi thực tế và phân định trách nhiệm kiểm tra",
+          "Chỉ công bố tổng tiền rồi bỏ mọi hồ sơ",
+          "Để một người duyệt và tự kiểm mọi khoản mà không giải thích"
+        ]
+      },
+      {
+        "id": "sense",
+        "kind": "meaning",
+        "prompt": "accountability trong lời Rowan nhấn mạnh điều gì?",
+        "targetIds": ["ox-03939fbeaa4a9d-01"],
+        "accepted": [
+          "Có trách nhiệm giải thích quyết định và việc sử dụng nguồn tiền"
+        ],
+        "explanation": "Accountability rộng hơn việc ghi số: nhóm cần giải thích các lựa chọn và chịu trách nhiệm về cách dùng tiền.",
+        "options": [
+          "Chỉ cần làm phép cộng tổng số tiền",
+          "Chắc chắn không có bất kỳ khoản chi phát sinh nào",
+          "Có trách nhiệm giải thích quyết định và việc sử dụng nguồn tiền"
+        ]
+      },
+      {
+        "id": "gap",
+        "kind": "cloze",
+        "prompt": "We need to decide how to ____ the money before promising anything publicly.",
+        "targetIds": ["ox-33b7bcc005217d-01"],
+        "accepted": ["allocate"],
+        "explanation": "Allocate the money là phân bổ tiền theo kế hoạch cho những mục đích cụ thể. Bài yêu cầu khôi phục đúng lời thoại, không chấm tư vấn tài chính."
+      }
+    ],
+    "reply": "Bạn là Finley. Hãy viết ba câu giải thích vì sao ưu tiên sửa sân chơi và vì sao số tiền trong bản nháp vẫn là tạm tính."
+  }
+]
