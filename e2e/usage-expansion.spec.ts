@@ -39,7 +39,7 @@ const apple: Word = {
   content_status: "reviewed",
 };
 const fixture = [...targets, apple];
-const filterLabel = "Có cách dùng đã đối chiếu";
+const filterLabel = "Có cách dùng và ngữ cảnh bổ sung";
 const DAY = 86_400_000;
 
 async function snapshot(page: Page): Promise<State> {

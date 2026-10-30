@@ -65,6 +65,7 @@ import {
   exerciseWord,
   getUsage,
   normalizeVocabularyLookup,
+  prioritizeExactVocabularyMatches,
   vocabularyLookupText,
 } from "./usage";
 import { selectLearningEvidence } from "./evidence";
@@ -126,7 +127,7 @@ const statusLabels: Record<string, string> = {
   new: "Chưa học",
   studied: "Đã học",
   known: "Tự đánh dấu đã biết",
-  usage: "Có cách dùng đã đối chiếu",
+  usage: "Có cách dùng và ngữ cảnh bổ sung",
 };
 function download(name: string, text: string, type = "text/plain") {
   const url = URL.createObjectURL(
@@ -716,21 +717,24 @@ function App() {
     [active],
   );
   const lookupQuery = normalizeVocabularyLookup(search);
-  const filtered = active.filter(
-    (e) =>
-      (lookupIndex.get(e.word.id) || "").includes(lookupQuery) &&
-      (!topic || (e.word.topics || "").split(",").includes(topic)) &&
-      (!collection ||
-        (e.word.collections || "").split(",").includes(collection)) &&
-      (!level || e.word.level === level) &&
-      (!status ||
-        (status === "usage"
-          ? !!getUsage(e.word)
-          : status === "known"
-            ? e.known
-            : status === "new"
-              ? !studiedIds.has(e.word.id)
-              : studiedIds.has(e.word.id))),
+  const filtered = prioritizeExactVocabularyMatches(
+    active.filter(
+      (e) =>
+        (lookupIndex.get(e.word.id) || "").includes(lookupQuery) &&
+        (!topic || (e.word.topics || "").split(",").includes(topic)) &&
+        (!collection ||
+          (e.word.collections || "").split(",").includes(collection)) &&
+        (!level || e.word.level === level) &&
+        (!status ||
+          (status === "usage"
+            ? !!getUsage(e.word)
+            : status === "known"
+              ? e.known
+              : status === "new"
+                ? !studiedIds.has(e.word.id)
+                : studiedIds.has(e.word.id))),
+    ),
+    lookupQuery,
   );
   const practiceEligible = filtered.filter((e) =>
     canPractice(e.word, practice),
@@ -2197,7 +2201,9 @@ function App() {
                   <option value="new">Chưa học</option>
                   <option value="studied">Đã học</option>
                   <option value="known">Tự đánh dấu đã biết</option>
-                  <option value="usage">Có cách dùng đã đối chiếu</option>
+                  <option value="usage">
+                    Có cách dùng và ngữ cảnh bổ sung
+                  </option>
                 </select>
               </div>
               <p className="fineprint" id="vocabulary-search-help">
@@ -3231,7 +3237,9 @@ function App() {
                   quên.
                 </p>
                 <p>
-                  Lịch riêng cho mỗi kỹ năng: 1–3–7–14–30 ngày; sai quay về 1
+                  Lịch riêng bắt đầu từ 1–3–7–14–30 ngày; sai quay về 1 ngày. Kỹ
+                  năng có kiểm tra khách quan và đủ bằng chứng sau khoảng nghỉ
+                  dài có thể giãn dần 60–90–180 ngày. Tự đánh giá vẫn tối đa 30
                   ngày. Lượt thử lại cùng lần ôn không kéo dài lịch. Mục tự đánh
                   dấu đã biết không có bằng chứng kiểm tra.
                 </p>

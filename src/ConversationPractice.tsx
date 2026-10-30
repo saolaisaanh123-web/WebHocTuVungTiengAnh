@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Headphones, Pause, Play, Square, Volume2 } from "lucide-react";
-import type { State } from "./core";
-import type { ConversationAttempt } from "./practice-data";
+import { contentKey, type State } from "./core";
+import type {
+  ConversationAttempt,
+  DelayedConversationCheck,
+} from "./practice-data";
 import { selectEnglishVoice } from "./american-english";
 import { formatPartOfSpeech, partOfSpeechCaption } from "./part-of-speech";
 import {
@@ -9,6 +12,7 @@ import {
   dialogues,
   makeConversationAttempt,
   recommendDialogues,
+  conversationReviewAvailability,
   type Dialogue,
 } from "./conversations";
 import "./conversation-practice.css";
@@ -32,6 +36,7 @@ type Draft = {
   savedId?: string;
   recall: boolean;
   usedHint: boolean;
+  delayedCheck?: DelayedConversationCheck;
 };
 type DraftBank = { selected?: string; drafts: Record<string, Draft> };
 const draftKey = "jeongyeon:conversation-drafts:v1";
@@ -90,6 +95,12 @@ function readDrafts(): { bank: DraftBank; warning: string } {
         savedId: typeof item.savedId === "string" ? item.savedId : undefined,
         recall: item.recall === true,
         usedHint: item.usedHint === true,
+        ...(item.delayedCheck &&
+        typeof item.delayedCheck.previousAttemptId === "string" &&
+        Number.isFinite(item.delayedCheck.startedAt) &&
+        Number.isFinite(item.delayedCheck.previousContactAt)
+          ? { delayedCheck: { ...item.delayedCheck } }
+          : {}),
       };
     }
     return {
@@ -118,6 +129,53 @@ const blankDraft = (d: Dialogue): Draft => ({
   recall: false,
   usedHint: false,
 });
+function restoreDraft(state: State, d: Dialogue, saved?: Draft): Draft {
+  if (saved) {
+    // A local draft may outlive an imported/replaced learner history. Keep its
+    // text, but never turn already-filled answers into an unaided new check.
+    if (
+      saved.savedId &&
+      !state.conversations?.some((a) => a.id === saved.savedId)
+    )
+      return {
+        ...saved,
+        savedId: undefined,
+        usedHint: true,
+        delayedCheck: undefined,
+      };
+    return saved;
+  }
+  const previous = (state.conversations || [])
+    .filter(
+      (attempt) =>
+        attempt.dialogueId === d.id &&
+        attempt.dialogueVersion === d.version &&
+        d.targets.every(
+          (target) =>
+            attempt.targetContentVersions[target.id] ===
+            contentKey(state.entries[target.id].word),
+        ),
+    )
+    .sort((a, b) => b.time - a.time || b.id.localeCompare(a.id))[0];
+  if (!previous) return blankDraft(d);
+  return {
+    ...blankDraft(d),
+    mode: previous.mode || "read",
+    values: Object.fromEntries(
+      previous.answers.map((answer) => [answer.questionId, answer.answer]),
+    ),
+    transcriptRevealed:
+      previous.mode === "listen" ? previous.transcriptRevealed === true : true,
+    lines: [...previous.listenedLineIds],
+    complete: previous.listenedComplete,
+    retryOf: previous.retryOf,
+    savedId: previous.id,
+    usedHint: previous.answers.some((answer) => answer.hint),
+    ...(previous.delayedCheck
+      ? { delayedCheck: { ...previous.delayedCheck } }
+      : {}),
+  };
+}
 function highlight(text: string, d: Dialogue): ReactNode[] {
   const escaped = d.targets
     .map((t) => t.lemma.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
@@ -212,7 +270,7 @@ export function ConversationPractice({
   const usesPounds = !!d?.lines.some((line) => /\bpounds?\b/i.test(line.en));
   const [draft, setDraft] = useState<Draft>(() =>
     d
-      ? bank.current.drafts[d.id] || blankDraft(d)
+      ? restoreDraft(state, d, bank.current.drafts[d.id])
       : {
           version: "",
           mode: "read",
@@ -240,8 +298,18 @@ export function ConversationPractice({
   const exposed = useRef("");
   const saveBusy = useRef(false);
   const report = state.conversations?.find((a) => a.id === draft.savedId);
+  const [freshOffer, setFreshOffer] = useState<string | undefined>(() =>
+    d && report && conversationReviewAvailability(state, d)?.eligible
+      ? d.id
+      : undefined,
+  );
+  const gatedReview = !!report && freshOffer === d?.id;
+  const reviewAvailability = d
+    ? conversationReviewAvailability(state, d)
+    : undefined;
   const transcriptHidden =
-    draft.mode === "listen" ? !draft.transcriptRevealed : draft.recall;
+    gatedReview ||
+    (draft.mode === "listen" ? !draft.transcriptRevealed : draft.recall);
   const needsListening = draft.mode === "listen" && !draft.complete;
   const allRecommendation = useMemo(
     () =>
@@ -300,7 +368,13 @@ export function ConversationPractice({
     setError("");
     setPendingAttempt(undefined);
     setSelected(next.id);
-    const savedDraft = bank.current.drafts[next.id] || blankDraft(next);
+    const savedDraft = restoreDraft(state, next, bank.current.drafts[next.id]);
+    setFreshOffer(
+      savedDraft.savedId &&
+        conversationReviewAvailability(state, next)?.eligible
+        ? next.id
+        : undefined,
+    );
     setDraft(savedDraft);
     persist(savedDraft, next);
   }
@@ -318,10 +392,18 @@ export function ConversationPractice({
     };
   }, []);
   useEffect(() => {
-    if (!d || transcriptHidden || exposed.current === d.version) return;
-    exposed.current = d.version;
+    const token =
+      d && (report ? `${d.version}:report:${report.id}` : d.version);
+    if (
+      !d ||
+      gatedReview ||
+      (!report && transcriptHidden) ||
+      exposed.current === token
+    )
+      return;
+    exposed.current = token!;
     onExpose(d.targets.map((t) => t.id));
-  }, [d, transcriptHidden, onExpose]);
+  }, [d, report?.id, gatedReview, transcriptHidden, onExpose]);
   useEffect(() => {
     if (d) persist(draft);
   }, [draft, selected]);
@@ -447,24 +529,25 @@ export function ConversationPractice({
     saveBusy.current = true;
     setSaving(true);
     setError("");
-    const attempt =
-      pendingAttempt ||
-      makeConversationAttempt(
-        state,
-        d,
-        draft.values,
-        {
-          lines: draft.lines,
-          complete: draft.complete,
-          hidden: transcriptHidden,
-          usedHint: draft.usedHint,
-          mode: draft.mode,
-          transcriptRevealed: draft.transcriptRevealed,
-        },
-        draft.retryOf,
-      );
-    setPendingAttempt(attempt);
     try {
+      const attempt =
+        pendingAttempt ||
+        makeConversationAttempt(
+          state,
+          d,
+          draft.values,
+          {
+            lines: draft.lines,
+            complete: draft.complete,
+            hidden: transcriptHidden,
+            usedHint: draft.usedHint,
+            mode: draft.mode,
+            transcriptRevealed: draft.transcriptRevealed,
+            delayedCheck: draft.delayedCheck,
+          },
+          draft.retryOf,
+        );
+      setPendingAttempt(attempt);
       await onSave(attempt);
       const next = { ...draft, savedId: attempt.id };
       setDraft(next);
@@ -495,8 +578,36 @@ export function ConversationPractice({
       savedId: undefined,
       retryOf: report.id,
       usedHint: true,
+      delayedCheck: undefined,
       ...(draft.mode === "listen" ? { complete: false, lines: [] } : {}),
     });
+    setError("");
+  }
+  function beginDelayedCheck() {
+    if (!d || !report || saveBusy.current) return;
+    const now = Date.now();
+    const availability = conversationReviewAvailability(state, d, now);
+    if (!availability?.eligible) {
+      setError(
+        "Chưa đủ 24 giờ từ lần tiếp xúc gần nhất. Kết quả cũ và câu trả lời của bạn vẫn được giữ.",
+      );
+      return;
+    }
+    stopAudio();
+    // Start with audio and no source text even if the preceding attempt used
+    // reading mode. Explicitly opening text later still marks support.
+    updateDraft({
+      ...blankDraft(d),
+      mode: "listen",
+      transcriptRevealed: false,
+      delayedCheck: {
+        previousAttemptId: availability.previousAttemptId,
+        startedAt: now,
+        previousContactAt: availability.previousContactAt,
+      },
+    });
+    setFreshOffer(undefined);
+    setAudioStatus("");
     setError("");
   }
 
@@ -646,482 +757,580 @@ export function ConversationPractice({
             </span>
           </div>
           <p className="conversation-reason">{allRecommendation?.reason}</p>
-          {(britishTerms.length > 0 || usesPounds) && (
-            <p className="conversation-note">
-              {usesPounds && "Tình huống này dùng bảng Anh (pounds). "}
-              {britishTerms.length > 0 && (
-                <>
-                  Bản gốc có cách viết/cách dùng Anh–Anh:{" "}
-                  <span lang="en">{britishTerms.join(", ")}</span>.{" "}
-                </>
-              )}
-              Giọng đọc Mỹ không tự đổi nội dung gốc; hãy đối chiếu ghi chú của
-              từng từ.
+          {draft.delayedCheck && !report && (
+            <p className="conversation-note" role="status">
+              Lượt kiểm tra mới sau khoảng nghỉ · bắt đầu{" "}
+              {new Date(draft.delayedCheck.startedAt).toLocaleString("vi-VN")}.
+              Lời và đáp án cũ đang ẩn; vẫn cần nghe xong trước khi trả lời. Đây
+              không phải chứng nhận nhớ từ lâu dài.
             </p>
           )}
-          <label className="conversation-mode">
-            Cách luyện
-            <select
-              aria-label="Cách luyện hội thoại"
-              value={draft.mode}
-              disabled={saving || !!report || !!playing}
-              onChange={(event) => {
-                stopAudio();
-                const mode = event.target.value as "read" | "listen";
-                updateDraft({
-                  ...draft,
-                  mode,
-                  recall: false,
-                  transcriptRevealed: mode === "read",
-                  usedHint:
-                    draft.usedHint ||
-                    draft.mode === "read" ||
-                    Object.values(draft.values).some((value) => !!value.trim()),
-                  ...(mode === "listen" ? { complete: false, lines: [] } : {}),
-                });
-              }}
+          {gatedReview ? (
+            <section
+              className="conversation-fresh-check"
+              aria-label="Kiểm tra lại sau khoảng nghỉ"
             >
-              <option value="listen">Nghe trước · ẩn lời và nghĩa từ</option>
-              <option value="read">Đọc và đối chiếu</option>
-            </select>
-          </label>
-          <div className="conversation-audio">
-            {draft.mode === "listen" ? (
-              !draft.transcriptRevealed ? (
+              <h4>Đã có thể tự kiểm tra lại</h4>
+              {error && (
+                <p className="notice" role="alert">
+                  {error}
+                </p>
+              )}
+              <p>
+                Đã qua ít nhất 24 giờ kể từ lần trả lời hoặc tiếp xúc liên quan
+                gần nhất được ghi nhận. Lời thoại và đáp án cũ đang ẩn để bạn
+                chưa xem lại trước khi bắt đầu.
+              </p>
+              <div className="conversation-actions">
+                <button
+                  className="primary"
+                  disabled={saving}
+                  onClick={beginDelayedCheck}
+                >
+                  Kiểm tra lại sau khoảng nghỉ
+                </button>
                 <button
                   disabled={saving}
-                  onClick={() => {
-                    exposed.current = d.version;
+                  onClick={() => setFreshOffer(undefined)}
+                >
+                  Xem lại kết quả cũ · tính là tiếp xúc
+                </button>
+              </div>
+              <p className="conversation-note">
+                Lượt mới giữ toàn bộ lịch sử, xóa đáp án và âm thanh đã phát
+                khỏi nháp mới. Đây là kiểm tra ngữ cảnh sau khoảng nghỉ, không
+                tự tăng lịch ôn hay chứng nhận thành thạo từ vựng.
+              </p>
+            </section>
+          ) : (
+            <>
+              {(britishTerms.length > 0 || usesPounds) && (
+                <p className="conversation-note">
+                  {usesPounds && "Tình huống này dùng bảng Anh (pounds). "}
+                  {britishTerms.length > 0 && (
+                    <>
+                      Bản gốc có cách viết/cách dùng Anh–Anh:{" "}
+                      <span lang="en">{britishTerms.join(", ")}</span>.{" "}
+                    </>
+                  )}
+                  Giọng đọc Mỹ không tự đổi nội dung gốc; hãy đối chiếu ghi chú
+                  của từng từ.
+                </p>
+              )}
+              <label className="conversation-mode">
+                Cách luyện
+                <select
+                  aria-label="Cách luyện hội thoại"
+                  value={draft.mode}
+                  disabled={saving || !!report || !!playing}
+                  onChange={(event) => {
+                    stopAudio();
+                    const mode = event.target.value as "read" | "listen";
                     updateDraft({
                       ...draft,
-                      transcriptRevealed: true,
-                      usedHint: true,
+                      mode,
+                      recall: false,
+                      transcriptRevealed: mode === "read",
+                      usedHint:
+                        draft.usedHint ||
+                        draft.mode === "read" ||
+                        Object.values(draft.values).some(
+                          (value) => !!value.trim(),
+                        ),
+                      ...(mode === "listen"
+                        ? { complete: false, lines: [] }
+                        : {}),
                     });
-                    onExpose(d.targets.map((target) => target.id));
                   }}
                 >
-                  Mở lời và nghĩa từ · tính là gợi ý
-                </button>
-              ) : (
-                <span className="conversation-note">
-                  Đã mở lời hoặc nghĩa từ trong lượt này; kết quả được ghi có hỗ
-                  trợ.
-                </span>
-              )
-            ) : !draft.recall ? (
-              <button
-                disabled={saving || !!report}
-                onClick={() => {
-                  stopAudio();
-                  updateDraft({
-                    ...draft,
-                    recall: true,
-                    translation: false,
-                    usedHint:
-                      draft.usedHint ||
-                      Object.values(draft.values).some(
-                        (value) => value.trim().length > 0,
-                      ),
-                  });
-                }}
-              >
-                Ẩn đoạn để tự thử nhớ
-              </button>
-            ) : (
-              <button
-                disabled={saving}
-                onClick={() => {
-                  updateDraft({ ...draft, recall: false, usedHint: true });
-                  onExpose(d.targets.map((target) => target.id));
-                }}
-              >
-                Xem lại đoạn · tính là gợi ý
-              </button>
-            )}
-          </div>
-          {transcriptHidden && (
-            <p className="conversation-note" role="status">
-              {draft.mode === "listen"
-                ? "Đang ẩn lời và nghĩa từ. Nghe toàn bộ để mở câu hỏi; có thể nghe lại hoặc từng câu. Mở văn bản sẽ được ghi là có gợi ý."
-                : "Đang ẩn đoạn và phần giải nghĩa. Mở lại đoạn hoặc nghe lại sẽ được ghi là có gợi ý. Đây vẫn là luyện ngay sau đọc/nghe, chưa phải bằng chứng nhớ lâu."}
-            </p>
-          )}
-          {!recommendations.some((r) => r.dialogue.id === selected) && (
-            <p className="conversation-note">
-              Đang giữ bài và câu trả lời hiện tại. Chọn bài trong danh sách để
-              áp dụng bộ lọc mới; nháp mỗi bài được giữ riêng.
-            </p>
-          )}
-          <div className="conversation-audio">
-            <button
-              onClick={() => play(d.lines.map((_, i) => i))}
-              disabled={!!playing}
-            >
-              <Headphones size={16} />
-              Nghe toàn bộ
-            </button>
-            {playing && (
-              <>
-                <button
-                  onClick={() => {
-                    if (paused) speechSynthesis.resume();
-                    else speechSynthesis.pause();
-                    setPaused(!paused);
-                  }}
-                >
-                  {paused ? <Play size={16} /> : <Pause size={16} />}
-                  {paused ? "Tiếp tục nghe" : "Tạm dừng"}
-                </button>
-                <button
-                  onClick={() => {
-                    stopAudio();
-                    setAudioStatus(
-                      "Đã dừng nghe; lượt phát bị dừng không được ghi là nghe hết.",
-                    );
-                  }}
-                >
-                  <Square size={15} />
-                  Dừng
-                </button>
-              </>
-            )}
-            <label className="conversation-check">
-              <input
-                type="checkbox"
-                disabled={transcriptHidden}
-                checked={draft.translation}
-                onChange={(e) =>
-                  updateDraft({ ...draft, translation: e.target.checked })
-                }
-              />
-              Bản dịch tiếng Việt
-            </label>
-          </div>
-          <label className="conversation-speed">
-            Tốc độ nghe
-            <select
-              aria-label="Tốc độ nghe hội thoại"
-              value={rate}
-              disabled={!!playing}
-              onChange={(event) => setRate(Number(event.target.value))}
-            >
-              {[0.65, 0.75, 0.85, 1, 1.1].map((value) => (
-                <option key={value} value={value}>
-                  {value}×
-                </option>
-              ))}
-              {![0.65, 0.75, 0.85, 1, 1.1].includes(rate) && (
-                <option value={rate}>{rate}×</option>
+                  <option value="listen">
+                    Nghe trước · ẩn lời và nghĩa từ
+                  </option>
+                  <option value="read">Đọc và đối chiếu</option>
+                </select>
+              </label>
+              <div className="conversation-audio">
+                {draft.mode === "listen" ? (
+                  !draft.transcriptRevealed ? (
+                    <button
+                      disabled={saving}
+                      onClick={() => {
+                        exposed.current = d.version;
+                        updateDraft({
+                          ...draft,
+                          transcriptRevealed: true,
+                          usedHint: true,
+                        });
+                        onExpose(d.targets.map((target) => target.id));
+                      }}
+                    >
+                      Mở lời và nghĩa từ · tính là gợi ý
+                    </button>
+                  ) : (
+                    <span className="conversation-note">
+                      Đã mở lời hoặc nghĩa từ trong lượt này; kết quả được ghi
+                      có hỗ trợ.
+                    </span>
+                  )
+                ) : !draft.recall ? (
+                  <button
+                    disabled={saving || !!report}
+                    onClick={() => {
+                      stopAudio();
+                      updateDraft({
+                        ...draft,
+                        recall: true,
+                        translation: false,
+                        usedHint:
+                          draft.usedHint ||
+                          Object.values(draft.values).some(
+                            (value) => value.trim().length > 0,
+                          ),
+                      });
+                    }}
+                  >
+                    Ẩn đoạn để tự thử nhớ
+                  </button>
+                ) : (
+                  <button
+                    disabled={saving}
+                    onClick={() => {
+                      updateDraft({ ...draft, recall: false, usedHint: true });
+                      onExpose(d.targets.map((target) => target.id));
+                    }}
+                  >
+                    Xem lại đoạn · tính là gợi ý
+                  </button>
+                )}
+              </div>
+              {transcriptHidden && (
+                <p className="conversation-note" role="status">
+                  {draft.mode === "listen"
+                    ? "Đang ẩn lời và nghĩa từ. Nghe toàn bộ để mở câu hỏi; có thể nghe lại hoặc từng câu. Mở văn bản sẽ được ghi là có gợi ý."
+                    : "Đang ẩn đoạn và phần giải nghĩa. Mở lại đoạn hoặc nghe lại sẽ được ghi là có gợi ý. Đây vẫn là luyện ngay sau đọc/nghe, chưa phải bằng chứng nhớ lâu."}
+                </p>
               )}
-            </select>
-          </label>
-          {spokenLine !== undefined && (
-            <p className="conversation-note" role="status">
-              Đang nghe câu {spokenLine + 1}/{d.lines.length} ·{" "}
-              {d.lines[spokenLine]?.speaker}
-            </p>
-          )}
-          {transcriptHidden && (
-            <div
-              className="conversation-sentence-audio"
-              aria-label="Nghe từng câu khi ẩn lời"
-            >
-              {d.lines.map((line, index) => (
+              {!recommendations.some((r) => r.dialogue.id === selected) && (
+                <p className="conversation-note">
+                  Đang giữ bài và câu trả lời hiện tại. Chọn bài trong danh sách
+                  để áp dụng bộ lọc mới; nháp mỗi bài được giữ riêng.
+                </p>
+              )}
+              <div className="conversation-audio">
                 <button
-                  key={index}
+                  onClick={() => play(d.lines.map((_, i) => i))}
                   disabled={!!playing}
-                  onClick={() => play([index])}
                 >
-                  Nghe câu {index + 1} · {line.speaker}
+                  <Headphones size={16} />
+                  Nghe toàn bộ
                 </button>
-              ))}
-            </div>
-          )}
-          <p
-            className="conversation-note"
-            data-testid="conversation-voice-status"
-          >
-            {actualVoice ? (
-              <>
-                Giọng tổng hợp đang dùng: {actualVoice.lang}, tốc độ {rate}.{" "}
-                {usingVoiceFallback && (
+                {playing && (
                   <>
-                    Thiết bị chưa có giọng {state.voice}; đang dùng giọng tiếng
-                    Anh thay thế {actualVoice.lang}.{" "}
+                    <button
+                      onClick={() => {
+                        if (paused) speechSynthesis.resume();
+                        else speechSynthesis.pause();
+                        setPaused(!paused);
+                      }}
+                    >
+                      {paused ? <Play size={16} /> : <Pause size={16} />}
+                      {paused ? "Tiếp tục nghe" : "Tạm dừng"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        stopAudio();
+                        setAudioStatus(
+                          "Đã dừng nghe; lượt phát bị dừng không được ghi là nghe hết.",
+                        );
+                      }}
+                    >
+                      <Square size={15} />
+                      Dừng
+                    </button>
                   </>
                 )}
-                {speakerVoices?.[0] === speakerVoices?.[1]
-                  ? "Hai nhân vật dùng chung một giọng để giữ cùng vùng phát âm. "
-                  : "Hai nhân vật dùng hai giọng cùng vùng phát âm. "}
-              </>
-            ) : (
-              <>
-                Chưa có giọng tiếng Anh khả dụng trên thiết bị; cài đặt mong
-                muốn {state.voice}.{" "}
-              </>
-            )}
-            Không phải bản thu của người bản ngữ. Một số giọng cần Internet.
-            Lịch sử ghi nhận trạng thái nghe tại thời điểm lưu bài.
-          </p>
-          <p role="status" className="conversation-audio-status">
-            {audioStatus ||
-              (draft.complete
-                ? "Đã có một lượt nghe hết được giữ trong nháp."
-                : "Chưa ghi nhận lượt nghe hết đoạn.")}
-          </p>
-          {!transcriptHidden && (
-            <ol className="conversation-lines">
-              {d.lines.map((l, i) => (
-                <li className={i % 2 ? "speaker-b" : "speaker-a"} key={i}>
-                  <div className="conversation-line-top">
-                    <strong>{l.speaker}</strong>
-                    <button
-                      aria-label={`Nghe câu ${i + 1} của ${l.speaker}`}
-                      onClick={() => play([i])}
-                      disabled={!!playing}
-                    >
-                      <Volume2 size={17} />
-                    </button>
-                  </div>
-                  <p lang="en">{highlight(l.en, d)}</p>
-                  {draft.translation && (
-                    <p className="conversation-translation">{l.vi}</p>
+                <label className="conversation-check">
+                  <input
+                    type="checkbox"
+                    disabled={transcriptHidden}
+                    checked={draft.translation}
+                    onChange={(e) =>
+                      updateDraft({ ...draft, translation: e.target.checked })
+                    }
+                  />
+                  Bản dịch tiếng Việt
+                </label>
+              </div>
+              <label className="conversation-speed">
+                Tốc độ nghe
+                <select
+                  aria-label="Tốc độ nghe hội thoại"
+                  value={rate}
+                  disabled={!!playing}
+                  onChange={(event) => setRate(Number(event.target.value))}
+                >
+                  {[0.65, 0.75, 0.85, 1, 1.1].map((value) => (
+                    <option key={value} value={value}>
+                      {value}×
+                    </option>
+                  ))}
+                  {![0.65, 0.75, 0.85, 1, 1.1].includes(rate) && (
+                    <option value={rate}>{rate}×</option>
                   )}
-                </li>
-              ))}
-            </ol>
-          )}
-          {!transcriptHidden && (
-            <details className="conversation-context">
-              <summary>Nghĩa của {d.targets.length} từ trong đoạn</summary>
-              <dl>
-                {d.targets.map((t) => (
-                  <div key={t.id}>
-                    <dt>
-                      <span lang="en">{t.lemma}</span>{" "}
-                      <span
-                        className="part-of-speech"
-                        aria-label={partOfSpeechCaption(t.partOfSpeech)}
-                      >
-                        {formatPartOfSpeech(t.partOfSpeech)}
-                      </span>
-                    </dt>
-                    <dd>{t.context}</dd>
-                  </div>
-                ))}
-              </dl>
-              <p className="conversation-note">
-                Giải thích theo tình huống do ứng dụng biên soạn; không phải
-                trích dẫn lời giải nghĩa của Oxford.
-              </p>
-            </details>
-          )}
-          <div className="conversation-exercises">
-            <h3>Thử hiểu và trả lời</h3>
-            <p className="conversation-note">
-              {draft.mode === "listen"
-                ? "Câu hỏi kiểm tra nội dung và nghĩa trong đoạn vừa nghe. Nghe lại vẫn là luyện trong phiên; không tự chứng minh nhớ lâu hoặc sử dụng thành thạo."
-                : draft.recall
-                  ? "Bạn đang thử trả lời khi ẩn đoạn. Kết quả ghi riêng việc mở lại gợi ý, chưa chứng minh nhớ sau nhiều ngày."
-                  : "Văn bản vẫn ở trên để đối chiếu. Điểm dưới đây đo bài luyện có hỗ trợ, không đo trí nhớ độc lập hay ngữ pháp câu tự viết."}
-            </p>
-            {needsListening && (
-              <p className="notice" role="status">
-                Nghe hết đoạn để mở các câu hỏi. Nếu thiết bị không phát được,
-                hãy chuyển sang Đọc và đối chiếu; không ghi kết quả đó thành bài
-                nghe.
-              </p>
-            )}
-            {!needsListening &&
-              d.questions.map((q, i) => {
-                const answer = report?.answers.find(
-                  (a) => a.questionId === q.id,
-                );
-                return (
-                  <fieldset key={q.id} disabled={saving || !!report}>
-                    <legend>
-                      {i + 1}. {q.prompt}
-                    </legend>
-                    {q.kind === "cloze" && (
-                      <p className="conversation-note">
-                        Điền lại từ đã dùng trong đoạn. Bài này đối chiếu lời
-                        gốc; một cách điền khác có thể đúng ngữ pháp nhưng chưa
-                        khôi phục đúng từ đang luyện.
-                      </p>
+                </select>
+              </label>
+              {spokenLine !== undefined && (
+                <p className="conversation-note" role="status">
+                  Đang nghe câu {spokenLine + 1}/{d.lines.length} ·{" "}
+                  {d.lines[spokenLine]?.speaker}
+                </p>
+              )}
+              {transcriptHidden && (
+                <div
+                  className="conversation-sentence-audio"
+                  aria-label="Nghe từng câu khi ẩn lời"
+                >
+                  {d.lines.map((line, index) => (
+                    <button
+                      key={index}
+                      disabled={!!playing}
+                      onClick={() => play([index])}
+                    >
+                      Nghe câu {index + 1} · {line.speaker}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p
+                className="conversation-note"
+                data-testid="conversation-voice-status"
+              >
+                {actualVoice ? (
+                  <>
+                    Giọng tổng hợp đang dùng: {actualVoice.lang}, tốc độ {rate}.{" "}
+                    {usingVoiceFallback && (
+                      <>
+                        Thiết bị chưa có giọng {state.voice}; đang dùng giọng
+                        tiếng Anh thay thế {actualVoice.lang}.{" "}
+                      </>
                     )}
-                    {q.options ? (
-                      q.options.map((option) => (
-                        <label className="conversation-option" key={option}>
+                    {speakerVoices?.[0] === speakerVoices?.[1]
+                      ? "Hai nhân vật dùng chung một giọng để giữ cùng vùng phát âm. "
+                      : "Hai nhân vật dùng hai giọng cùng vùng phát âm. "}
+                  </>
+                ) : (
+                  <>
+                    Chưa có giọng tiếng Anh khả dụng trên thiết bị; cài đặt mong
+                    muốn {state.voice}.{" "}
+                  </>
+                )}
+                Không phải bản thu của người bản ngữ. Một số giọng cần Internet.
+                Lịch sử ghi nhận trạng thái nghe tại thời điểm lưu bài.
+              </p>
+              <p role="status" className="conversation-audio-status">
+                {audioStatus ||
+                  (draft.complete
+                    ? "Đã có một lượt nghe hết được giữ trong nháp."
+                    : "Chưa ghi nhận lượt nghe hết đoạn.")}
+              </p>
+              {!transcriptHidden && (
+                <ol className="conversation-lines">
+                  {d.lines.map((l, i) => (
+                    <li className={i % 2 ? "speaker-b" : "speaker-a"} key={i}>
+                      <div className="conversation-line-top">
+                        <strong>{l.speaker}</strong>
+                        <button
+                          aria-label={`Nghe câu ${i + 1} của ${l.speaker}`}
+                          onClick={() => play([i])}
+                          disabled={!!playing}
+                        >
+                          <Volume2 size={17} />
+                        </button>
+                      </div>
+                      <p lang="en">{highlight(l.en, d)}</p>
+                      {draft.translation && (
+                        <p className="conversation-translation">{l.vi}</p>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              )}
+              {!transcriptHidden && (
+                <details className="conversation-context">
+                  <summary>Nghĩa của {d.targets.length} từ trong đoạn</summary>
+                  <dl>
+                    {d.targets.map((t) => (
+                      <div key={t.id}>
+                        <dt>
+                          <span lang="en">{t.lemma}</span>{" "}
+                          <span
+                            className="part-of-speech"
+                            aria-label={partOfSpeechCaption(t.partOfSpeech)}
+                          >
+                            {formatPartOfSpeech(t.partOfSpeech)}
+                          </span>
+                        </dt>
+                        <dd>{t.context}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <p className="conversation-note">
+                    Giải thích theo tình huống do ứng dụng biên soạn; không phải
+                    trích dẫn lời giải nghĩa của Oxford.
+                  </p>
+                </details>
+              )}
+              <div className="conversation-exercises">
+                <h3>Thử hiểu và trả lời</h3>
+                <p className="conversation-note">
+                  {draft.mode === "listen"
+                    ? "Câu hỏi kiểm tra nội dung và nghĩa trong đoạn vừa nghe. Nghe lại vẫn là luyện trong phiên; không tự chứng minh nhớ lâu hoặc sử dụng thành thạo."
+                    : draft.recall
+                      ? "Bạn đang thử trả lời khi ẩn đoạn. Kết quả ghi riêng việc mở lại gợi ý, chưa chứng minh nhớ sau nhiều ngày."
+                      : "Văn bản vẫn ở trên để đối chiếu. Điểm dưới đây đo bài luyện có hỗ trợ, không đo trí nhớ độc lập hay ngữ pháp câu tự viết."}
+                </p>
+                {needsListening && (
+                  <p className="notice" role="status">
+                    Nghe hết đoạn để mở các câu hỏi. Nếu thiết bị không phát
+                    được, hãy chuyển sang Đọc và đối chiếu; không ghi kết quả đó
+                    thành bài nghe.
+                  </p>
+                )}
+                {!needsListening &&
+                  d.questions.map((q, i) => {
+                    const answer = report?.answers.find(
+                      (a) => a.questionId === q.id,
+                    );
+                    return (
+                      <fieldset key={q.id} disabled={saving || !!report}>
+                        <legend>
+                          {i + 1}. {q.prompt}
+                        </legend>
+                        {q.kind === "cloze" && (
+                          <p className="conversation-note">
+                            Điền lại từ đã dùng trong đoạn. Bài này đối chiếu
+                            lời gốc; một cách điền khác có thể đúng ngữ pháp
+                            nhưng chưa khôi phục đúng từ đang luyện.
+                          </p>
+                        )}
+                        {q.options ? (
+                          q.options.map((option) => (
+                            <label className="conversation-option" key={option}>
+                              <input
+                                type="radio"
+                                name={`${d.id}-${q.id}`}
+                                value={option}
+                                checked={draft.values[q.id] === option}
+                                onChange={() =>
+                                  updateDraft({
+                                    ...draft,
+                                    values: { ...draft.values, [q.id]: option },
+                                  })
+                                }
+                              />
+                              {option}
+                            </label>
+                          ))
+                        ) : (
                           <input
-                            type="radio"
-                            name={`${d.id}-${q.id}`}
-                            value={option}
-                            checked={draft.values[q.id] === option}
-                            onChange={() =>
+                            aria-label={`Câu ${i + 1}: điền từ`}
+                            value={draft.values[q.id] || ""}
+                            maxLength={200}
+                            autoComplete="off"
+                            spellCheck={false}
+                            onChange={(e) =>
                               updateDraft({
                                 ...draft,
-                                values: { ...draft.values, [q.id]: option },
+                                values: {
+                                  ...draft.values,
+                                  [q.id]: e.target.value,
+                                },
                               })
                             }
                           />
-                          {option}
-                        </label>
-                      ))
-                    ) : (
-                      <input
-                        aria-label={`Câu ${i + 1}: điền từ`}
-                        value={draft.values[q.id] || ""}
-                        maxLength={200}
-                        autoComplete="off"
-                        spellCheck={false}
-                        onChange={(e) =>
+                        )}
+                        {answer && (
+                          <div
+                            className={`conversation-feedback ${answer.correct ? "is-correct" : "needs-work"}`}
+                          >
+                            <strong>
+                              {answer.correct
+                                ? "Đúng trong bài này"
+                                : "Cần xem lại"}
+                            </strong>
+                            <p>{answer.explanation}</p>
+                            {!answer.correct && (
+                              <p>
+                                Đáp án của bài:{" "}
+                                <span lang="en">{q.accepted.join(" / ")}</span>
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </fieldset>
+                    );
+                  })}
+                {!needsListening && (
+                  <label className="conversation-reply">
+                    {d.questions.length + 1}. {d.reply}
+                    <textarea
+                      value={draft.values.reply || ""}
+                      maxLength={6000}
+                      rows={3}
+                      disabled={saving || !!report}
+                      onChange={(e) =>
+                        updateDraft({
+                          ...draft,
+                          values: { ...draft.values, reply: e.target.value },
+                        })
+                      }
+                      placeholder="Viết câu trả lời bằng tiếng Anh (không bắt buộc)…"
+                    />
+                  </label>
+                )}
+                <p className="conversation-note">
+                  Chưa thể chấm tự động câu trả lời mở tại đây. Bản gốc được lưu
+                  để xem lại; các cách trả lời hợp lý khác nhau đều được giữ.
+                </p>
+                {error && (
+                  <p className="notice" role="alert">
+                    {error}
+                    {draft.delayedCheck && (
+                      <button
+                        onClick={() => {
                           updateDraft({
                             ...draft,
-                            values: { ...draft.values, [q.id]: e.target.value },
-                          })
-                        }
-                      />
-                    )}
-                    {answer && (
-                      <div
-                        className={`conversation-feedback ${answer.correct ? "is-correct" : "needs-work"}`}
+                            retryOf: draft.delayedCheck!.previousAttemptId,
+                            delayedCheck: undefined,
+                            usedHint: true,
+                          });
+                          setError("");
+                        }}
                       >
-                        <strong>
-                          {answer.correct
-                            ? "Đúng trong bài này"
-                            : "Cần xem lại"}
-                        </strong>
-                        <p>{answer.explanation}</p>
-                        {!answer.correct && (
-                          <p>
-                            Đáp án của bài:{" "}
-                            <span lang="en">{q.accepted.join(" / ")}</span>
-                          </p>
-                        )}
-                      </div>
+                        Chuyển thành lượt có hỗ trợ
+                      </button>
                     )}
-                  </fieldset>
-                );
-              })}
-            {!needsListening && (
-              <label className="conversation-reply">
-                {d.questions.length + 1}. {d.reply}
-                <textarea
-                  value={draft.values.reply || ""}
-                  maxLength={6000}
-                  rows={3}
-                  disabled={saving || !!report}
-                  onChange={(e) =>
-                    updateDraft({
-                      ...draft,
-                      values: { ...draft.values, reply: e.target.value },
-                    })
-                  }
-                  placeholder="Viết câu trả lời bằng tiếng Anh (không bắt buộc)…"
-                />
-              </label>
-            )}
-            <p className="conversation-note">
-              Chưa thể chấm tự động câu trả lời mở tại đây. Bản gốc được lưu để
-              xem lại; các cách trả lời hợp lý khác nhau đều được giữ.
-            </p>
-            {error && (
-              <p className="notice" role="alert">
-                {error}
-              </p>
-            )}
-            {!report ? (
-              <button
-                className="primary"
-                onClick={submit}
-                disabled={saving || needsListening || !!playing}
-              >
-                {saving ? "Đang lưu…" : "Lưu và xem phản hồi"}
-              </button>
-            ) : (
-              <div className="conversation-report" role="status">
-                <p>
-                  Đã lưu:{" "}
-                  {report.answers.filter((a) => a.correct === true).length}/
-                  {d.questions.length}
-                  câu có đáp án đúng.{" "}
-                  {report.mode === "listen" &&
-                    "Bài nghe có phát âm thanh hoàn tất. "}
-                  {report.answers.every((a) => !a.hint)
-                    ? "Đã trả lời khi ẩn đoạn, không mở lại gợi ý; đây là luyện trong phiên. "
-                    : "Lượt có hỗ trợ hoặc phản hồi trước. "}
-                  {report.answers.some((a) => a.kind === "reply")
-                    ? "Câu trả lời mở đã lưu, chưa chấm tự động."
-                    : "Chưa viết câu trả lời mở."}
-                </p>
-                <div className="conversation-actions">
-                  {report.answers.some((a) => a.correct === false) && (
-                    <button onClick={() => retry(true)}>
-                      Làm lại phần chưa đúng
-                    </button>
-                  )}
-                  <button onClick={() => retry(false)}>Làm lại toàn bài</button>
-                </div>
-              </div>
-            )}
-          </div>
-          <details className="conversation-history">
-            <summary>
-              Lịch sử đoạn này (
-              {state.conversations?.filter((a) => a.dialogueId === d.id)
-                .length || 0}
-              )
-            </summary>
-            {[...(state.conversations || [])]
-              .filter((a) => a.dialogueId === d.id)
-              .sort((a, b) => b.time - a.time)
-              .slice(0, 10)
-              .map((a) => (
-                <article key={a.id}>
-                  <strong>{new Date(a.time).toLocaleString("vi-VN")}</strong>
-                  <p>
-                    {
-                      a.answers.filter((answer) => answer.correct === true)
-                        .length
-                    }
-                    /
-                    {
-                      a.answers.filter((answer) => answer.correct !== undefined)
-                        .length
-                    }{" "}
-                    câu có đáp án ·{" "}
-                    {a.listenedComplete ? "đã nghe hết" : "chưa nghe hết"}
-                    {a.mode === "listen"
-                      ? " · bài nghe trước"
-                      : " · bài đọc/đối chiếu"}
-                    {a.transcriptRevealed && a.mode === "listen"
-                      ? " · đã mở lời"
-                      : ""}
-                    {a.retryOf ? " · lượt làm lại có phản hồi trước" : ""}
                   </p>
-                  {a.answers
-                    .filter(
-                      (answer) =>
-                        answer.kind === "reply" || answer.correct === false,
-                    )
-                    .map((answer) => (
-                      <p key={answer.questionId}>
-                        {answer.kind === "reply"
-                          ? "Bạn đã viết"
-                          : "Câu cần xem lại"}
-                        : <span lang="en">{answer.answer}</span>
-                        {answer.kind !== "reply" && (
-                          <small>{answer.explanation}</small>
-                        )}
+                )}
+                {!report ? (
+                  <button
+                    className="primary"
+                    onClick={submit}
+                    disabled={saving || needsListening || !!playing}
+                  >
+                    {saving ? "Đang lưu…" : "Lưu và xem phản hồi"}
+                  </button>
+                ) : (
+                  <div className="conversation-report" role="status">
+                    <p>
+                      Đã lưu:{" "}
+                      {report.answers.filter((a) => a.correct === true).length}/
+                      {d.questions.length}
+                      câu có đáp án đúng.{" "}
+                      {report.mode === "listen" &&
+                        "Bài nghe có phát âm thanh hoàn tất. "}
+                      {report.delayedCheck &&
+                        "Lượt kiểm tra mới sau khoảng nghỉ. "}
+                      {report.answers.every((a) => !a.hint)
+                        ? "Đã trả lời khi ẩn đoạn, không mở lại gợi ý; đây là luyện trong phiên. "
+                        : "Lượt có hỗ trợ hoặc phản hồi trước. "}
+                      {report.answers.some((a) => a.kind === "reply")
+                        ? "Câu trả lời mở đã lưu, chưa chấm tự động."
+                        : "Chưa viết câu trả lời mở."}
+                    </p>
+                    <div className="conversation-actions">
+                      {report.answers.some((a) => a.correct === false) && (
+                        <button onClick={() => retry(true)}>
+                          Làm lại phần chưa đúng
+                        </button>
+                      )}
+                      <button onClick={() => retry(false)}>
+                        Làm lại toàn bài
+                      </button>
+                    </div>
+                    <p className="conversation-note">
+                      Làm lại ngay vẫn là sửa sai có hỗ trợ. Để bắt đầu lượt
+                      kiểm tra mới, hãy đóng bài và quay lại sau ít nhất 24 giờ
+                      không xem/nghe/luyện các từ này.
+                      {reviewAvailability && (
+                        <>
+                          {" "}
+                          Mốc sớm nhất theo dữ liệu hiện có:{" "}
+                          {new Date(
+                            reviewAvailability.availableAt,
+                          ).toLocaleString("vi-VN")}
+                          .
+                        </>
+                      )}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <details className="conversation-history">
+                <summary>
+                  Lịch sử đoạn này (
+                  {state.conversations?.filter((a) => a.dialogueId === d.id)
+                    .length || 0}
+                  )
+                </summary>
+                {[...(state.conversations || [])]
+                  .filter((a) => a.dialogueId === d.id)
+                  .sort((a, b) => b.time - a.time)
+                  .slice(0, 10)
+                  .map((a) => (
+                    <article key={a.id}>
+                      <strong>
+                        {new Date(a.time).toLocaleString("vi-VN")}
+                      </strong>
+                      <p>
+                        {
+                          a.answers.filter((answer) => answer.correct === true)
+                            .length
+                        }
+                        /
+                        {
+                          a.answers.filter(
+                            (answer) => answer.correct !== undefined,
+                          ).length
+                        }{" "}
+                        câu có đáp án ·{" "}
+                        {a.listenedComplete ? "đã nghe hết" : "chưa nghe hết"}
+                        {a.mode === "listen"
+                          ? " · bài nghe trước"
+                          : " · bài đọc/đối chiếu"}
+                        {a.transcriptRevealed && a.mode === "listen"
+                          ? " · đã mở lời"
+                          : ""}
+                        {a.retryOf ? " · lượt làm lại có phản hồi trước" : ""}
+                        {a.delayedCheck
+                          ? " · kiểm tra mới sau khoảng nghỉ"
+                          : ""}
                       </p>
-                    ))}
-                </article>
-              ))}
-            <p className="conversation-note">
-              Hiện tối đa 10 lượt gần nhất của đoạn này; bản sao lưu giữ toàn bộ
-              lịch sử.
-            </p>
-          </details>
+                      {a.answers
+                        .filter(
+                          (answer) =>
+                            answer.kind === "reply" || answer.correct === false,
+                        )
+                        .map((answer) => (
+                          <p key={answer.questionId}>
+                            {answer.kind === "reply"
+                              ? "Bạn đã viết"
+                              : "Câu cần xem lại"}
+                            : <span lang="en">{answer.answer}</span>
+                            {answer.kind !== "reply" && (
+                              <small>{answer.explanation}</small>
+                            )}
+                          </p>
+                        ))}
+                    </article>
+                  ))}
+                <p className="conversation-note">
+                  Hiện tối đa 10 lượt gần nhất của đoạn này; bản sao lưu giữ
+                  toàn bộ lịch sử.
+                </p>
+              </details>
+            </>
+          )}
         </>
       )}
     </section>

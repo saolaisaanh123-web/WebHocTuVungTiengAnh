@@ -67,6 +67,14 @@ export type ConversationAttempt = {
   mode?: "read" | "listen";
   transcriptRevealed?: boolean;
   retryOf?: string;
+  /** A new contextual check after a recorded rest, separate from a repair.
+   * It never supplies delayed vocabulary-recall or SRS evidence. */
+  delayedCheck?: DelayedConversationCheck;
+};
+export type DelayedConversationCheck = {
+  previousAttemptId: string;
+  startedAt: number;
+  previousContactAt: number;
 };
 
 const object = (v: unknown): v is Record<string, unknown> =>
@@ -253,6 +261,40 @@ export function validatePracticeCollections(s: {
           previous.time > a.time
         )
           throw Error("Lượt hội thoại cần luyện lại không hợp lệ.");
+      }
+      if (a.delayedCheck !== undefined) {
+        const check = a.delayedCheck;
+        if (
+          !object(check) ||
+          !nonempty(check.previousAttemptId) ||
+          !time(check.startedAt) ||
+          !time(check.previousContactAt) ||
+          check.startedAt > (a.time as number) ||
+          check.startedAt - check.previousContactAt < 86_400_000 ||
+          a.retryOf !== undefined
+        )
+          throw Error("Lượt kiểm tra hội thoại sau khoảng nghỉ không hợp lệ.");
+        const previous = s.conversations.find(
+          (item: unknown) =>
+            object(item) && item.id === check.previousAttemptId,
+        ) as ConversationAttempt | undefined;
+        if (
+          !previous ||
+          previous.id === a.id ||
+          previous.dialogueId !== a.dialogueId ||
+          previous.dialogueVersion !== a.dialogueVersion ||
+          previous.time > check.previousContactAt ||
+          previous.targetIds.length !== a.targetIds.length ||
+          !previous.targetIds.every(
+            (id) =>
+              (a.targetIds as string[]).includes(id) &&
+              previous.targetContentVersions[id] ===
+                (a.targetContentVersions as Record<string, string>)[id],
+          )
+        )
+          throw Error(
+            "Nguồn của lượt kiểm tra hội thoại sau khoảng nghỉ không còn khớp.",
+          );
       }
       const questionIds = new Set<string>();
       for (const answer of a.answers) {

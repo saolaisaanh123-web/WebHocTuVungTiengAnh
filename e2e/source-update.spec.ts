@@ -78,9 +78,11 @@ test("the reviewed corpus exposes American Oxford and OPAL sources and usable Bl
   await expect(page.locator(".dict-source-note")).toContainText(
     /mới|chuyên biệt|không chứng minh|chưa chứng minh|ổn định|thuật ngữ/,
   );
-  await expect(page.locator(".dict-example-heading h3")).toHaveText(
-    "Ví dụ biên soạn",
-  );
+  await expect(
+    page.locator(
+      ".dict-example:not(.usage-second-example) .dict-example-heading h3",
+    ),
+  ).toHaveText("Ví dụ biên soạn");
   await expect(page.locator(".dict-reference-list a").first()).toHaveAttribute(
     "href",
     /dictionaryblog\.cambridge\.org/,
@@ -91,7 +93,14 @@ test("the reviewed corpus exposes American Oxford and OPAL sources and usable Bl
   try {
     await collection.selectOption("american-3000");
     await search.fill("elevator");
-    await expect(page.locator(".word-card h3")).toHaveText("elevator");
+    // The query also finds word-specific usage phrases. Exact headwords lead
+    // those results while the other matches remain available for lookup.
+    await expect(page.locator(".word-card h3").first()).toHaveText("elevator");
+    await expect(
+      page.locator(".word-card").filter({
+        has: page.getByRole("heading", { name: "elevator", exact: true }),
+      }),
+    ).toHaveCount(1);
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(320);
@@ -145,10 +154,12 @@ test("a formerly lookup-only word is learnable with its corrected meaning and li
   await expect(page.locator(".dict-meaning .dict-label").first()).toContainText(
     "Open English WordNet (CC BY 4.0)",
   );
-  await expect(page.locator(".dict-example-en")).toContainText(
-    "A bee landed on the flower.",
-  );
-  await expect(page.locator(".dict-example-vi")).toContainText("Một con ong");
+  await expect(
+    page.locator(".dict-example:not(.usage-second-example) .dict-example-en"),
+  ).toContainText("A bee landed on the flower.");
+  await expect(
+    page.locator(".dict-example:not(.usage-second-example) .dict-example-vi"),
+  ).toContainText("Một con ong");
   await expect(page.locator(".dict-learning-note")).toContainText(
     "đối chiếu nguồn",
   );

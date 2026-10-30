@@ -1,7 +1,12 @@
 import { canPractice, contentKey, type State } from "./core";
 import listeningA from "../data/conversations/listening-a.json" with { type: "json" };
 import listeningB from "../data/conversations/listening-b.json" with { type: "json" };
-import type { ConversationAnswer, ConversationAttempt } from "./practice-data";
+import type {
+  ConversationAnswer,
+  ConversationAttempt,
+  DelayedConversationCheck,
+} from "./practice-data";
+import { lastObservedExposure } from "./exposure-events";
 import {
   EVIDENCE_DAY,
   isWeakEvidence,
@@ -1487,6 +1492,88 @@ export function conversationPracticeIds(
   return matches[0]?.ids || [];
 }
 
+/** Contextual practice can start again after a real rest. Account for contacts
+ * from other texts, vocabulary practice and reference views too. This is not
+ * a mastery decision and does not modify learner records or due dates. */
+export function conversationReviewAvailability(
+  state: State,
+  dialogue: Dialogue,
+  now = Date.now(),
+  contactCutoff = now,
+) {
+  const current = (attempt: ConversationAttempt) =>
+    validEvidenceTime(attempt.time, contactCutoff) &&
+    dialogue.targets.some(
+      (target) =>
+        attempt.targetIds.includes(target.id) &&
+        attempt.targetContentVersions[target.id] ===
+          contentKey(state.entries[target.id]?.word),
+    );
+  if (!availableDialogues(state, [dialogue]).length) return undefined;
+  const attempts = (state.conversations || []).filter(current);
+  const previous = attempts
+    .filter(
+      (attempt) =>
+        attempt.dialogueId === dialogue.id &&
+        attempt.dialogueVersion === dialogue.version &&
+        attempt.targetIds.length === dialogue.targets.length &&
+        dialogue.targets.every(
+          (target) =>
+            attempt.targetContentVersions[target.id] ===
+            contentKey(state.entries[target.id].word),
+        ),
+    )
+    .sort((a, b) => b.time - a.time || b.id.localeCompare(a.id))[0];
+  if (!previous) return undefined;
+  const previousContactAt = Math.max(
+    previous.time,
+    ...attempts.map((attempt) => attempt.time),
+    ...dialogue.targets.map(
+      (target) =>
+        lastObservedExposure(state, target.id, contactCutoff, {
+          skill: 4,
+          includeEqualLegacy: true,
+        }) || 0,
+    ),
+  );
+  return {
+    previousAttemptId: previous.id,
+    previousContactAt,
+    availableAt: previousContactAt + EVIDENCE_DAY,
+    eligible: now - previousContactAt >= EVIDENCE_DAY,
+  };
+}
+
+function validDelayedConversationCheck(
+  state: State,
+  dialogue: Dialogue,
+  check: DelayedConversationCheck,
+  answerTime: number,
+) {
+  if (
+    !Number.isFinite(check.startedAt) ||
+    !Number.isFinite(check.previousContactAt) ||
+    check.startedAt > answerTime ||
+    answerTime - check.startedAt >= EVIDENCE_DAY
+  )
+    return false;
+  // Playback inside this check is expected exposure. Contacts preceding its
+  // start, including observations merged later from another device, still
+  // invalidate a previously claimed rest. Millisecond-equal playback belongs
+  // to the current check, whose baseline was captured before revealing text.
+  const before = conversationReviewAvailability(
+    state,
+    dialogue,
+    check.startedAt,
+    check.startedAt - 1,
+  );
+  return (
+    !!before?.eligible &&
+    before.previousAttemptId === check.previousAttemptId &&
+    before.previousContactAt === check.previousContactAt
+  );
+}
+
 export function recommendDialogues(
   state: State,
   options: {
@@ -1553,6 +1640,13 @@ export function recommendDialogues(
         a.time - previous >= EVIDENCE_DAY &&
         a.retryOf === undefined &&
         a.dialogueVersion === dialogueVersions.get(a.dialogueId) &&
+        (!a.delayedCheck ||
+          validDelayedConversationCheck(
+            state,
+            dialogues.find((dialogue) => dialogue.id === a.dialogueId)!,
+            a.delayedCheck,
+            a.time,
+          )) &&
         tested.every((answer) => answer.hint === false)
       )
         dialogueWeak.delete(id);
@@ -1646,10 +1740,20 @@ export function makeConversationAttempt(
     usedHint?: boolean;
     mode?: "read" | "listen";
     transcriptRevealed?: boolean;
+    delayedCheck?: DelayedConversationCheck;
   },
   retryOf?: string,
 ): ConversationAttempt {
   const listening = audio.mode === "listen";
+  const answerTime = Date.now();
+  if (
+    audio.delayedCheck &&
+    (retryOf ||
+      !validDelayedConversationCheck(state, d, audio.delayedCheck, answerTime))
+  )
+    throw Error(
+      "Khoảng nghỉ của lượt kiểm tra mới không còn hợp lệ. Hãy làm lại với hỗ trợ; kết quả cũ và lịch ôn vẫn được giữ.",
+    );
   const requiredLines = d.lines.map((_, index) => `line-${index}`);
   if (
     listening &&
@@ -1677,7 +1781,7 @@ export function makeConversationAttempt(
     id: crypto.randomUUID(),
     dialogueId: d.id,
     dialogueVersion: d.version,
-    time: Date.now(),
+    time: answerTime,
     targetIds: d.targets.map((t) => t.id),
     targetContentVersions: Object.fromEntries(
       d.targets.map((t) => [t.id, contentKey(state.entries[t.id].word)]),
@@ -1695,5 +1799,6 @@ export function makeConversationAttempt(
         }
       : {}),
     ...(retryOf ? { retryOf } : {}),
+    ...(audio.delayedCheck ? { delayedCheck: { ...audio.delayedCheck } } : {}),
   };
 }

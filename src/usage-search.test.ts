@@ -4,6 +4,7 @@ import { contentKey, empty, grade, merge, parse, serialize } from "./core";
 import {
   getUsage,
   normalizeVocabularyLookup,
+  prioritizeExactVocabularyMatches,
   vocabularyLookupText,
 } from "./usage";
 
@@ -27,6 +28,50 @@ describe("Sense-bound vocabulary reference lookup", () => {
     expect(normalizeVocabularyLookup("  somebody’s   name ")).toBe(
       "somebody's name",
     );
+  });
+
+  it("puts the searched headword before incidental phrase matches without changing the remaining library order", () => {
+    const entries = words
+      .filter((w) => vocabularyLookupText(w).includes("elevator"))
+      .map((word) => ({ word }));
+    expect(entries.length).toBeGreaterThan(1);
+    const before = structuredClone(entries);
+    const ranked = prioritizeExactVocabularyMatches(entries, " ELEVATOR ");
+    expect(ranked[0].word.word).toBe("elevator");
+    expect(ranked.filter((e) => e.word.word !== "elevator")).toEqual(
+      entries.filter((e) => e.word.word !== "elevator"),
+    );
+    expect(prioritizeExactVocabularyMatches(entries, "")).toEqual(entries);
+    expect(entries).toEqual(before);
+  });
+
+  it("prioritizes US spellings and actual reviewed forms without inheriting forms after a sense edit", () => {
+    const go = word("go");
+    const incidental = {
+      ...word("day"),
+      id: "personal",
+      collocation: "the trip went well",
+    };
+    expect(
+      prioritizeExactVocabularyMatches(
+        [{ word: incidental }, { word: go }],
+        "went",
+      )[0].word,
+    ).toBe(go);
+    const edited = { ...go, meaning_vi: "nghĩa khác do tôi sửa" };
+    expect(
+      prioritizeExactVocabularyMatches(
+        [{ word: incidental }, { word: edited }],
+        "went",
+      )[0].word,
+    ).toBe(incidental);
+    const neighbor = word("neighbour");
+    expect(
+      prioritizeExactVocabularyMatches(
+        [{ word: incidental }, { word: neighbor }],
+        "neighbor",
+      )[0].word,
+    ).toBe(neighbor);
   });
 
   it("keeps explicit headword spellings and personal collocations searchable", () => {

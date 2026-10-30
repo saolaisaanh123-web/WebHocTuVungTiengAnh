@@ -28,6 +28,18 @@ const usageEntries = (
       ),
   )
 ).flat();
+const contextualRows = (
+  await Promise.all(
+    (await readdir("data/usage-contexts"))
+      .filter((name) => /^range-.*\.json$/.test(name))
+      .map(async (name) =>
+        JSON.parse(await readFile("data/usage-contexts/" + name, "utf8")),
+      ),
+  )
+).flat();
+const contextEvidence = JSON.parse(
+  await readFile("data/usage-contexts/evidence.json", "utf8"),
+);
 async function checkGrammar(page) {
   await page
     .getByRole("button", { name: "Tra cứu ngữ pháp", exact: true })
@@ -75,7 +87,7 @@ async function checkUsage(page) {
     .selectOption("usage");
   assert.equal(
     Number(await page.locator(".word-grid").getAttribute("data-total-items")),
-    usageEntries.length,
+    usageEntries.length + contextualRows.length,
   );
   for (const headword of [
     "suggest",
@@ -129,6 +141,33 @@ async function checkUsage(page) {
       await panel.locator(".usage-sources a").first().getAttribute("href"),
       usage.sources[0].url,
     );
+    await page.getByRole("button", { name: "Đóng", exact: true }).click();
+  }
+  assert.equal(contextualRows.length, expectedCount - usageEntries.length);
+  for (const row of [contextualRows[0], contextualRows.at(-1)]) {
+    const sense = contextEvidence.senses[row.sourceId];
+    assert.ok(sense && sense.wordId === row.wordId);
+    await page.getByPlaceholder(/Tìm từ/).fill(sense.headword);
+    await page
+      .locator(".word-card")
+      .filter({
+        has: page.getByRole("heading", { name: sense.headword, exact: true }),
+      })
+      .filter({
+        has: page.locator(`p[data-exposure-id="${row.wordId}"]`),
+      })
+      .click();
+    const panel = page.getByRole("region", {
+      name: "Cách dùng và ngữ cảnh biên soạn",
+    });
+    await panel.waitFor();
+    assert.ok((await panel.innerText()).includes(row.en));
+    assert.ok((await panel.innerText()).includes(row.vi));
+    assert.ok((await panel.innerText()).includes(row.phraseExplanation));
+    assert.ok(
+      (await panel.innerText()).includes("Tham chiếu nghĩa và từ loại"),
+    );
+    assert.equal(await panel.locator(".usage-mistake").count(), 0);
     await page.getByRole("button", { name: "Đóng", exact: true }).click();
   }
   await page.getByPlaceholder(/Tìm từ/).fill("drank");

@@ -11,7 +11,9 @@ import {
   type ExposureEvent,
 } from "./exposure-events";
 import {
+  EVIDENCE_DAY,
   evidenceForSkill,
+  isDelayedEvidence,
   selectLearningEvidence,
   type LearningEvidence,
 } from "./evidence";
@@ -614,6 +616,66 @@ export function strength(
   if (proof.retained) return "Nhớ khá vững";
   return proof.objective.length ? "Chưa ổn định" : "Đang làm quen";
 }
+
+/** A bounded scheduling heuristic, not a calibrated memory model. Keep the
+ * legacy stage and first five intervals; only an already-mature objective
+ * skill with repeated independent evidence may receive a longer interval.
+ * Historical answers, saved sessions and existing due dates are never edited.
+ */
+function matureReviewInterval(state: State, result: Result, old?: Schedule) {
+  if (
+    old?.step !== 4 ||
+    ![1, 3, 4].includes(result.skill) ||
+    result.scheduled !== true ||
+    !result.correct ||
+    !isDelayedEvidence(result) ||
+    result.exposureGap! < 30 * EVIDENCE_DAY
+  )
+    return 30;
+
+  // Reconcile older "independent" flags with observations merged from other
+  // devices before using those answers as proof. A lapse or hinted check starts
+  // a new evidence streak; pre-lapse successes cannot immediately restore a
+  // long interval after one repaired answer.
+  const evidence = selectLearningEvidence(state, result.time);
+  const key = `${result.wordId}:${result.skill}`;
+  const current = evidence.currentBySkill.get(key) || [];
+  const latestProblem = current.reduce(
+    (latest, answer) =>
+      answer.method !== "ungraded" && (!answer.correct || answer.hint)
+        ? Math.max(latest, answer.time)
+        : latest,
+    0,
+  );
+  const clean = (evidence.attemptsBySkill.get(key) || []).filter(
+    (answer) =>
+      answer.time > latestProblem &&
+      answer.scheduled === true &&
+      answer.correct &&
+      isDelayedEvidence(answer),
+  );
+  if (
+    !clean.some((answer) => answer.id === result.id) ||
+    new Set(clean.map((answer) => day(answer.time))).size < 3
+  )
+    return 30;
+
+  // Schedules use local calendar dates, so infer the planned interval without
+  // treating a daylight-saving change as a shorter review stage. The actual
+  // observed quiet gap must still reach the corresponding full-day threshold.
+  const calendarDate = (time: number) => {
+    const date = new Date(time);
+    return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+  };
+  const plannedDays =
+    (calendarDate(old.due) - calendarDate(old.last)) / EVIDENCE_DAY;
+  const quietDays = result.exposureGap! / EVIDENCE_DAY;
+  if (plannedDays >= 90 && quietDays >= 90) return 180;
+  if (plannedDays >= 60 && quietDays >= 60) return 90;
+  if (plannedDays >= 30 && quietDays >= 30) return 60;
+  return 30;
+}
+
 export function record(state: State, r: Result, scheduled: boolean) {
   if (state.history.some((x) => x.id === r.id)) return state;
   if (!Object.hasOwn(state.entries, r.wordId)) return state;
@@ -721,7 +783,12 @@ export function record(state: State, r: Result, scheduled: boolean) {
           : (old?.step ?? 0);
       // Hinted recall holds its stage and asks for a fresh check tomorrow;
       // it is neither evidence of forgetting nor a reason to advance stages.
-      const interval = canAdvance && r.correct ? [1, 3, 7, 14, 30][step] : 1;
+      const interval =
+        canAdvance && r.correct
+          ? step === 4
+            ? matureReviewInterval(next, r, old)
+            : [1, 3, 7, 14][step]
+          : 1;
       const due = new Date(r.time);
       due.setDate(due.getDate() + interval);
       next.schedules[key] = {

@@ -1,6 +1,14 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
-import { contentKey, empty, merge, parse, type Result } from "./core";
+import { describe, expect, it, vi } from "vitest";
+import {
+  contentKey,
+  empty,
+  expose,
+  merge,
+  parse,
+  validateBackup,
+  type Result,
+} from "./core";
 import {
   availableDialogues,
   dialogues,
@@ -8,6 +16,7 @@ import {
   evaluateDialogueAnswer,
   makeConversationAttempt,
   recommendDialogues,
+  conversationReviewAvailability,
 } from "./conversations";
 import { validatePracticeCollections } from "./practice-data";
 
@@ -444,5 +453,236 @@ describe("Listen-first attempt evidence", () => {
     expect(legacy).not.toHaveProperty("mode");
     expect(legacy).not.toHaveProperty("transcriptRevealed");
     expect(legacy.read).toBe(true);
+  });
+});
+
+const CHECK_DAY = 86_400_000;
+const CHECK_START = Date.UTC(2026, 9, 28, 12);
+function delayedFixture() {
+  const d = listeningDialogues[0];
+  const ids = new Set(d.targets.map((target) => target.id));
+  const state = merge(
+    empty(),
+    parse(readFileSync("public/data/vocabulary.txt", "utf8")).filter((word) =>
+      ids.has(word.id),
+    ),
+    "default",
+  );
+  const values = Object.fromEntries(
+    d.questions.map((q) => [q.id, q.accepted[0]]),
+  );
+  const audio = {
+    mode: "listen" as const,
+    complete: true,
+    lines: d.lines.map((_, i) => `line-${i}`),
+    transcriptRevealed: false,
+  };
+  const clock = vi.spyOn(Date, "now").mockReturnValue(CHECK_START);
+  const failed = makeConversationAttempt(
+    state,
+    d,
+    { ...values, [d.questions.find((q) => q.kind === "cloze")!.id]: "wrong" },
+    audio,
+  );
+  clock.mockRestore();
+  state.conversations = [failed];
+  let contacted = state;
+  for (const target of d.targets)
+    contacted = expose(contacted, target.id, CHECK_START + 1000);
+  return { state: contacted, d, values, audio, failed };
+}
+
+describe("Fresh contextual checks after a recorded rest", () => {
+  it("uses the latest related source view instead of merely the last saved answer", () => {
+    const { state, d, failed } = delayedFixture();
+    expect(
+      conversationReviewAvailability(state, d, CHECK_START + CHECK_DAY),
+    ).toMatchObject({ eligible: false });
+    expect(
+      conversationReviewAvailability(state, d, CHECK_START + CHECK_DAY + 1000),
+    ).toMatchObject({
+      eligible: true,
+      previousAttemptId: failed.id,
+      previousContactAt: CHECK_START + 1000,
+      availableAt: CHECK_START + CHECK_DAY + 1000,
+    });
+    const later = expose(
+      state,
+      d.targets[0].id,
+      CHECK_START + CHECK_DAY - 1000,
+    );
+    expect(
+      conversationReviewAvailability(later, d, CHECK_START + CHECK_DAY + 1000)
+        ?.eligible,
+    ).toBe(false);
+    expect(
+      conversationReviewAvailability(later, d, CHECK_START + 2 * CHECK_DAY)
+        ?.eligible,
+    ).toBe(true);
+  });
+
+  it("records an actually new unaided listening check, keeping old attempts, SRS and vocabulary mastery separate", () => {
+    const { state, d, failed, audio, values } = delayedFixture();
+    const startedAt = CHECK_START + CHECK_DAY + 2000;
+    const before = structuredClone(state);
+    const available = conversationReviewAvailability(state, d, startedAt)!;
+    const check = {
+      previousAttemptId: available.previousAttemptId,
+      previousContactAt: available.previousContactAt,
+      startedAt,
+    };
+    let heard = state;
+    for (const target of d.targets) heard = expose(heard, target.id, startedAt);
+    const clock = vi.spyOn(Date, "now").mockReturnValue(startedAt + 5000);
+    try {
+      const fresh = makeConversationAttempt(heard, d, values, {
+        ...audio,
+        delayedCheck: check,
+      });
+      expect(fresh.retryOf).toBeUndefined();
+      expect(fresh.delayedCheck).toEqual(check);
+      expect(
+        fresh.answers.every((answer) => answer.correct && !answer.hint),
+      ).toBe(true);
+      const after = {
+        ...heard,
+        conversations: [...heard.conversations!, fresh],
+      };
+      expect(validateBackup(JSON.parse(JSON.stringify(after)))).toEqual(after);
+      expect(
+        recommendDialogues(state, { weakOnly: true, now: startedAt }).find(
+          (item) => item.dialogue.id === d.id,
+        )?.weak,
+      ).toBeGreaterThan(0);
+      expect(
+        recommendDialogues(after, { weakOnly: true, now: fresh.time }).find(
+          (item) => item.dialogue.id === d.id,
+        ),
+      ).toBeUndefined();
+      expect(after.conversations![0]).toEqual(failed);
+      expect(after.history).toEqual([]);
+      expect(after.schedules).toEqual({});
+      expect(state).toEqual(before);
+    } finally {
+      clock.mockRestore();
+    }
+  });
+
+  it("invalidates a claimed rest when a late-merged observation precedes the check, without rewriting history", () => {
+    const { state, d, audio, values } = delayedFixture();
+    const startedAt = CHECK_START + CHECK_DAY + 2000;
+    const available = conversationReviewAvailability(state, d, startedAt)!;
+    const check = {
+      previousAttemptId: available.previousAttemptId,
+      previousContactAt: available.previousContactAt,
+      startedAt,
+    };
+    const clock = vi.spyOn(Date, "now").mockReturnValue(startedAt + 10_000);
+    try {
+      const fresh = makeConversationAttempt(state, d, values, {
+        ...audio,
+        delayedCheck: check,
+      });
+      const recorded = {
+        ...state,
+        conversations: [...state.conversations!, fresh],
+      };
+      const before = structuredClone(recorded);
+      const merged = expose(recorded, d.targets[0].id, startedAt - 1000);
+      expect(
+        recommendDialogues(merged, { weakOnly: true, now: fresh.time }).find(
+          (item) => item.dialogue.id === d.id,
+        )?.weak,
+      ).toBeGreaterThan(0);
+      expect(() =>
+        makeConversationAttempt(merged, d, values, {
+          ...audio,
+          delayedCheck: check,
+        }),
+      ).toThrow(/Khoảng nghỉ/);
+      expect(recorded).toEqual(before);
+    } finally {
+      clock.mockRestore();
+    }
+  });
+
+  it("does not grant a fresh check to stale bindings, recent repairs or an expired unfinished check", () => {
+    const { state, d, failed, audio, values } = delayedFixture();
+    const time = CHECK_START + CHECK_DAY + 2000;
+    const available = conversationReviewAvailability(state, d, time)!;
+    const check = {
+      previousAttemptId: available.previousAttemptId,
+      previousContactAt: available.previousContactAt,
+      startedAt: time,
+    };
+    const stale = {
+      ...state,
+      conversations: [{ ...failed, dialogueVersion: "old-text" }],
+    };
+    expect(conversationReviewAvailability(stale, d, time)).toBeUndefined();
+    const oldSense = structuredClone(state);
+    oldSense.conversations![0].targetContentVersions[d.targets[0].id] =
+      "old-sense";
+    expect(conversationReviewAvailability(oldSense, d, time)).toBeUndefined();
+    const clock = vi.spyOn(Date, "now").mockReturnValue(time);
+    try {
+      expect(() =>
+        makeConversationAttempt(
+          state,
+          d,
+          values,
+          { ...audio, delayedCheck: check },
+          failed.id,
+        ),
+      ).toThrow(/Khoảng nghỉ/);
+      clock.mockReturnValue(time + CHECK_DAY);
+      expect(() =>
+        makeConversationAttempt(state, d, values, {
+          ...audio,
+          delayedCheck: check,
+        }),
+      ).toThrow(/Khoảng nghỉ/);
+    } finally {
+      clock.mockRestore();
+    }
+  });
+
+  it("rejects malformed delayed-check backup links but keeps legacy and later-edited historical records", () => {
+    const { state, d, audio, values, failed } = delayedFixture();
+    const startedAt = CHECK_START + CHECK_DAY + 2000;
+    const available = conversationReviewAvailability(state, d, startedAt)!;
+    const check = {
+      previousAttemptId: available.previousAttemptId,
+      previousContactAt: available.previousContactAt,
+      startedAt,
+    };
+    const clock = vi.spyOn(Date, "now").mockReturnValue(startedAt + 1000);
+    try {
+      const fresh = makeConversationAttempt(state, d, values, {
+        ...audio,
+        delayedCheck: check,
+      });
+      const recorded = { ...state, conversations: [failed, fresh] };
+      for (const change of [
+        { previousAttemptId: "missing" },
+        { startedAt: CHECK_START + 100 },
+        { previousContactAt: -1 },
+        { startedAt: fresh.time + 1 },
+      ]) {
+        const broken = structuredClone(recorded);
+        broken.conversations[1].delayedCheck = { ...check, ...change };
+        expect(() => validateBackup(broken)).toThrow();
+      }
+      const stale = structuredClone(recorded);
+      stale.entries[d.targets[0].id].word.meaning_vi = "nghĩa cá nhân mới";
+      expect(validateBackup(stale).conversations).toEqual(
+        recorded.conversations,
+      );
+      expect(
+        validateBackup(JSON.parse(JSON.stringify(state))).conversations,
+      ).toEqual(state.conversations);
+    } finally {
+      clock.mockRestore();
+    }
   });
 });

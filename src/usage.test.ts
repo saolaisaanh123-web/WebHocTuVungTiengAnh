@@ -17,6 +17,7 @@ import {
   attachStudyContexts,
   exerciseWord,
   getUsage,
+  inspectUsageEntry,
   usageEntries,
 } from "./usage";
 import { analyzeLearning } from "./analytics";
@@ -59,12 +60,14 @@ function result(overrides: Partial<Result> = {}): Result {
 
 describe("source-reviewed usage and contextual recall", () => {
   it("ships 203 distinct, complete, sense-matched supplements with real source receipts", () => {
-    expect(usageEntries).toHaveLength(203);
-    expect(new Set(usageEntries.map((entry) => entry.wordId)).size).toBe(203);
-    expect(new Set(usageEntries.map((entry) => entry.example.id)).size).toBe(
-      203,
-    );
-    for (const entry of usageEntries) {
+    const curated = usageEntries.filter((entry) => {
+      const word = corpus.find((word) => word.id === entry.wordId);
+      return word && inspectUsageEntry(entry, word).legacy;
+    });
+    expect(curated).toHaveLength(203);
+    expect(new Set(curated.map((entry) => entry.wordId)).size).toBe(203);
+    expect(new Set(curated.map((entry) => entry.example.id)).size).toBe(203);
+    for (const entry of curated) {
       const word = corpus.find((w) => w.id === entry.wordId)!;
       expect(word, entry.wordId).toBeDefined();
       expect(getUsage(word), entry.wordId).toBe(entry);
@@ -73,10 +76,13 @@ describe("source-reviewed usage and contextual recall", () => {
         expect(pattern.form.trim()).not.toBe("");
         expect(pattern.explanation.trim()).not.toBe("");
       }
-      expect(entry.note.trim()).not.toBe("");
-      for (const text of Object.values(entry.mistake))
-        expect(text.trim()).not.toBe("");
-      expect(entry.mistake.incorrect).not.toBe(entry.mistake.correct);
+      expect(entry.note?.trim()).not.toBe("");
+      expect(entry.mistake).toBeDefined();
+      if (entry.mistake) {
+        for (const text of Object.values(entry.mistake))
+          expect(text.trim()).not.toBe("");
+        expect(entry.mistake.incorrect).not.toBe(entry.mistake.correct);
+      }
       expect(entry.example.en).not.toBe(word.example_en);
       expect(entry.example.vi.trim()).not.toBe("");
       expect(cloze({ ...word, example_en: entry.example.en })).not.toBe(

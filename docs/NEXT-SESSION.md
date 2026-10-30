@@ -1,6 +1,18 @@
 # Jeongyeon — ghi nhớ cho phiên sửa tiếp theo
 
-Cập nhật mới nhất **28/10/2026 — mở rộng bài nghe theo yêu cầu mới**. Báo cáo: [listening-upgrade-2026-10-28.md](listening-upgrade-2026-10-28.md).
+Đã hoàn tất yêu cầu ngày 30/10; kiểm thử và bàn giao **31/10/2026**. Báo cáo hiện hành: [whole-vocabulary-contexts-2026-10-30.md](whole-vocabulary-contexts-2026-10-30.md).
+
+- Toàn bộ **5.586 ID/nghĩa/POS** có ngữ cảnh thứ hai: 203 bài sâu cũ giữ nguyên + 5.383 câu Anh–Việt/cụm minh họa mới, đã rà độc lập bằng mô hình và ràng buộc hash. 0 mục thiếu. Không gọi nguồn định nghĩa là chứng nhận mọi quy tắc ngữ pháp.
+- 836 phiếu/790 URL cho lớp mới; 4.986 mục có body cache khớp hash, 397 phiếu lịch sử thiếu body hiện tại. 44 tệp OEWN tải lại 30/10 đúng hash; Oxford/Cambridge mẫu vẫn bị proxy403, giữ ngày đọc cũ. TXT 8.916.954 byte/SHA bfedc903… và 203 bài sâu không đổi.
+- Thêm lượt hội thoại mới sau ≥24h với lời/đáp án cũ ẩn; retry vẫn có hỗ trợ, không cấp nhớ vững/SRS. Giãn 60/90/180 ngày chỉ với kỹ năng khách quan đã đủ bằng chứng; tự đánh giá ≤30 ngày; queue đang dở không đổi.
+- Tìm kiếm ưu tiên đầu từ/cách viết/dạng đã đối chiếu khớp chính xác; các kết quả còn lại và thứ tự học giữ nguyên. Khi sửa nghĩa/POS cá nhân, phần mở rộng nghĩa cũ không được gắn nhầm.
+- **517 unit/37 tệp,46 data + audit độ phủ/nguồn,160/160 Chromium toàn lượt, TypeScript/build và production gốc/đường dẫn con offline/UTM đều đạt.** Gói JS 5,33 MB/gzip 1,47 MB do chứa nội dung offline; chưa đo điện thoại thật.
+- Giới hạn công bố: TTS thiết bị; không chấm ngữ pháp tổng quát; Supabase thật cần dự án của người dùng; chưa kiểm Safari/iPhone thật. Không biến các giới hạn này thành chức năng giả hoặc tuyên bố đã thử dịch vụ thật.
+- Đợt này đã đóng phạm vi. Không tự khởi động thêm vòng rà/mở rộng khi chưa có yêu cầu mới. Người dùng đã cho phép commit/push; xác nhận triển khai trong thông báo bàn giao của phiên.
+
+
+
+Mốc lịch sử **28/10/2026 — mở rộng bài nghe theo yêu cầu mới**. Báo cáo: [listening-upgrade-2026-10-28.md](listening-upgrade-2026-10-28.md).
 
 - Thêm 30 bài nghe (10 B1/14 B2/6 C1), tổng44bài;272lượt thoại/120câu hỏi/97IDhiện có được luyện trong bài. Dữ liệu tự biên soạn Anh–Mỹ, giọng TTS thiết bị, không giả bản thu nhà xuất bản. Mức B1–C1 do Jeongyeon gợi ý, không phải chứng nhận độ khó/band.
 - Bài mới mặc định nghe trước, ẩn lời/nghĩa/câu hỏi trước khi nghe xong; lỗi/dừng không có kết quả nghe, mở lời/retry đánh dấu hỗ trợ. Nghe/từng câu/toàn bài/tốc độ/tìm Việt không dấu+English/C1, lưu nháp và kết quả. Giữ14bài cũ nguyên byte/version.

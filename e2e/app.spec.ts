@@ -92,7 +92,9 @@ test("news idioms filter and display attributed context separately from practice
     .getByRole("button", { name: `Xem chi tiết và nguồn của ${idiom.word}` })
     .click();
   await expect(page.locator(".dict-headword")).toHaveText(idiom.word);
-  await expect(page.locator(".dict-example-en")).toHaveText(idiom.example_en);
+  await expect(
+    page.locator(".dict-example:not(.usage-second-example) .dict-example-en"),
+  ).toHaveText(idiom.example_en);
   await expect(page.locator(".dict-news blockquote")).toHaveText(
     idiom.news_excerpt,
   );

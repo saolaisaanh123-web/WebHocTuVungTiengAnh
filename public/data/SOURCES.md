@@ -1,10 +1,19 @@
 # Nguồn và phạm vi kho từ Jeongyeon
 
-Kho mặc định hiện chứa **toàn bộ phạm vi Oxford 3000 và phần bổ sung Oxford 5000 theo hai PDF đã đối chiếu**, cộng bộ cụm động từ và Slang/thành ngữ/khẩu ngữ ban đầu, gồm 27 thành ngữ có ngữ cảnh báo chí. Tất cả nội dung học nằm trong file UTF-8 `vocabulary.txt`; không nhúng từ vựng vào mã giao diện.
+Kho mặc định hiện chứa **toàn bộ phạm vi Oxford 3000 và phần bổ sung Oxford 5000 theo hai PDF đã đối chiếu**, cộng bộ cụm động từ và Slang/thành ngữ/khẩu ngữ ban đầu, gồm 27 thành ngữ có ngữ cảnh báo chí. Kho từ chính nằm trong file UTF-8 `vocabulary.txt`; ngữ pháp và các ngữ cảnh bổ sung nằm trong các tệp dữ liệu riêng, không viết cứng trong mã giao diện.
+
+## Ngữ cảnh cho toàn bộ kho — 30/10/2026
+
+Kho hiện có **5.586 mục theo ID/nghĩa/từ loại**. Toàn bộ có ngữ cảnh Anh–Việt thứ hai: giữ 203 bài sâu cũ và thêm 5.383 câu tự biên soạn, cụm minh họa cùng giải thích theo ngữ cảnh, qua lượt biên tập độc lập thứ hai bằng mô hình. Không giả là chuyên gia hoặc nhà xuất bản kiểm duyệt.
+
+Nguồn của phần mới xác nhận **nghĩa và từ loại được chọn**, không chứng nhận câu mới hoặc toàn bộ ngữ pháp/kết hợp từ. Metadata giữ ngày đọc/hash gốc; nguồn OEWN khóa phiên bản, Oxford American, Merriam-Webster, Cambridge Blog và những bài từ điển khác gắn theo đúng mục. Có bản lưu khớp hash thì đối chiếu bản lưu; thiếu body thì ghi phiếu xác minh lịch sử, không giả lượt đọc mới. Ngày 30/10 đã tải lại 44 tệp OEWN chính thức và xác nhận đúng hash; trang mẫu Oxford/Cambridge vẫn bị proxy403.
+
+Nội dung ở `data/usage-contexts` được đóng gói vào ứng dụng để dùng offline. Không đổi byte TXT, ID, đáp án, lịch sử hoặc câu trong phiên đang dở. Mục `no-cloze` vẫn không tạo bài điền; thành ngữ thay đại từ dùng ví dụ tự nhiên để đọc/nghe, không thêm đại từ thành đáp án chung. Các phần có quy tắc/lỗi/tính đếm được đã đối chiếu giữ nguyên; không tự sinh quy tắc còn thiếu chỉ để đánh dấu hoàn tất.
+
 
 ## Rà toàn bộ nội dung học ngày 21/10/2026
 
-Đợt này đã rà **5.558 mục theo nghĩa/từ loại, đều đủ nội dung để luyện**. Hoàn thiện 4.497 mục trước đây chỉ tra cứu và đối chiếu lại 1.061 mục vốn đã học được; không chỉ đổi cờ `ready`. Mỗi mục có nghĩa Việt, giải nghĩa Anh, câu tiếng Anh hoàn chỉnh và bản dịch Việt. Một mục vẫn chỉ học một nghĩa được chọn, không bao gồm mọi nghĩa của đầu từ. Sau bổ sung hai nghĩa nền tảng ngày 23/10, kho đạt 5.560 mục. Đợt từ loại ngày 24/10 thêm 21 mục động từ có nguồn riêng, tổng hiện tại là 5.581 mục.
+Đợt này đã rà **5.558 mục theo nghĩa/từ loại, đều đủ nội dung để luyện**. Hoàn thiện 4.497 mục trước đây chỉ tra cứu và đối chiếu lại 1.061 mục vốn đã học được; không chỉ đổi cờ `ready`. Mỗi mục có nghĩa Việt, giải nghĩa Anh, câu tiếng Anh hoàn chỉnh và bản dịch Việt. Một mục vẫn chỉ học một nghĩa được chọn, không bao gồm mọi nghĩa của đầu từ. Sau bổ sung hai nghĩa nền tảng ngày 23/10, kho đạt 5.560 mục. Đợt từ loại ngày 24/10 thêm 21 mục động từ có nguồn riêng, tổng tại mốc đó là 5.581 mục; sau các bổ sung tiếp theo kho hiện có 5.586 mục.
 
 - **Open English WordNet**, phiên bản khóa `45fdb60396dc804526b85f21a23c59983c2c396a`: chọn nghĩa và từ loại cụ thể qua synset/lemma. Nguồn này phát triển từ Princeton WordNet, dùng để đối chiếu ngữ nghĩa; không lấy thứ tự nghĩa làm bằng chứng thông dụng, CEFR hoặc ưu tiên Mỹ.
 - **Oxford American/Academic/Learner’s**: đọc các nghĩa phù hợp cho từ chức năng, nghĩa WordNet chưa bao phủ tốt, từ loại và khác biệt Anh–Mỹ. **Merriam-Webster** cùng các nguồn từ điển bổ sung được đọc cho tiếng lóng/cách dùng hiện đại; từng nguồn thật nằm trong bằng chứng của từng ID.
