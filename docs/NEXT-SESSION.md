@@ -8,6 +8,7 @@
 - Tìm kiếm ưu tiên đầu từ/cách viết/dạng đã đối chiếu khớp chính xác; các kết quả còn lại và thứ tự học giữ nguyên. Khi sửa nghĩa/POS cá nhân, phần mở rộng nghĩa cũ không được gắn nhầm.
 - **517 unit/37 tệp,46 data + audit độ phủ/nguồn,160/160 Chromium toàn lượt, TypeScript/build và production gốc/đường dẫn con offline/UTM đều đạt.** Gói JS 5,33 MB/gzip 1,47 MB do chứa nội dung offline; chưa đo điện thoại thật.
 - Giới hạn công bố: TTS thiết bị; không chấm ngữ pháp tổng quát; Supabase thật cần dự án của người dùng; chưa kiểm Safari/iPhone thật. Không biến các giới hạn này thành chức năng giả hoặc tuyên bố đã thử dịch vụ thật.
+- CI dùng hai worker và ngân sách 20 giây cho hai phép quét toàn kho; không bỏ mục hoặc assertion. Bản đầu gặp timeout 5 giây trên runner, đã tối ưu quét dữ liệu và điều chỉnh ngân sách. Kết quả triển khai cuối được xác nhận trong thông báo bàn giao.
 - Đợt này đã đóng phạm vi. Không tự khởi động thêm vòng rà/mở rộng khi chưa có yêu cầu mới. Người dùng đã cho phép commit/push; xác nhận triển khai trong thông báo bàn giao của phiên.
 
 

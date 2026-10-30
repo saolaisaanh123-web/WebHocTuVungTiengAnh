@@ -26,6 +26,7 @@ import { cloudPayload, mergeCloudState } from "./sync";
 import { assessLearningAnswer } from "./assessment";
 
 const corpus = parse(readFileSync("public/data/vocabulary.txt", "utf8"));
+const corpusById = new Map(corpus.map((word) => [word.id, word]));
 const target = corpus.find((word) => word.word === "suggest")!;
 const setup = () => merge(empty(), [target], "default");
 const task = (): StudyTask => ({
@@ -60,16 +61,17 @@ function result(overrides: Partial<Result> = {}): Result {
 
 describe("source-reviewed usage and contextual recall", () => {
   it("ships 203 distinct, complete, sense-matched supplements with real source receipts", () => {
-    const curated = usageEntries.filter((entry) => {
-      const word = corpus.find((word) => word.id === entry.wordId);
-      return word && inspectUsageEntry(entry, word).legacy;
-    });
+    // New entries have their own exhaustive review/coverage suite. Check every
+    // unversioned entry here rather than revalidating 5,383 modern records just
+    // to discard them, and still reject any unrecognized legacy candidate.
+    const curated = usageEntries.filter((entry) => entry.review === undefined);
     expect(curated).toHaveLength(203);
     expect(new Set(curated.map((entry) => entry.wordId)).size).toBe(203);
     expect(new Set(curated.map((entry) => entry.example.id)).size).toBe(203);
     for (const entry of curated) {
-      const word = corpus.find((w) => w.id === entry.wordId)!;
+      const word = corpusById.get(entry.wordId)!;
       expect(word, entry.wordId).toBeDefined();
+      expect(inspectUsageEntry(entry, word).legacy, entry.wordId).toBe(true);
       expect(getUsage(word), entry.wordId).toBe(entry);
       expect(entry.patterns.length).toBeGreaterThan(0);
       for (const pattern of entry.patterns) {
@@ -105,7 +107,7 @@ describe("source-reviewed usage and contextual recall", () => {
 
   it("keeps reviewed alternative answers local to their exact example and never credits target recall", () => {
     for (const entry of usageEntries) {
-      const word = corpus.find((candidate) => candidate.id === entry.wordId)!;
+      const word = corpusById.get(entry.wordId)!;
       const alternatives = entry.example.alternatives || [];
       expect(new Set(alternatives.map(normalize)).size, entry.headword).toBe(
         alternatives.length,
@@ -168,7 +170,7 @@ describe("source-reviewed usage and contextual recall", () => {
       );
       expect(entry, headword).toBeDefined();
       expect(entry!.countability?.trim(), headword).toBeTruthy();
-      const word = corpus.find((candidate) => candidate.id === entry!.wordId)!;
+      const word = corpusById.get(entry!.wordId)!;
       expect(word.part_of_speech).toBe("noun");
       const exercise = { ...word, example_en: entry!.example.en };
       expect(cloze(exercise), headword).not.toBe(exercise.example_en);

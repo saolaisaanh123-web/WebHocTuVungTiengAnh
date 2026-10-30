@@ -46,7 +46,7 @@ Mục `no-cloze` đã có, như thành ngữ đổi đại từ, vẫn có ngữ
 
 ## Kiểm thử và giới hạn
 
-- **517 kiểm thử mã/37 tệp** đạt, bao gồm độ phủ từng ID, nội dung được rà, bảo vệ nghĩa/POS, lịch ôn dài hạn, lưu/khôi phục và hợp nhất dữ liệu.
+- **517 kiểm thử mã/37 tệp** đạt, bao gồm độ phủ từng ID, nội dung được rà, bảo vệ nghĩa/POS, lịch ôn dài hạn, lưu/khôi phục và hợp nhất dữ liệu. CI giới hạn hai worker; hai phép quét toàn kho dùng ngân sách 20 giây thay vì 5 giây trên runner dùng chung. Kiểm tra 203 bài cũ dùng chỉ mục ID và tránh quét lại lớp mới chỉ để loại bỏ; vẫn kiểm tra đủ toàn bộ mục và giữ các assertion nguồn/nội dung.
 - **46 kiểm thử dữ liệu** đạt; kiểm tra bổ sung xác nhận 5.383 + 203 = 5.586/5.586 mục sẵn sàng và 0 thiếu. Metadata 203 bài cũ/253 URL đạt, không gọi kiểm tra metadata offline là truy cập nguồn mới.
 - **160/160 ca Chromium đạt trong một lượt chạy toàn bộ** (3,4 phút), gồm tra cứu offline, ưu tiên đầu từ chính xác, ngữ cảnh mới, lưu nháp, giữ phiên, hội thoại sau khoảng nghỉ và không ghi bằng chứng từ phần đang đóng. Kiểm tra các màn hình 320/390/1.366 px và các kích thước cũ trong bộ hồi quy.
 - **TypeScript/build production** đạt; tải đủ 5.586 mục, ngữ pháp, bài nghe và ngữ cảnh bổ sung ở đường dẫn gốc và `/pages-test/`, tải lại offline cả URL chuẩn và bookmark có UTM, không cache API riêng tư. Mất JavaScript hiện thông báo lỗi thay vì trang trắng.

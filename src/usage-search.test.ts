@@ -43,7 +43,9 @@ describe("Sense-bound vocabulary reference lookup", () => {
     );
     expect(prioritizeExactVocabularyMatches(entries, "")).toEqual(entries);
     expect(entries).toEqual(before);
-  });
+    // This deliberately builds the complete 5,586-entry index on a cold cache.
+    // Leave a bounded corpus-sized budget on shared CI without skipping rows.
+  }, 20_000);
 
   it("prioritizes US spellings and actual reviewed forms without inheriting forms after a sense edit", () => {
     const go = word("go");

@@ -20,7 +20,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm test
+      # Whole-corpus checks share large immutable teaching data. Bound worker
+      # contention just as in the verified local release command.
+      - run: npm test -- --maxWorkers=2
       - name: Verify curated vocabulary and source metadata
         run: |
           npm run test:data

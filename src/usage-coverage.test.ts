@@ -48,7 +48,8 @@ describe("Whole selected-sense contextual coverage", () => {
     expect(createHash("sha256").update(txt).digest("hex")).toBe(
       "bfedc90307e912b5dd19f2620f92a45e0704b67054ef7a1070273fe2464209bb",
     );
-  });
+    // This validates readiness and exact sense bindings across the entire corpus.
+  }, 20_000);
 
   it("binds the actual reviewed original sentence, translation and phrase to a different reviewer", () => {
     for (const row of rows) {
